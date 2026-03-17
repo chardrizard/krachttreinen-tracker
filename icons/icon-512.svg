@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Background -->
+  <rect width="512" height="512" rx="102" fill="#0a0a0a"/>
+  
+  <!-- Barbell icon centered -->
+  <g transform="translate(256, 276)">
+    <!-- Center bar -->
+    <rect x="-140" y="-20" width="280" height="40" rx="10" fill="#404040"/>
+    
+    <!-- Left weight plates -->
+    <rect x="-172" y="-86" width="52" height="172" rx="10" fill="#22c55e"/>
+    <rect x="-152" y="-66" width="12" height="132" rx="3" fill="#16a34a"/>
+    
+    <!-- Right weight plates -->
+    <rect x="120" y="-86" width="52" height="172" rx="10" fill="#22c55e"/>
+    <rect x="140" y="-66" width="12" height="132" rx="3" fill="#16a34a"/>
+  </g>
+  
+  <!-- Upward arrow indicating progress -->
+  <g transform="translate(256, 120)">
+    <path d="M0 -44 L44 12 L16 12 L16 56 L-16 56 L-16 12 L-44 12 Z" fill="#fafafa"/>
+  </g>
+</svg>

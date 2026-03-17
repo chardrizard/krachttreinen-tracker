@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180">
+  <!-- Background - iOS will apply its own mask -->
+  <rect width="180" height="180" fill="#0a0a0a"/>
+  
+  <!-- Barbell icon centered -->
+  <g transform="translate(90, 94)">
+    <!-- Center bar -->
+    <rect x="-48" y="-7" width="96" height="14" rx="4" fill="#404040"/>
+    
+    <!-- Left weight plates -->
+    <rect x="-60" y="-30" width="18" height="60" rx="4" fill="#22c55e"/>
+    <rect x="-52" y="-22" width="4" height="44" rx="1" fill="#16a34a"/>
+    
+    <!-- Right weight plates -->
+    <rect x="42" y="-30" width="18" height="60" rx="4" fill="#22c55e"/>
+    <rect x="48" y="-22" width="4" height="44" rx="1" fill="#16a34a"/>
+  </g>
+  
+  <!-- Upward arrow -->
+  <g transform="translate(90, 46)">
+    <path d="M0 -14 L14 4 L5 4 L5 18 L-5 18 L-5 4 L-14 4 Z" fill="#fafafa"/>
+  </g>
+</svg>
