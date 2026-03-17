@@ -589,7 +589,7 @@ a { color: inherit; text-decoration: none; }
   color: var(--text-secondary);
 }
 
-/* Set Input Row */
+/* Set Input Row - Simple 5-column layout */
 .set-list {
   display: flex;
   flex-direction: column;
@@ -598,77 +598,45 @@ a { color: inherit; text-decoration: none; }
 }
 
 .set-row {
-  display: grid;
-  grid-template-columns: 32px minmax(0, 1fr) 64px;
-  gap: var(--space-2);
+  display: flex;
   align-items: center;
+  gap: 8px;
   padding: var(--space-3);
   background: var(--surface-raised);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  position: relative;
-  overflow: hidden;
 }
 
 .set-row__number {
+  width: 24px;
   font-family: var(--font-mono);
   font-size: var(--text-sm);
   color: var(--text-muted);
   text-align: center;
-}
-
-.set-row__weight {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  min-width: 0;
-}
-
-.set-row__weight-input {
-  flex: 1;
-  min-width: 0;
-  height: 44px;
-  background: var(--surface-inset);
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-sm);
-  font-family: var(--font-mono);
-  font-size: var(--text-lg);
-  font-variant-numeric: tabular-nums;
-  text-align: center;
-  color: var(--text-primary);
-  padding: 0 var(--space-1);
-}
-
-.set-row__weight-input:focus {
-  outline: none;
-  border-color: var(--accent);
-}
-
-.set-row__increment {
   flex-shrink: 0;
-  width: 40px;
+}
+
+.set-row__btn {
+  width: 44px;
   height: 44px;
   background: var(--surface-overlay);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-sm);
-  font-size: var(--text-lg);
+  font-size: 20px;
   font-weight: 500;
   color: var(--text-primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all var(--transition-fast);
+  flex-shrink: 0;
 }
 
-.set-row__increment:hover {
+.set-row__btn:active { 
   background: var(--surface-raised);
-  border-color: var(--border-strong);
+  transform: scale(0.95); 
 }
 
-.set-row__increment:active { transform: scale(0.95); }
-
-.set-row__reps-input {
-  width: 100%;
+.set-row__input {
   height: 44px;
   background: var(--surface-inset);
   border: 1px solid var(--border-default);
@@ -680,31 +648,25 @@ a { color: inherit; text-decoration: none; }
   color: var(--text-primary);
 }
 
-.set-row__reps-input:focus {
+.set-row__input:focus {
   outline: none;
   border-color: var(--accent);
 }
 
-.set-row__delete {
-  position: absolute;
-  right: -60px;
-  top: 0;
-  bottom: 0;
-  width: 60px;
-  background: var(--destructive);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  transition: right var(--transition-fast);
+.set-row__input--weight {
+  flex: 1;
+  min-width: 60px;
 }
 
-.set-row.swiped .set-row__delete { right: 0; }
+.set-row__input--reps {
+  width: 56px;
+  flex-shrink: 0;
+}
 
 .set-row__labels {
-  display: grid;
-  grid-template-columns: 32px minmax(0, 1fr) 64px;
-  gap: var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
   padding: 0 var(--space-3);
   margin-bottom: var(--space-2);
 }
@@ -717,8 +679,9 @@ a { color: inherit; text-decoration: none; }
   color: var(--text-muted);
 }
 
-.set-row__label:nth-child(2) { text-align: center; }
-.set-row__label:nth-child(3) { text-align: center; }
+.set-row__label--set { width: 24px; }
+.set-row__label--weight { flex: 1; text-align: center; margin-left: 52px; }
+.set-row__label--reps { width: 56px; text-align: center; }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    COMPONENTS: Progress Screen
@@ -1112,7 +1075,7 @@ a { color: inherit; text-decoration: none; }
    RESPONSIVE
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* iPhone SE (320px) and very small screens */
+/* Small screens (iPhone SE) */
 @media (max-width: 359px) {
   :root {
     --text-base: 15px;
@@ -1121,26 +1084,23 @@ a { color: inherit; text-decoration: none; }
   }
   
   .set-row {
-    grid-template-columns: 28px minmax(0, 1fr) 56px;
     gap: 6px;
     padding: var(--space-2);
   }
   
-  .set-row__increment {
-    width: 32px;
+  .set-row__btn {
+    width: 36px;
+    height: 40px;
+    font-size: 18px;
+  }
+  
+  .set-row__input {
     height: 40px;
     font-size: var(--text-base);
   }
   
-  .set-row__weight-input,
-  .set-row__reps-input {
-    height: 40px;
-    font-size: var(--text-base);
-  }
-  
-  .set-row__labels {
-    grid-template-columns: 28px minmax(0, 1fr) 56px;
-    gap: 6px;
+  .set-row__input--reps {
+    width: 48px;
   }
   
   .last-session__stat {
@@ -1169,33 +1129,10 @@ a { color: inherit; text-decoration: none; }
   }
 }
 
-/* iPhone standard (375px+) */
-@media (min-width: 375px) {
-  .set-row {
-    grid-template-columns: 32px minmax(0, 1fr) 72px;
-    gap: var(--space-2);
-  }
-  
-  .set-row__increment {
-    width: 44px;
-    height: 44px;
-  }
-  
-  .set-row__labels {
-    grid-template-columns: 32px minmax(0, 1fr) 72px;
-  }
-}
-
-/* iPhone Plus / Pro Max (414px+) */
+/* Larger phones (414px+) */
 @media (min-width: 414px) {
-  .set-row {
-    grid-template-columns: 36px minmax(0, 1fr) 80px;
-    gap: var(--space-3);
-  }
-  
-  .set-row__labels {
-    grid-template-columns: 36px minmax(0, 1fr) 80px;
-    gap: var(--space-3);
+  .set-row__input--reps {
+    width: 64px;
   }
   
   .stats-grid {
@@ -1317,9 +1254,9 @@ a { color: inherit; text-decoration: none; }
 
     <!-- Set Input Labels -->
     <div class="set-row__labels">
-      <span class="set-row__label">Set</span>
-      <span class="set-row__label">Weight (kg)</span>
-      <span class="set-row__label">Reps</span>
+      <span class="set-row__label set-row__label--set">Set</span>
+      <span class="set-row__label set-row__label--weight">Weight (kg)</span>
+      <span class="set-row__label set-row__label--reps">Reps</span>
     </div>
 
     <!-- Sets List -->
@@ -1845,16 +1782,12 @@ function renderSets() {
   container.innerHTML = state.currentSets.map((set, index) => `
     <div class="set-row" data-index="${index}">
       <span class="set-row__number">${index + 1}</span>
-      <div class="set-row__weight">
-        <button class="set-row__increment" onclick="adjustWeight(${index}, -${increment})">−</button>
-        <input type="number" class="set-row__weight-input" value="${set.weight}" 
-          onchange="updateWeight(${index}, this.value)" 
-          inputmode="decimal" step="${increment}">
-        <button class="set-row__increment" onclick="adjustWeight(${index}, ${increment})">+</button>
-      </div>
-      <input type="number" class="set-row__reps-input" value="${set.reps}" 
-        onchange="updateReps(${index}, this.value)" 
-        inputmode="numeric" min="0" placeholder="reps">
+      <button class="set-row__btn" onclick="adjustWeight(${index}, -${increment})">−</button>
+      <input type="number" class="set-row__input set-row__input--weight" value="${set.weight}" 
+        onchange="updateWeight(${index}, this.value)" inputmode="decimal">
+      <button class="set-row__btn" onclick="adjustWeight(${index}, ${increment})">+</button>
+      <input type="number" class="set-row__input set-row__input--reps" value="${set.reps}" 
+        onchange="updateReps(${index}, this.value)" inputmode="numeric">
     </div>
   `).join('');
 }
