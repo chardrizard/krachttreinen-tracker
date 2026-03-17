@@ -136,13 +136,14 @@ a { color: inherit; text-decoration: none; }
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
+  padding-top: env(safe-area-inset-top);
   padding-bottom: calc(64px + env(safe-area-inset-bottom));
 }
 
 .screen {
   flex: 1;
   padding: var(--space-4);
-  padding-top: var(--space-6);
+  padding-top: var(--space-4);
   display: none;
   flex-direction: column;
   animation: fadeIn var(--transition-normal) var(--ease-out);
@@ -598,8 +599,8 @@ a { color: inherit; text-decoration: none; }
 
 .set-row {
   display: grid;
-  grid-template-columns: 40px 1fr 80px;
-  gap: var(--space-3);
+  grid-template-columns: 32px minmax(0, 1fr) 64px;
+  gap: var(--space-2);
   align-items: center;
   padding: var(--space-3);
   background: var(--surface-raised);
@@ -620,10 +621,12 @@ a { color: inherit; text-decoration: none; }
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  min-width: 0;
 }
 
 .set-row__weight-input {
   flex: 1;
+  min-width: 0;
   height: 44px;
   background: var(--surface-inset);
   border: 1px solid var(--border-default);
@@ -633,7 +636,7 @@ a { color: inherit; text-decoration: none; }
   font-variant-numeric: tabular-nums;
   text-align: center;
   color: var(--text-primary);
-  padding: 0 var(--space-2);
+  padding: 0 var(--space-1);
 }
 
 .set-row__weight-input:focus {
@@ -642,7 +645,8 @@ a { color: inherit; text-decoration: none; }
 }
 
 .set-row__increment {
-  width: 44px;
+  flex-shrink: 0;
+  width: 40px;
   height: 44px;
   background: var(--surface-overlay);
   border: 1px solid var(--border-default);
@@ -664,7 +668,7 @@ a { color: inherit; text-decoration: none; }
 .set-row__increment:active { transform: scale(0.95); }
 
 .set-row__reps-input {
-  width: 80px;
+  width: 100%;
   height: 44px;
   background: var(--surface-inset);
   border: 1px solid var(--border-default);
@@ -699,8 +703,8 @@ a { color: inherit; text-decoration: none; }
 
 .set-row__labels {
   display: grid;
-  grid-template-columns: 40px 1fr 80px;
-  gap: var(--space-3);
+  grid-template-columns: 32px minmax(0, 1fr) 64px;
+  gap: var(--space-2);
   padding: 0 var(--space-3);
   margin-bottom: var(--space-2);
 }
@@ -713,7 +717,7 @@ a { color: inherit; text-decoration: none; }
   color: var(--text-muted);
 }
 
-.set-row__label:nth-child(2) { padding-left: var(--space-12); }
+.set-row__label:nth-child(2) { text-align: center; }
 .set-row__label:nth-child(3) { text-align: center; }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -1108,22 +1112,22 @@ a { color: inherit; text-decoration: none; }
    RESPONSIVE
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* iPhone SE (320px) and small screens */
+/* iPhone SE (320px) and very small screens */
 @media (max-width: 359px) {
   :root {
     --text-base: 15px;
-    --text-lg: 17px;
-    --text-xl: 22px;
+    --text-lg: 16px;
+    --text-xl: 20px;
   }
   
   .set-row {
-    grid-template-columns: 32px 1fr 64px;
-    gap: var(--space-2);
+    grid-template-columns: 28px minmax(0, 1fr) 56px;
+    gap: 6px;
     padding: var(--space-2);
   }
   
   .set-row__increment {
-    width: 36px;
+    width: 32px;
     height: 40px;
     font-size: var(--text-base);
   }
@@ -1134,17 +1138,14 @@ a { color: inherit; text-decoration: none; }
     font-size: var(--text-base);
   }
   
-  .set-row__reps-input {
-    width: 64px;
-  }
-  
   .set-row__labels {
-    grid-template-columns: 32px 1fr 64px;
-    gap: var(--space-2);
+    grid-template-columns: 28px minmax(0, 1fr) 56px;
+    gap: 6px;
   }
   
   .last-session__stat {
-    min-width: 56px;
+    min-width: 52px;
+    padding: var(--space-2);
   }
   
   .stats-grid {
@@ -1159,13 +1160,8 @@ a { color: inherit; text-decoration: none; }
     font-size: var(--text-lg);
   }
   
-  .recent-exercises {
-    gap: var(--space-2);
-  }
-  
-  .recent-exercise-card {
-    min-width: 100px;
-    padding: var(--space-3);
+  .page-title {
+    font-size: var(--text-lg);
   }
   
   .bottom-nav__item span {
@@ -1173,42 +1169,33 @@ a { color: inherit; text-decoration: none; }
   }
 }
 
-/* iPhone Mini / 12 Mini / 13 Mini (360-374px) */
-@media (min-width: 360px) and (max-width: 374px) {
+/* iPhone standard (375px+) */
+@media (min-width: 375px) {
   .set-row {
-    grid-template-columns: 36px 1fr 72px;
+    grid-template-columns: 32px minmax(0, 1fr) 72px;
+    gap: var(--space-2);
   }
   
   .set-row__increment {
-    width: 40px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
   }
   
-  .set-row__reps-input {
-    width: 72px;
+  .set-row__labels {
+    grid-template-columns: 32px minmax(0, 1fr) 72px;
   }
 }
-
-/* iPhone 14/15/16 standard (375-413px) - default styles apply */
 
 /* iPhone Plus / Pro Max (414px+) */
 @media (min-width: 414px) {
   .set-row {
-    grid-template-columns: 44px 1fr 88px;
+    grid-template-columns: 36px minmax(0, 1fr) 80px;
+    gap: var(--space-3);
   }
   
-  .set-row__increment {
-    width: 48px;
-    height: 48px;
-  }
-  
-  .set-row__weight-input,
-  .set-row__reps-input {
-    height: 48px;
-  }
-  
-  .set-row__reps-input {
-    width: 88px;
+  .set-row__labels {
+    grid-template-columns: 36px minmax(0, 1fr) 80px;
+    gap: var(--space-3);
   }
   
   .stats-grid {
