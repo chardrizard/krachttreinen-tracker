@@ -3,72 +3,41 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-
-<!-- PWA & iOS Configuration -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Gym Tracker">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0a0a0a">
-<meta name="msapplication-TileColor" content="#0a0a0a">
-<meta name="msapplication-navbutton-color" content="#0a0a0a">
-
-<!-- SEO & Social -->
 <meta name="description" content="Track progressive overload with zero friction. Log sets fast, see your gains over time.">
-<meta name="keywords" content="gym tracker, workout log, progressive overload, fitness app, weight training">
-<meta name="author" content="Gym Tracker">
-
-<!-- Icons -->
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.svg">
-<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.svg">
-
 <title>Gym Tracker — Progressive Overload Logger</title>
-
-<!-- External Resources -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* ═══════════════════════════════════════════════════════════════════════════
-   DESIGN TOKENS — Adapted from AlignUI for dark mode gym context
-   ═══════════════════════════════════════════════════════════════════════════ */
 :root {
-  /* === SURFACES === */
   --surface-base: #0a0a0a;
   --surface-raised: #141414;
   --surface-overlay: #1a1a1a;
   --surface-inset: #050505;
-  
-  /* === TEXT HIERARCHY === */
   --text-primary: #fafafa;
   --text-secondary: #a1a1a1;
   --text-muted: #525252;
   --text-faint: #3f3f3f;
-  
-  /* === BORDERS === */
   --border-default: rgba(255, 255, 255, 0.08);
   --border-subtle: rgba(255, 255, 255, 0.04);
   --border-strong: rgba(255, 255, 255, 0.12);
-  
-  /* === ACCENT (Green = progress, gains) === */
   --accent: #22c55e;
   --accent-hover: #16a34a;
   --accent-muted: rgba(34, 197, 94, 0.15);
-  
-  /* === SEMANTIC === */
   --destructive: #ef4444;
   --destructive-muted: rgba(239, 68, 68, 0.15);
   --warning: #f59e0b;
   --warning-muted: rgba(245, 158, 11, 0.15);
-  
-  /* === FAVOURITE star color === */
   --star-active: #f59e0b;
   --star-inactive: #525252;
-  
-  /* === SPACING (4px base, strict multiples) === */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -78,33 +47,23 @@
   --space-8: 32px;
   --space-10: 40px;
   --space-12: 48px;
-  
-  /* === RADIUS === */
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
   --radius-full: 9999px;
-  
-  /* === TYPOGRAPHY === */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'DM Mono', 'SF Mono', 'Fira Code', 'Consolas', monospace;
-  
   --text-xs: 12px;
   --text-sm: 14px;
   --text-base: 16px;
   --text-lg: 18px;
   --text-xl: 24px;
   --text-2xl: 32px;
-  
-  /* === TRANSITIONS === */
   --transition-fast: 150ms ease-out;
   --transition-normal: 200ms ease-out;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   RESET & BASE
-   ═══════════════════════════════════════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html {
@@ -126,15 +85,11 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 input { font-family: inherit; color: inherit; }
 a { color: inherit; text-decoration: none; }
 
-/* Focus states */
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   LAYOUT SHELL
-   ═══════════════════════════════════════════════════════════════════════════ */
 #app {
   min-height: 100vh;
   min-height: 100dvh;
@@ -160,9 +115,7 @@ a { color: inherit; text-decoration: none; }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   COMPONENTS: Bottom Navigation
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* ── Bottom Nav ── */
 .bottom-nav {
   position: fixed;
   bottom: 0;
@@ -199,9 +152,7 @@ a { color: inherit; text-decoration: none; }
 .nav-item.active { color: var(--accent); }
 .nav-item:active { transform: scale(0.95); }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   COMPONENTS: Buttons
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* ── Buttons ── */
 .btn-primary {
   height: 48px;
   padding: 0 var(--space-6);
@@ -284,9 +235,7 @@ a { color: inherit; text-decoration: none; }
   background: rgba(239, 68, 68, 0.25);
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   COMPONENTS: Inputs
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* ── Inputs ── */
 .input {
   width: 100%;
   height: 48px;
@@ -315,9 +264,7 @@ a { color: inherit; text-decoration: none; }
   padding-left: var(--space-10);
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   COMPONENTS: Cards
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* ── Cards ── */
 .card {
   background: var(--surface-raised);
   border: 1px solid var(--border-subtle);
@@ -339,9 +286,7 @@ a { color: inherit; text-decoration: none; }
   transform: scale(0.98);
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   COMPONENTS: Section Headers
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* ── Section Headers ── */
 .section-header {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
@@ -365,11 +310,72 @@ a { color: inherit; text-decoration: none; }
   letter-spacing: -0.5px;
 }
 
+/* ── Favourites Carousel ── */
+.fav-section {
+  margin-bottom: var(--space-5);
+}
 
+.fav-carousel {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: var(--space-1);
+  /* hide scrollbar */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   COMPONENTS: Today's Log
-   ═══════════════════════════════════════════════════════════════════════════ */
+.fav-carousel::-webkit-scrollbar { display: none; }
+
+.fav-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  flex-shrink: 0;
+  width: 76px;
+  min-height: 72px;
+  padding: var(--space-2) var(--space-2);
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  scroll-snap-align: start;
+  transition: all var(--transition-fast);
+  text-align: center;
+}
+
+.fav-card:hover {
+  border-color: var(--border-default);
+  background: var(--surface-overlay);
+}
+
+.fav-card:active {
+  transform: scale(0.95);
+}
+
+.fav-card__icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.fav-card__name {
+  font-size: 10px;
+  color: var(--text-secondary);
+  line-height: 1.2;
+  /* max 2 lines, then ellipsis */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+  max-width: 100%;
+}
+
+/* ── Today Log ── */
 .today-log {
   display: flex;
   flex-direction: column;
@@ -392,9 +398,7 @@ a { color: inherit; text-decoration: none; }
   gap: var(--space-3);
 }
 
-.log-item__icon {
-  font-size: 20px;
-}
+.log-item__icon { font-size: 20px; }
 
 .log-item__name {
   font-size: var(--text-sm);
@@ -414,9 +418,7 @@ a { color: inherit; text-decoration: none; }
   font-variant-numeric: tabular-nums;
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   COMPONENTS: Exercise List
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* ── Exercise List ── */
 .exercise-list {
   display: flex;
   flex-direction: column;
@@ -437,7 +439,6 @@ a { color: inherit; text-decoration: none; }
   margin-bottom: var(--space-2);
 }
 
-/* Favourites group gets a warm tint on the label */
 .exercise-group__title--favourites {
   color: var(--star-active);
 }
@@ -476,7 +477,6 @@ a { color: inherit; text-decoration: none; }
 
 .exercise-row.selected .exercise-row__check { opacity: 1; }
 
-/* ── Star / Favourite Button ────────────────────────────────────────────── */
 .star-btn {
   display: flex;
   align-items: center;
@@ -496,33 +496,17 @@ a { color: inherit; text-decoration: none; }
   width: 18px;
   height: 18px;
   stroke-width: 1.5;
-  /* Default: outline star */
   fill: none;
   stroke: currentColor;
   transition: fill var(--transition-fast), stroke var(--transition-fast);
 }
 
-.star-btn.active {
-  color: var(--star-active);
-}
+.star-btn.active { color: var(--star-active); }
+.star-btn.active svg { fill: var(--star-active); stroke: var(--star-active); }
+.star-btn:hover { color: var(--star-active); transform: scale(1.15); }
+.star-btn:active { transform: scale(0.9); }
 
-.star-btn.active svg {
-  fill: var(--star-active);
-  stroke: var(--star-active);
-}
-
-.star-btn:hover {
-  color: var(--star-active);
-  transform: scale(1.15);
-}
-
-.star-btn:active {
-  transform: scale(0.9);
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   COMPONENTS: Log Sets Screen
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* ── Log Sets Screen ── */
 .log-header {
   display: flex;
   align-items: center;
@@ -530,25 +514,10 @@ a { color: inherit; text-decoration: none; }
   margin-bottom: var(--space-6);
 }
 
-.log-header__icon {
-  font-size: 28px;
-}
-
-.log-header__title {
-  font-size: var(--text-lg);
-  font-weight: 600;
-  flex: 1;
-}
-
-.log-header__edit {
-  color: var(--text-muted);
-  padding: var(--space-2);
-}
-
-.log-header__edit svg {
-  width: 18px;
-  height: 18px;
-}
+.log-header__icon { font-size: 28px; }
+.log-header__title { font-size: var(--text-lg); font-weight: 600; flex: 1; }
+.log-header__edit { color: var(--text-muted); padding: var(--space-2); }
+.log-header__edit svg { width: 18px; height: 18px; }
 
 .last-session {
   background: var(--accent-muted);
@@ -572,10 +541,7 @@ a { color: inherit; text-decoration: none; }
   gap: var(--space-6);
 }
 
-.last-session__stat {
-  display: flex;
-  flex-direction: column;
-}
+.last-session__stat { display: flex; flex-direction: column; }
 
 .last-session__value {
   font-family: var(--font-mono);
@@ -589,7 +555,6 @@ a { color: inherit; text-decoration: none; }
   color: var(--text-secondary);
 }
 
-/* Set Input Row */
 .set-list {
   display: flex;
   flex-direction: column;
@@ -633,10 +598,7 @@ a { color: inherit; text-decoration: none; }
   flex-shrink: 0;
 }
 
-.set-row__btn:active { 
-  background: var(--surface-raised);
-  transform: scale(0.95); 
-}
+.set-row__btn:active { background: var(--surface-raised); transform: scale(0.95); }
 
 .set-row__input {
   height: 44px;
@@ -648,7 +610,6 @@ a { color: inherit; text-decoration: none; }
   font-variant-numeric: tabular-nums;
   text-align: center;
   color: var(--text-primary);
-  /* Remove browser number spinners */
   -moz-appearance: textfield;
 }
 
@@ -658,25 +619,10 @@ a { color: inherit; text-decoration: none; }
   margin: 0;
 }
 
-.set-row__input:focus {
-  outline: none;
-  border-color: var(--accent);
-}
-
-/* When the stored value is 0, the input shows placeholder styling */
-.set-row__input::placeholder {
-  color: var(--text-muted);
-}
-
-.set-row__input--weight {
-  flex: 1;
-  min-width: 60px;
-}
-
-.set-row__input--reps {
-  width: 56px;
-  flex-shrink: 0;
-}
+.set-row__input:focus { outline: none; border-color: var(--accent); }
+.set-row__input::placeholder { color: var(--text-muted); }
+.set-row__input--weight { flex: 1; min-width: 60px; }
+.set-row__input--reps { width: 56px; flex-shrink: 0; }
 
 .set-row__labels {
   display: flex;
@@ -698,12 +644,8 @@ a { color: inherit; text-decoration: none; }
 .set-row__label--weight { flex: 1; text-align: center; margin-left: 52px; }
 .set-row__label--reps { width: 56px; text-align: center; }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   COMPONENTS: Progress Screen
-   ═══════════════════════════════════════════════════════════════════════════ */
-.progress-selector {
-  margin-bottom: var(--space-4);
-}
+/* ── Progress Screen ── */
+.progress-selector { margin-bottom: var(--space-4); }
 
 .progress-dropdown {
   width: 100%;
@@ -720,11 +662,7 @@ a { color: inherit; text-decoration: none; }
   justify-content: space-between;
 }
 
-.progress-dropdown svg {
-  width: 20px;
-  height: 20px;
-  color: var(--text-muted);
-}
+.progress-dropdown svg { width: 20px; height: 20px; color: var(--text-muted); }
 
 .time-pills {
   display: flex;
@@ -743,15 +681,8 @@ a { color: inherit; text-decoration: none; }
   transition: all var(--transition-fast);
 }
 
-.time-pill:hover {
-  border-color: var(--border-default);
-}
-
-.time-pill.active {
-  background: var(--accent-muted);
-  border-color: var(--accent);
-  color: var(--accent);
-}
+.time-pill:hover { border-color: var(--border-default); }
+.time-pill.active { background: var(--accent-muted); border-color: var(--accent); color: var(--accent); }
 
 .chart-container {
   background: var(--surface-raised);
@@ -761,10 +692,7 @@ a { color: inherit; text-decoration: none; }
   margin-bottom: var(--space-6);
 }
 
-.chart-wrapper {
-  height: 200px;
-  position: relative;
-}
+.chart-wrapper { height: 200px; position: relative; }
 
 .stats-grid {
   display: grid;
@@ -795,26 +723,13 @@ a { color: inherit; text-decoration: none; }
   font-variant-numeric: tabular-nums;
 }
 
-.stat-card__unit {
-  font-size: var(--text-sm);
-  color: var(--text-secondary);
-  font-weight: 400;
-}
-
-.stat-card__change {
-  font-size: var(--text-xs);
-  margin-top: var(--space-1);
-}
-
+.stat-card__unit { font-size: var(--text-sm); color: var(--text-secondary); font-weight: 400; }
+.stat-card__change { font-size: var(--text-xs); margin-top: var(--space-1); }
 .stat-card__change--positive { color: var(--accent); }
 .stat-card__change--negative { color: var(--destructive); }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   COMPONENTS: Settings Screen
-   ═══════════════════════════════════════════════════════════════════════════ */
-.settings-group {
-  margin-bottom: var(--space-8);
-}
+/* ── Settings ── */
+.settings-group { margin-bottom: var(--space-8); }
 
 .settings-group__title {
   font-family: var(--font-mono);
@@ -837,30 +752,38 @@ a { color: inherit; text-decoration: none; }
 }
 
 .settings-row:last-child { margin-bottom: 0; }
-
-.settings-row__label {
-  font-size: var(--text-base);
-}
-
-.settings-row__value {
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  color: var(--text-secondary);
-}
-
-.settings-row--button {
-  cursor: pointer;
-  transition: background var(--transition-fast);
-}
-
+.settings-row__label { font-size: var(--text-base); }
+.settings-row__value { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--text-secondary); }
+.settings-row--button { cursor: pointer; transition: background var(--transition-fast); }
 .settings-row--button:hover { background: var(--surface-overlay); }
+.settings-row--destructive { border-color: rgba(239, 68, 68, 0.2); }
+.settings-row--destructive .settings-row__label { color: var(--destructive); }
 
-.settings-row--destructive {
-  border-color: rgba(239, 68, 68, 0.2);
+/* Data storage info banner */
+.data-info-banner {
+  background: var(--surface-inset);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin-bottom: var(--space-3);
 }
 
-.settings-row--destructive .settings-row__label {
-  color: var(--destructive);
+.data-info-banner__title {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.data-info-banner__body {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.data-info-banner__body strong {
+  color: var(--text-secondary);
+  font-weight: 500;
 }
 
 /* Toggle pills */
@@ -880,16 +803,9 @@ a { color: inherit; text-decoration: none; }
   transition: all var(--transition-fast);
 }
 
-.toggle-pill.active {
-  background: var(--surface-overlay);
-  color: var(--text-primary);
-}
+.toggle-pill.active { background: var(--surface-overlay); color: var(--text-primary); }
 
-/* Increment selector */
-.increment-pills {
-  display: flex;
-  gap: var(--space-2);
-}
+.increment-pills { display: flex; gap: var(--space-2); }
 
 .increment-pill {
   padding: var(--space-2) var(--space-3);
@@ -902,15 +818,9 @@ a { color: inherit; text-decoration: none; }
   transition: all var(--transition-fast);
 }
 
-.increment-pill.active {
-  background: var(--accent-muted);
-  border-color: var(--accent);
-  color: var(--accent);
-}
+.increment-pill.active { background: var(--accent-muted); border-color: var(--accent); color: var(--accent); }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   COMPONENTS: Modal / Overlay
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* ── Modal ── */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -924,10 +834,7 @@ a { color: inherit; text-decoration: none; }
   transition: opacity var(--transition-normal);
 }
 
-.modal-overlay.active {
-  opacity: 1;
-  pointer-events: auto;
-}
+.modal-overlay.active { opacity: 1; pointer-events: auto; }
 
 .modal {
   background: var(--surface-raised);
@@ -940,46 +847,14 @@ a { color: inherit; text-decoration: none; }
   transition: transform var(--transition-normal) var(--ease-out);
 }
 
-.modal-overlay.active .modal {
-  transform: translateY(0);
-}
+.modal-overlay.active .modal { transform: translateY(0); }
+.modal__header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-6); }
+.modal__title { font-size: var(--text-lg); font-weight: 600; }
+.modal__close { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); }
+.modal__close svg { width: 20px; height: 20px; }
+.modal__actions { display: flex; flex-direction: column; gap: var(--space-3); margin-top: var(--space-6); }
 
-.modal__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--space-6);
-}
-
-.modal__title {
-  font-size: var(--text-lg);
-  font-weight: 600;
-}
-
-.modal__close {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-muted);
-}
-
-.modal__close svg {
-  width: 20px;
-  height: 20px;
-}
-
-.modal__actions {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  margin-top: var(--space-6);
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   COMPONENTS: Empty State
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* ── Empty State ── */
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -989,31 +864,12 @@ a { color: inherit; text-decoration: none; }
   text-align: center;
 }
 
-.empty-state__icon {
-  font-size: 48px;
-  margin-bottom: var(--space-4);
-  opacity: 0.5;
-}
+.empty-state__icon { font-size: 48px; margin-bottom: var(--space-4); opacity: 0.5; }
+.empty-state__title { font-size: var(--text-lg); font-weight: 500; margin-bottom: var(--space-2); }
+.empty-state__text { font-size: var(--text-sm); color: var(--text-secondary); max-width: 280px; }
 
-.empty-state__title {
-  font-size: var(--text-lg);
-  font-weight: 500;
-  margin-bottom: var(--space-2);
-}
-
-.empty-state__text {
-  font-size: var(--text-sm);
-  color: var(--text-secondary);
-  max-width: 280px;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   COMPONENTS: Search
-   ═══════════════════════════════════════════════════════════════════════════ */
-.search-wrapper {
-  position: relative;
-  margin-bottom: var(--space-6);
-}
+/* ── Search ── */
+.search-wrapper { position: relative; margin-bottom: var(--space-6); }
 
 .search-icon {
   position: absolute;
@@ -1025,9 +881,7 @@ a { color: inherit; text-decoration: none; }
   height: 20px;
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   COMPONENTS: Dropdown
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* ── Dropdown ── */
 .dropdown-menu {
   position: absolute;
   top: 100%;
@@ -1058,9 +912,7 @@ a { color: inherit; text-decoration: none; }
 .dropdown-item:hover { background: var(--surface-raised); }
 .dropdown-item.selected { color: var(--accent); }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   UTILITY CLASSES
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* ── Utilities ── */
 .mt-auto { margin-top: auto; }
 .mb-4 { margin-bottom: var(--space-4); }
 .mb-6 { margin-bottom: var(--space-6); }
@@ -1074,19 +926,14 @@ a { color: inherit; text-decoration: none; }
 .font-mono { font-family: var(--font-mono); }
 .tabular-nums { font-variant-numeric: tabular-nums; }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   ANIMATIONS
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* ── Animations ── */
 @keyframes slideUp {
   from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
 
-.slide-up {
-  animation: slideUp var(--transition-normal) var(--ease-out);
-}
+.slide-up { animation: slideUp var(--transition-normal) var(--ease-out); }
 
-/* Star pop animation on toggle */
 @keyframes starPop {
   0%   { transform: scale(1); }
   40%  { transform: scale(1.4); }
@@ -1094,86 +941,32 @@ a { color: inherit; text-decoration: none; }
   100% { transform: scale(1); }
 }
 
-.star-btn.popping {
-  animation: starPop 300ms var(--ease-out);
-}
+.star-btn.popping { animation: starPop 300ms var(--ease-out); }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   RESPONSIVE
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-/* Small screens (iPhone SE) */
+/* ── Responsive ── */
 @media (max-width: 359px) {
   :root {
     --text-base: 15px;
     --text-lg: 16px;
     --text-xl: 20px;
   }
-  
-  .set-row {
-    gap: 6px;
-    padding: var(--space-2);
-  }
-  
-  .set-row__btn {
-    width: 36px;
-    height: 40px;
-    font-size: 18px;
-  }
-  
-  .set-row__input {
-    height: 40px;
-    font-size: var(--text-base);
-  }
-  
-  .set-row__input--reps {
-    width: 48px;
-  }
-  
-  .last-session__stat {
-    min-width: 52px;
-    padding: var(--space-2);
-  }
-  
-  .stats-grid {
-    gap: var(--space-2);
-  }
-  
-  .stat-card {
-    padding: var(--space-3);
-  }
-  
-  .stat-card__value {
-    font-size: var(--text-lg);
-  }
-  
-  .page-title {
-    font-size: var(--text-lg);
-  }
-  
-  .bottom-nav__item span {
-    font-size: 9px;
-  }
+  .set-row { gap: 6px; padding: var(--space-2); }
+  .set-row__btn { width: 36px; height: 40px; font-size: 18px; }
+  .set-row__input { height: 40px; font-size: var(--text-base); }
+  .set-row__input--reps { width: 48px; }
+  .stats-grid { gap: var(--space-2); }
+  .stat-card { padding: var(--space-3); }
+  .stat-card__value { font-size: var(--text-lg); }
+  .page-title { font-size: var(--text-lg); }
 }
 
-/* Larger phones (414px+) */
 @media (min-width: 414px) {
-  .set-row__input--reps {
-    width: 64px;
-  }
-  
-  .stats-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
+  .set-row__input--reps { width: 64px; }
+  .stats-grid { grid-template-columns: repeat(4, 1fr); }
 }
 
-/* Tablet and desktop - center constrain */
 @media (min-width: 768px) {
-  #app {
-    max-width: 480px;
-    margin: 0 auto;
-  }
-  
+  #app { max-width: 480px; margin: 0 auto; }
   .bottom-nav {
     max-width: 480px;
     left: 50%;
@@ -1188,21 +981,24 @@ a { color: inherit; text-decoration: none; }
 <body>
 
 <div id="app">
-  <!-- ════════════════════════════════════════════════════════════════════════
-       HOME SCREEN
-       ════════════════════════════════════════════════════════════════════════ -->
+  <!-- HOME SCREEN -->
   <div id="screen-home" class="screen active">
     <div class="page-header">
       <h1 class="page-title">Gym Tracker</h1>
     </div>
 
-    <!-- Primary CTA -->
     <button class="btn-primary mb-6" onclick="navigateTo('select')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M12 5v14M5 12h14"/>
       </svg>
       Log Exercise
     </button>
+
+    <!-- Favourites Carousel -->
+    <section id="fav-section" class="fav-section" style="display: none;">
+      <div class="section-header">My Favourites</div>
+      <div class="fav-carousel" id="fav-carousel"></div>
+    </section>
 
     <!-- Today's Log -->
     <section id="today-section">
@@ -1217,9 +1013,7 @@ a { color: inherit; text-decoration: none; }
     </section>
   </div>
 
-  <!-- ════════════════════════════════════════════════════════════════════════
-       EXERCISE SELECTION SCREEN
-       ════════════════════════════════════════════════════════════════════════ -->
+  <!-- EXERCISE SELECTION SCREEN -->
   <div id="screen-select" class="screen">
     <div class="page-header">
       <button class="btn-ghost" onclick="navigateTo('home')">
@@ -1248,9 +1042,7 @@ a { color: inherit; text-decoration: none; }
     </button>
   </div>
 
-  <!-- ════════════════════════════════════════════════════════════════════════
-       LOG SETS SCREEN
-       ════════════════════════════════════════════════════════════════════════ -->
+  <!-- LOG SETS SCREEN -->
   <div id="screen-log" class="screen">
     <div class="log-header">
       <button class="btn-ghost" onclick="navigateTo('home')" style="margin-right: auto;">
@@ -1267,23 +1059,19 @@ a { color: inherit; text-decoration: none; }
       </button>
     </div>
 
-    <!-- Last Session Reference -->
     <div class="last-session" id="last-session" style="display: none;">
       <div class="last-session__label">Last Session</div>
       <div class="last-session__content" id="last-session-content"></div>
     </div>
 
-    <!-- Set Input Labels -->
     <div class="set-row__labels">
       <span class="set-row__label set-row__label--set">Set</span>
       <span class="set-row__label set-row__label--weight">Weight (kg)</span>
       <span class="set-row__label set-row__label--reps">Reps</span>
     </div>
 
-    <!-- Sets List -->
     <div class="set-list" id="set-list"></div>
 
-    <!-- Add Set Button -->
     <button class="btn-secondary mb-6" onclick="addSet()">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M12 5v14M5 12h14"/>
@@ -1291,21 +1079,17 @@ a { color: inherit; text-decoration: none; }
       Add Set
     </button>
 
-    <!-- Save Button -->
     <button class="btn-primary mt-auto" onclick="saveLog()" id="save-btn">
       Save Workout
     </button>
   </div>
 
-  <!-- ════════════════════════════════════════════════════════════════════════
-       PROGRESS SCREEN
-       ════════════════════════════════════════════════════════════════════════ -->
+  <!-- PROGRESS SCREEN -->
   <div id="screen-progress" class="screen">
     <div class="page-header">
       <h1 class="page-title">Progress</h1>
     </div>
 
-    <!-- Exercise Selector -->
     <div class="progress-selector" style="position: relative;">
       <button class="progress-dropdown" id="progress-dropdown" onclick="toggleExerciseDropdown()">
         <span id="selected-exercise-name">Select Exercise</span>
@@ -1316,21 +1100,18 @@ a { color: inherit; text-decoration: none; }
       <div class="dropdown-menu" id="exercise-dropdown"></div>
     </div>
 
-    <!-- Time Range Pills -->
     <div class="time-pills">
       <button class="time-pill active" data-range="30" onclick="setTimeRange(30, this)">30 days</button>
       <button class="time-pill" data-range="90" onclick="setTimeRange(90, this)">90 days</button>
       <button class="time-pill" data-range="0" onclick="setTimeRange(0, this)">All time</button>
     </div>
 
-    <!-- Chart -->
     <div class="chart-container">
       <div class="chart-wrapper">
         <canvas id="progress-chart"></canvas>
       </div>
     </div>
 
-    <!-- Stats -->
     <div class="stats-grid" id="progress-stats">
       <div class="stat-card">
         <div class="stat-card__label">Starting</div>
@@ -1351,9 +1132,7 @@ a { color: inherit; text-decoration: none; }
     </div>
   </div>
 
-  <!-- ════════════════════════════════════════════════════════════════════════
-       SETTINGS SCREEN
-       ════════════════════════════════════════════════════════════════════════ -->
+  <!-- SETTINGS SCREEN -->
   <div id="screen-settings" class="screen">
     <div class="page-header">
       <h1 class="page-title">Settings</h1>
@@ -1382,6 +1161,15 @@ a { color: inherit; text-decoration: none; }
 
     <div class="settings-group">
       <div class="settings-group__title">Data</div>
+
+      <!-- Data storage info banner -->
+      <div class="data-info-banner">
+        <div class="data-info-banner__title">Where is my data stored?</div>
+        <div class="data-info-banner__body">
+          Your workout data is saved <strong>only on this device</strong>, in your browser's local storage. There is no account and no cloud backup — if you clear your browser data, history, or site cache, your logs will be permanently deleted.<br><br>
+          Use <strong>Export Data</strong> regularly to save a backup file. The export is a <strong>.json file</strong> containing all your logs, custom exercises, settings, and favourites. You can re-import it anytime using <strong>Import Data</strong> — it only accepts .json files exported from this app, and merges them with any existing data (nothing is overwritten).
+        </div>
+      </div>
       
       <div class="settings-row settings-row--button" onclick="exportData()">
         <span class="settings-row__label">Export Data</span>
@@ -1396,13 +1184,6 @@ a { color: inherit; text-decoration: none; }
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
         </svg>
         <input type="file" id="import-input" accept=".json" style="display:none" onchange="importData(event)">
-      </div>
-      
-      <div class="settings-row settings-row--button" onclick="navigateTo('manage')">
-        <span class="settings-row__label">Manage Exercises</span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--text-muted)">
-          <path d="m9 18 6-6-6-6"/>
-        </svg>
       </div>
     </div>
 
@@ -1419,9 +1200,7 @@ a { color: inherit; text-decoration: none; }
   </div>
 </div>
 
-<!-- ════════════════════════════════════════════════════════════════════════
-     BOTTOM NAVIGATION
-     ════════════════════════════════════════════════════════════════════════ -->
+<!-- BOTTOM NAV -->
 <nav class="bottom-nav">
   <button class="nav-item active" data-screen="home" onclick="navigateTo('home')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -1447,17 +1226,12 @@ a { color: inherit; text-decoration: none; }
   </button>
 </nav>
 
-<!-- ════════════════════════════════════════════════════════════════════════
-     MODALS
-     ════════════════════════════════════════════════════════════════════════ -->
+<!-- MODALS -->
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal" id="modal-content"></div>
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════════════════════════
-// DATA SCHEMA & STORAGE
-// ═══════════════════════════════════════════════════════════════════════════
 const STORAGE_KEYS = {
   exercises: 'gym_exercises',
   logs: 'gym_logs',
@@ -1466,31 +1240,46 @@ const STORAGE_KEYS = {
 };
 
 const PRESET_EXERCISES = [
+  // Chest
   { id: "bench-press-flat-barbell", name: "Flat Barbell Bench Press", category: "chest", icon: "🏋️" },
   { id: "incline-dumbbell-press", name: "Incline Dumbbell Press", category: "chest", icon: "🏋️" },
   { id: "cable-fly", name: "Cable Fly / Pec Deck", category: "chest", icon: "🏋️" },
   { id: "chest-press-machine", name: "Chest Press Machine", category: "chest", icon: "🏋️" },
+  // Back
   { id: "lat-pulldown", name: "Lat Pulldown", category: "back", icon: "🔙" },
   { id: "seated-cable-row", name: "Seated Cable Row", category: "back", icon: "🔙" },
   { id: "barbell-row", name: "Barbell Row", category: "back", icon: "🔙" },
   { id: "pull-up", name: "Pull-Up / Assisted Pull-Up", category: "back", icon: "🔙" },
+  // Shoulders
   { id: "overhead-press", name: "Overhead Press", category: "shoulders", icon: "🎯" },
   { id: "lateral-raise", name: "Lateral Raise", category: "shoulders", icon: "🎯" },
   { id: "face-pull", name: "Face Pull", category: "shoulders", icon: "🎯" },
   { id: "shoulder-press-machine", name: "Shoulder Press Machine", category: "shoulders", icon: "🎯" },
+  // Arms
   { id: "barbell-curl", name: "Barbell Curl", category: "arms", icon: "💪" },
   { id: "dumbbell-curl", name: "Dumbbell Curl", category: "arms", icon: "💪" },
   { id: "tricep-pushdown", name: "Tricep Pushdown", category: "arms", icon: "💪" },
   { id: "overhead-tricep-extension", name: "Overhead Tricep Extension", category: "arms", icon: "💪" },
+  // Legs (existing + 3 new)
   { id: "barbell-squat", name: "Barbell Squat", category: "legs", icon: "🦵" },
   { id: "leg-press", name: "Leg Press", category: "legs", icon: "🦵" },
   { id: "romanian-deadlift", name: "Romanian Deadlift", category: "legs", icon: "🦵" },
   { id: "leg-curl-machine", name: "Leg Curl Machine", category: "legs", icon: "🦵" },
   { id: "leg-extension-machine", name: "Leg Extension Machine", category: "legs", icon: "🦵" },
   { id: "calf-raise", name: "Calf Raise", category: "legs", icon: "🦵" },
+  { id: "walking-lunge", name: "Walking Lunge", category: "legs", icon: "🦵" },
+  { id: "hack-squat", name: "Hack Squat", category: "legs", icon: "🦵" },
+  { id: "bulgarian-split-squat", name: "Bulgarian Split Squat", category: "legs", icon: "🦵" },
+  // Compound
   { id: "deadlift", name: "Deadlift", category: "compound", icon: "⚡" },
+  // Core (existing + 2 new — no ab-wheel)
   { id: "cable-crunch", name: "Cable Crunch", category: "core", icon: "🎯" },
-  { id: "hip-thrust", name: "Hip Thrust", category: "glutes", icon: "🦵" }
+  { id: "hanging-knee-raise", name: "Hanging Knee Raise", category: "core", icon: "🎯" },
+  { id: "plank", name: "Plank", category: "core", icon: "🎯" },
+  // Glutes (existing + 2 new)
+  { id: "hip-thrust", name: "Hip Thrust", category: "glutes", icon: "🦵" },
+  { id: "glute-kickback-cable", name: "Cable Glute Kickback", category: "glutes", icon: "🦵" },
+  { id: "sumo-squat", name: "Sumo Squat / Goblet Squat", category: "glutes", icon: "🦵" }
 ];
 
 const CATEGORY_ORDER = ['chest', 'back', 'shoulders', 'arms', 'legs', 'compound', 'core', 'glutes', 'custom'];
@@ -1499,9 +1288,6 @@ const CATEGORY_LABELS = {
   legs: 'Legs', compound: 'Compound', core: 'Core', glutes: 'Glutes', custom: 'Custom'
 };
 
-// ═══════════════════════════════════════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════════════════════════════════════
 let state = {
   exercises: [],
   logs: [],
@@ -1514,16 +1300,12 @@ let state = {
   chart: null
 };
 
-// ═══════════════════════════════════════════════════════════════════════════
-// INITIALIZATION
-// ═══════════════════════════════════════════════════════════════════════════
 function init() {
   loadData();
   renderExerciseList();
   renderHome();
   updateProgressDropdown();
   applySettings();
-  
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed:', err));
   }
@@ -1567,13 +1349,9 @@ function saveData() {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// FAVOURITES
-// ═══════════════════════════════════════════════════════════════════════════
+// ── Favourites ──
 function toggleFavourite(exerciseId, event) {
-  // Stop the click from bubbling up to the exercise row (which would selectExercise)
   event.stopPropagation();
-
   const idx = state.favouriteIds.indexOf(exerciseId);
   if (idx === -1) {
     state.favouriteIds.push(exerciseId);
@@ -1582,8 +1360,6 @@ function toggleFavourite(exerciseId, event) {
   }
   saveData();
 
-  // Animate the specific star button without re-rendering the full list
-  // (full re-render would lose search state; this is cheaper)
   const starBtn = document.querySelector(`.star-btn[data-id="${exerciseId}"]`);
   if (starBtn) {
     const isFav = state.favouriteIds.includes(exerciseId);
@@ -1593,31 +1369,45 @@ function toggleFavourite(exerciseId, event) {
     starBtn.addEventListener('animationend', () => starBtn.classList.remove('popping'), { once: true });
   }
 
-  // Refresh the list so the Favourites group updates position
   const currentSearch = document.getElementById('exercise-search')?.value || '';
   renderExerciseList(currentSearch);
+  renderFavouritesCarousel();
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// NAVIGATION
-// ═══════════════════════════════════════════════════════════════════════════
+// ── Navigation ──
 function navigateTo(screenId) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(`screen-${screenId}`).classList.add('active');
-  
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const navItem = document.querySelector(`.nav-item[data-screen="${screenId}"]`);
   if (navItem) navItem.classList.add('active');
-
   if (screenId === 'home') renderHome();
   else if (screenId === 'progress') renderProgressChart();
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// HOME SCREEN
-// ═══════════════════════════════════════════════════════════════════════════
+// ── Home ──
 function renderHome() {
+  renderFavouritesCarousel();
   renderTodayLog();
+}
+
+function renderFavouritesCarousel() {
+  const section = document.getElementById('fav-section');
+  const carousel = document.getElementById('fav-carousel');
+  if (state.favouriteIds.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+  section.style.display = 'block';
+  const favExercises = state.favouriteIds
+    .map(id => state.exercises.find(e => e.id === id))
+    .filter(Boolean);
+  carousel.innerHTML = favExercises.map(ex => `
+    <div class="fav-card" onclick="quickLog('${ex.id}')" role="button" aria-label="Log ${ex.alias || ex.name}">
+      <span class="fav-card__icon">${ex.icon}</span>
+      <span class="fav-card__name">${ex.alias || ex.name}</span>
+    </div>
+  `).join('');
 }
 
 function renderTodayLog() {
@@ -1656,19 +1446,14 @@ function renderTodayLog() {
   }).join('');
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// EXERCISE SELECTION
-// ═══════════════════════════════════════════════════════════════════════════
+// ── Exercise Selection ──
 function renderExerciseList(filter = '') {
   const container = document.getElementById('exercise-list');
   const filterLower = filter.toLowerCase();
 
-  // Group exercises by category (applying filter)
   const grouped = {};
   state.exercises.forEach(ex => {
-    if (filter && !(ex.name.toLowerCase().includes(filterLower) || (ex.alias && ex.alias.toLowerCase().includes(filterLower)))) {
-      return;
-    }
+    if (filter && !(ex.name.toLowerCase().includes(filterLower) || (ex.alias && ex.alias.toLowerCase().includes(filterLower)))) return;
     const cat = ex.isCustom ? 'custom' : ex.category;
     if (!grouped[cat]) grouped[cat] = [];
     grouped[cat].push(ex);
@@ -1676,11 +1461,8 @@ function renderExerciseList(filter = '') {
 
   let html = '';
 
-  // ── MY FAVOURITES group (always first) ────────────────────────────────
   if (!filter && state.favouriteIds.length > 0) {
-    const favExercises = state.favouriteIds
-      .map(id => state.exercises.find(e => e.id === id))
-      .filter(Boolean);
+    const favExercises = state.favouriteIds.map(id => state.exercises.find(e => e.id === id)).filter(Boolean);
     if (favExercises.length > 0) {
       html += `<div class="exercise-group">
         <div class="exercise-group__title exercise-group__title--favourites">⭐ My Favourites</div>
@@ -1689,14 +1471,10 @@ function renderExerciseList(filter = '') {
     }
   }
 
-  // ── When filtering, also show favourites that match ───────────────────
   if (filter && state.favouriteIds.length > 0) {
     const favMatches = state.favouriteIds
       .map(id => state.exercises.find(e => e.id === id))
-      .filter(ex => ex && (
-        ex.name.toLowerCase().includes(filterLower) ||
-        (ex.alias && ex.alias.toLowerCase().includes(filterLower))
-      ));
+      .filter(ex => ex && (ex.name.toLowerCase().includes(filterLower) || (ex.alias && ex.alias.toLowerCase().includes(filterLower))));
     if (favMatches.length > 0) {
       html += `<div class="exercise-group">
         <div class="exercise-group__title exercise-group__title--favourites">⭐ My Favourites</div>
@@ -1705,7 +1483,6 @@ function renderExerciseList(filter = '') {
     }
   }
 
-  // ── All categories ────────────────────────────────────────────────────
   CATEGORY_ORDER.forEach(cat => {
     if (grouped[cat] && grouped[cat].length > 0) {
       html += `<div class="exercise-group">
@@ -1748,17 +1525,14 @@ function filterExercises(query) {
 function selectExercise(exerciseId) {
   const exercise = state.exercises.find(e => e.id === exerciseId);
   if (!exercise) return;
-
   state.currentExercise = exercise;
   state.currentSets = [];
-
   const lastSession = getLastSession(exerciseId);
   if (lastSession) {
     state.currentSets = lastSession.sets.map(s => ({...s}));
   } else {
     state.currentSets = [{ weight: 0, reps: 10 }];
   }
-
   renderLogScreen();
   navigateTo('log');
 }
@@ -1767,13 +1541,10 @@ function quickLog(exerciseId) {
   selectExercise(exerciseId);
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// LOG SETS SCREEN
-// ═══════════════════════════════════════════════════════════════════════════
+// ── Log Sets ──
 function renderLogScreen() {
   const exercise = state.currentExercise;
   if (!exercise) return;
-
   document.getElementById('log-exercise-icon').textContent = exercise.icon;
   document.getElementById('log-exercise-name').textContent = exercise.alias || exercise.name;
 
@@ -1806,54 +1577,28 @@ function renderLogScreen() {
   } else {
     lastSessionEl.style.display = 'none';
   }
-
   renderSets();
 }
 
 function renderSets() {
   const container = document.getElementById('set-list');
   const increment = state.settings.weightIncrement;
-
   container.innerHTML = state.currentSets.map((set, index) => {
-    // ── Input UX improvement ──────────────────────────────────────────────
-    // Show placeholder "0" instead of value "0" so users can type without
-    // deleting. A zero stored value renders as empty input + placeholder.
     const weightVal = set.weight > 0 ? set.weight : '';
     const repsVal   = set.reps > 0   ? set.reps   : '';
-
     return `
       <div class="set-row" data-index="${index}">
         <span class="set-row__number">${index + 1}</span>
         <button class="set-row__btn" onclick="adjustWeight(${index}, -${increment})">−</button>
-        <input
-          type="number"
-          class="set-row__input set-row__input--weight"
-          value="${weightVal}"
-          placeholder="0"
-          inputmode="decimal"
-          onfocus="selectAllOnFocus(this)"
-          onchange="updateWeight(${index}, this.value)"
-          onblur="commitWeight(${index}, this)"
-        >
+        <input type="number" class="set-row__input set-row__input--weight" value="${weightVal}" placeholder="0" inputmode="decimal" onfocus="selectAllOnFocus(this)" onchange="updateWeight(${index}, this.value)" onblur="commitWeight(${index}, this)">
         <button class="set-row__btn" onclick="adjustWeight(${index}, ${increment})">+</button>
-        <input
-          type="number"
-          class="set-row__input set-row__input--reps"
-          value="${repsVal}"
-          placeholder="0"
-          inputmode="numeric"
-          onfocus="selectAllOnFocus(this)"
-          onchange="updateReps(${index}, this.value)"
-          onblur="commitReps(${index}, this)"
-        >
+        <input type="number" class="set-row__input set-row__input--reps" value="${repsVal}" placeholder="0" inputmode="numeric" onfocus="selectAllOnFocus(this)" onchange="updateReps(${index}, this.value)" onblur="commitReps(${index}, this)">
       </div>
     `;
   }).join('');
 }
 
-// Select all text on focus so the user can immediately type their number
 function selectAllOnFocus(input) {
-  // Timeout needed on iOS where selection is cleared after focus fires
   setTimeout(() => input.select(), 0);
 }
 
@@ -1872,7 +1617,6 @@ function updateWeight(index, value) {
   state.currentSets[index].weight = Math.max(0, parseFloat(value) || 0);
 }
 
-// On blur: if field is empty, set state back to 0 (keeps data clean)
 function commitWeight(index, input) {
   const val = parseFloat(input.value) || 0;
   state.currentSets[index].weight = val;
@@ -1887,13 +1631,6 @@ function commitReps(index, input) {
   const val = parseInt(input.value) || 0;
   state.currentSets[index].reps = val;
   input.value = val > 0 ? val : '';
-}
-
-function deleteSet(index) {
-  if (state.currentSets.length > 1) {
-    state.currentSets.splice(index, 1);
-    renderSets();
-  }
 }
 
 function saveLog() {
@@ -1918,13 +1655,10 @@ function saveLog() {
   navigateTo('home');
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// PROGRESS SCREEN
-// ═══════════════════════════════════════════════════════════════════════════
+// ── Progress ──
 function updateProgressDropdown() {
   const dropdown = document.getElementById('exercise-dropdown');
   const exercisesWithLogs = state.exercises.filter(ex => state.logs.some(log => log.exerciseId === ex.id));
-  
   if (exercisesWithLogs.length === 0) {
     dropdown.innerHTML = '<div class="dropdown-item" style="color: var(--text-muted)">No logged exercises yet</div>';
     return;
@@ -2037,9 +1771,7 @@ function renderProgressChart() {
   });
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// SETTINGS
-// ═══════════════════════════════════════════════════════════════════════════
+// ── Settings ──
 function applySettings() {
   document.querySelectorAll('.increment-pill').forEach(pill => {
     pill.classList.toggle('active', parseFloat(pill.dataset.increment) === state.settings.weightIncrement);
@@ -2070,7 +1802,7 @@ function exportData() {
     exercises: state.exercises.filter(e => e.isCustom || e.alias),
     logs: state.logs,
     settings: state.settings,
-    favourites: state.favouriteIds   // ← include favourites in export
+    favourites: state.favouriteIds
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -2102,7 +1834,6 @@ function importData(event) {
         if (!existingLogIds.has(log.id)) state.logs.push(log);
       });
       state.settings = { ...state.settings, ...(data.settings || {}) };
-      // Restore favourites, deduplicating
       if (data.favourites) {
         const merged = new Set([...state.favouriteIds, ...data.favourites]);
         state.favouriteIds = [...merged];
@@ -2143,9 +1874,7 @@ function clearAllData() {
   location.reload();
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// MODALS
-// ═══════════════════════════════════════════════════════════════════════════
+// ── Modals ──
 function showModal(content) {
   document.getElementById('modal-content').innerHTML = content;
   document.getElementById('modal-overlay').classList.add('active');
@@ -2164,8 +1893,7 @@ function showRenameModal() {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
       </button>
     </div>
-    <input type="text" class="input" id="rename-input" value="${state.currentExercise.alias || state.currentExercise.name}"
-      placeholder="Exercise name" style="margin-bottom: var(--space-4);">
+    <input type="text" class="input" id="rename-input" value="${state.currentExercise.alias || state.currentExercise.name}" placeholder="Exercise name" style="margin-bottom: var(--space-4);">
     <div class="modal__actions">
       <button class="btn-primary" onclick="saveRename()">Save</button>
       ${state.currentExercise.alias ? '<button class="btn-ghost" onclick="resetName()">Reset to default</button>' : ''}
@@ -2241,10 +1969,10 @@ function saveCustomExercise() {
     name,
     alias: null,
     category: selectedCategory,
-    icon: CATEGORY_LABELS[selectedCategory] === 'Arms' ? '💪' :
-          CATEGORY_LABELS[selectedCategory] === 'Legs' ? '🦵' :
-          CATEGORY_LABELS[selectedCategory] === 'Back' ? '🔙' :
-          CATEGORY_LABELS[selectedCategory] === 'Chest' ? '🏋️' : '⭐',
+    icon: selectedCategory === 'arms' ? '💪' :
+          selectedCategory === 'legs' ? '🦵' :
+          selectedCategory === 'back' ? '🔙' :
+          selectedCategory === 'chest' ? '🏋️' : '⭐',
     isCustom: true
   };
   state.exercises.push(exercise);
@@ -2254,9 +1982,7 @@ function saveCustomExercise() {
   selectExercise(exercise.id);
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// HELPER FUNCTIONS
-// ═══════════════════════════════════════════════════════════════════════════
+// ── Helpers ──
 function getLastSession(exerciseId) {
   return state.logs
     .filter(log => log.exerciseId === exerciseId)
@@ -2268,7 +1994,6 @@ function estimateOneRepMax(weight, reps) {
   return Math.round(weight * (1 + reps / 30));
 }
 
-// Close dropdowns on outside click
 document.addEventListener('click', (e) => {
   if (!e.target.closest('.progress-selector')) {
     document.getElementById('exercise-dropdown').classList.remove('active');
@@ -2276,7 +2001,6 @@ document.addEventListener('click', (e) => {
   if (e.target.classList.contains('modal-overlay')) hideModal();
 });
 
-// Initialize
 init();
 
 if ('serviceWorker' in navigator) {
@@ -2287,6 +2011,5 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
-
 </body>
 </html>
