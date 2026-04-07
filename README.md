@@ -7,8 +7,11 @@ A minimal, mobile-first PWA for tracking progressive overload at the gym. Built 
 ## ✨ Features
 
 - **Quick Logging** — Tap to increment weight (+2.5kg), enter reps, done
-- **Progressive Overload Tracking** — See your starting weight, current weight, and % progress
-- **Last Session Reference** — Always know what you lifted last time
+- **Edit Today's Entries** — Tap any entry logged today to correct sets, weights, or reps
+- **Latest Session Reference** — Home screen always shows your last workout day, tappable to re-log any exercise
+- **1RM-Based Progress** — Progress chart and stats use estimated 1-rep max (Epley formula), so adding reps counts as improvement
+- **Last Session Reference** — Always know what you lifted last time before logging
+- **Remove Last Set** — Add or remove sets during logging without misclicking
 - **Offline-First** — Works without internet after first load
 - **No Account Required** — All data stays on your device (localStorage)
 
@@ -49,19 +52,30 @@ gym-tracker/
 
 ### Logging a Workout
 
-1. Tap **Log Exercise** or select from recent exercises
+1. Tap **Log Exercise** or select from favourites / latest session
 2. Choose an exercise from the list (or create custom)
 3. Use **−** / **+** buttons to adjust weight
-4. Enter reps and tap **Add Set**
-5. Repeat for each set
-6. Tap **Save** when done
+4. Enter reps — use **Add Set** / **Remove Last Set** to manage sets
+5. Tap **Save** when done
+
+### Editing a Today Entry
+
+1. From the Home screen, tap any entry under **Today**
+2. Adjust sets, weights, or reps as needed
+3. Tap **Save** — the original log is updated in place
+4. To remove the entry entirely, tap **Delete This Entry** (confirmation required)
+
+### Logging from Last Session
+
+- The **Latest** section on the home screen shows your most recent past workout
+- Tap any exercise to open a new log pre-filled with last session's sets
 
 ### Viewing Progress
 
 1. Go to **Progress** tab
 2. Select an exercise from the dropdown
 3. Choose time range (30 days / 90 days / All time)
-4. View your progression chart and stats
+4. Chart shows estimated 1RM per session — both weight and rep increases are reflected
 
 ### Settings
 
@@ -79,20 +93,24 @@ gym-tracker/
 
 ## 📊 Data Schema
 
-All data is stored in `localStorage` under `gym-tracker-data`:
+All data is stored in `localStorage` across four keys:
 
 ```javascript
-{
-  exercises: [...],      // Exercise definitions
-  logs: [...],           // Workout logs with sets
-  settings: {
-    weightIncrement: 2.5,
-    weightUnit: 'kg',
-    theme: 'dark'
-  },
-  recentExercises: [...]  // Last 10 used exercise IDs
-}
+gym_exercises   // Exercise definitions + aliases
+gym_logs        // Workout logs: { id, date, timestamp, exerciseId, sets[] }
+gym_settings    // { weightIncrement, weightUnit, theme }
+gym_favourites  // Array of favourited exercise IDs
 ```
+
+## 📐 Progress Calculation
+
+Progress is based on **estimated 1-rep max** using the Epley formula:
+
+```
+Est. 1RM = weight × (1 + reps / 30)
+```
+
+This means lifting 80kg × 8 reps (est. 1RM ≈ 101kg) correctly shows as better than 82.5kg × 1 rep. Both weight and rep improvements count toward progress.
 
 ## 🔒 Privacy
 
