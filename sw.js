@@ -1,7 +1,11 @@
 // Service Worker for Gym Progress Tracker PWA
 // Provides offline caching for the app shell
+//
+// ⚠️  DEPLOY CHECKLIST: bump CACHE_NAME to today's date on every push.
+//     Format: 'gym-tracker-YYYY-MM-DD'
+//     This is the only string you need to change per deploy.
 
-const CACHE_NAME = 'gym-tracker-v1';
+const CACHE_NAME = 'gym-tracker-2026-04-07';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -57,19 +61,15 @@ self.addEventListener('fetch', (event) => {
     caches.match(event.request)
       .then((cachedResponse) => {
         if (cachedResponse) {
-          // Return cached version
           return cachedResponse;
         }
 
-        // Not in cache - fetch from network
         return fetch(event.request)
           .then((networkResponse) => {
-            // Don't cache non-successful responses
             if (!networkResponse || networkResponse.status !== 200) {
               return networkResponse;
             }
 
-            // Cache successful responses for future use
             const responseToCache = networkResponse.clone();
             caches.open(CACHE_NAME)
               .then((cache) => {
@@ -79,7 +79,6 @@ self.addEventListener('fetch', (event) => {
             return networkResponse;
           })
           .catch(() => {
-            // Network failed, return offline fallback for navigation
             if (event.request.mode === 'navigate') {
               return caches.match('/index.html');
             }
