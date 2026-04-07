@@ -322,7 +322,6 @@ a { color: inherit; text-decoration: none; }
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   padding-bottom: var(--space-1);
-  /* hide scrollbar */
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -366,7 +365,6 @@ a { color: inherit; text-decoration: none; }
   font-size: 10px;
   color: var(--text-secondary);
   line-height: 1.2;
-  /* max 2 lines, then ellipsis */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -390,6 +388,39 @@ a { color: inherit; text-decoration: none; }
   background: var(--surface-raised);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.log-item:hover {
+  border-color: var(--border-default);
+  background: var(--surface-overlay);
+}
+
+.log-item:active { transform: scale(0.98); }
+
+/* Read-only variant for latest section */
+.log-item--readonly {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.log-item--readonly:hover {
+  border-color: var(--border-subtle);
+  background: var(--surface-raised);
+  transform: none;
+}
+
+/* Latest section log items — tappable to start new entry */
+.log-item--latest {
+  cursor: pointer;
+  opacity: 0.75;
+}
+
+.log-item--latest:hover {
+  opacity: 1;
+  border-color: var(--border-default);
+  background: var(--surface-overlay);
 }
 
 .log-item__left {
@@ -416,6 +447,31 @@ a { color: inherit; text-decoration: none; }
   font-size: var(--text-sm);
   color: var(--text-secondary);
   font-variant-numeric: tabular-nums;
+}
+
+.log-item__edit-hint {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* ── Latest Section ── */
+.latest-section {
+  margin-top: var(--space-5);
+}
+
+.latest-section-header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.latest-date {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-faint);
+  letter-spacing: 0.3px;
 }
 
 /* ── Exercise List ── */
@@ -518,6 +574,22 @@ a { color: inherit; text-decoration: none; }
 .log-header__title { font-size: var(--text-lg); font-weight: 600; flex: 1; }
 .log-header__edit { color: var(--text-muted); padding: var(--space-2); }
 .log-header__edit svg { width: 18px; height: 18px; }
+
+/* Edit mode indicator */
+.edit-mode-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 3px var(--space-2);
+  background: var(--warning-muted);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-radius: var(--radius-full);
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--warning);
+  letter-spacing: 0.3px;
+  margin-bottom: var(--space-4);
+}
 
 .last-session {
   background: var(--surface-raised);
@@ -734,6 +806,40 @@ a { color: inherit; text-decoration: none; }
 .set-row__label--weight { flex: 1; text-align: center; margin-left: 52px; }
 .set-row__label--reps { width: 56px; text-align: center; }
 
+/* ── Set action buttons group ── */
+.set-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+}
+
+/* ── Delete entry button ── */
+.btn-delete-entry {
+  height: 40px;
+  padding: 0 var(--space-4);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  margin-top: var(--space-2);
+}
+
+.btn-delete-entry:hover {
+  color: var(--destructive);
+  border-color: rgba(239, 68, 68, 0.3);
+  background: var(--destructive-muted);
+}
+
 /* ── Progress Screen ── */
 .progress-selector { margin-bottom: var(--space-4); }
 
@@ -849,7 +955,6 @@ a { color: inherit; text-decoration: none; }
 .settings-row--destructive { border-color: rgba(239, 68, 68, 0.2); }
 .settings-row--destructive .settings-row__label { color: var(--destructive); }
 
-/* Data storage info banner */
 .data-info-banner {
   background: var(--surface-inset);
   border: 1px solid var(--border-subtle);
@@ -876,7 +981,6 @@ a { color: inherit; text-decoration: none; }
   font-weight: 500;
 }
 
-/* Toggle pills */
 .toggle-pills {
   display: flex;
   background: var(--surface-inset);
@@ -1093,13 +1197,16 @@ a { color: inherit; text-decoration: none; }
     <!-- Today's Log -->
     <section id="today-section">
       <div class="section-header">Today</div>
-      <div class="today-log" id="today-log">
-        <div class="empty-state">
-          <div class="empty-state__icon">🏋️</div>
-          <div class="empty-state__title">No exercises logged</div>
-          <div class="empty-state__text">Tap "Log Exercise" to start tracking your workout</div>
-        </div>
+      <div class="today-log" id="today-log"></div>
+    </section>
+
+    <!-- Latest (past) section — always shown if data exists -->
+    <section id="latest-section" class="latest-section" style="display: none;">
+      <div class="latest-section-header">
+        <span class="section-header" style="margin-bottom: 0;">Latest</span>
+        <span class="latest-date" id="latest-date"></span>
       </div>
+      <div class="today-log" id="latest-log"></div>
     </section>
   </div>
 
@@ -1149,6 +1256,11 @@ a { color: inherit; text-decoration: none; }
       </button>
     </div>
 
+    <!-- Edit mode badge — only shown when editing an existing log -->
+    <div id="edit-mode-badge" class="edit-mode-badge" style="display: none;">
+      ✎ Editing today's entry
+    </div>
+
     <div class="last-session" id="last-session" style="display: none;">
       <div class="last-session__header">
         <span class="last-session__label">Last Session</span>
@@ -1166,12 +1278,28 @@ a { color: inherit; text-decoration: none; }
 
     <div class="set-list" id="set-list"></div>
 
-    <button class="btn-secondary mb-6" onclick="addSet()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M12 5v14M5 12h14"/>
-      </svg>
-      Add Set
-    </button>
+    <!-- Add / Remove set buttons -->
+    <div class="set-actions">
+      <button class="btn-secondary" onclick="addSet()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 5v14M5 12h14"/>
+        </svg>
+        Add Set
+      </button>
+      <button class="btn-secondary" id="remove-set-btn" onclick="removeLastSet()" style="display: none;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12h14"/>
+        </svg>
+        Remove Last Set
+      </button>
+      <!-- Delete entry — only shown in edit mode -->
+      <button class="btn-delete-entry" id="delete-entry-btn" style="display: none;" onclick="confirmDeleteEntry()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+        </svg>
+        Delete This Entry
+      </button>
+    </div>
 
     <button class="btn-primary mt-auto" onclick="saveLog()" id="save-btn">
       Save Workout
@@ -1208,11 +1336,11 @@ a { color: inherit; text-decoration: none; }
 
     <div class="stats-grid" id="progress-stats">
       <div class="stat-card">
-        <div class="stat-card__label">Starting</div>
+        <div class="stat-card__label">Start 1RM</div>
         <div class="stat-card__value" id="stat-start">--<span class="stat-card__unit">kg</span></div>
       </div>
       <div class="stat-card">
-        <div class="stat-card__label">Current</div>
+        <div class="stat-card__label">Current 1RM</div>
         <div class="stat-card__value" id="stat-current">--<span class="stat-card__unit">kg</span></div>
       </div>
       <div class="stat-card">
@@ -1220,7 +1348,7 @@ a { color: inherit; text-decoration: none; }
         <div class="stat-card__value" id="stat-progress">--%</div>
       </div>
       <div class="stat-card">
-        <div class="stat-card__label">Est. 1RM</div>
+        <div class="stat-card__label">Best Set</div>
         <div class="stat-card__value" id="stat-1rm">--<span class="stat-card__unit">kg</span></div>
       </div>
     </div>
@@ -1256,7 +1384,6 @@ a { color: inherit; text-decoration: none; }
     <div class="settings-group">
       <div class="settings-group__title">Data</div>
 
-      <!-- Data storage info banner -->
       <div class="data-info-banner">
         <div class="data-info-banner__title">Where is my data stored?</div>
         <div class="data-info-banner__body">
@@ -1334,27 +1461,22 @@ const STORAGE_KEYS = {
 };
 
 const PRESET_EXERCISES = [
-  // Chest
   { id: "bench-press-flat-barbell", name: "Flat Barbell Bench Press", category: "chest", icon: "🏋️" },
   { id: "incline-dumbbell-press", name: "Incline Dumbbell Press", category: "chest", icon: "🏋️" },
   { id: "cable-fly", name: "Cable Fly / Pec Deck", category: "chest", icon: "🏋️" },
   { id: "chest-press-machine", name: "Chest Press Machine", category: "chest", icon: "🏋️" },
-  // Back
   { id: "lat-pulldown", name: "Lat Pulldown", category: "back", icon: "🔙" },
   { id: "seated-cable-row", name: "Seated Cable Row", category: "back", icon: "🔙" },
   { id: "barbell-row", name: "Barbell Row", category: "back", icon: "🔙" },
   { id: "pull-up", name: "Pull-Up / Assisted Pull-Up", category: "back", icon: "🔙" },
-  // Shoulders
   { id: "overhead-press", name: "Overhead Press", category: "shoulders", icon: "🎯" },
   { id: "lateral-raise", name: "Lateral Raise", category: "shoulders", icon: "🎯" },
   { id: "face-pull", name: "Face Pull", category: "shoulders", icon: "🎯" },
   { id: "shoulder-press-machine", name: "Shoulder Press Machine", category: "shoulders", icon: "🎯" },
-  // Arms
   { id: "barbell-curl", name: "Barbell Curl", category: "arms", icon: "💪" },
   { id: "dumbbell-curl", name: "Dumbbell Curl", category: "arms", icon: "💪" },
   { id: "tricep-pushdown", name: "Tricep Pushdown", category: "arms", icon: "💪" },
   { id: "overhead-tricep-extension", name: "Overhead Tricep Extension", category: "arms", icon: "💪" },
-  // Legs (existing + 3 new)
   { id: "barbell-squat", name: "Barbell Squat", category: "legs", icon: "🦵" },
   { id: "leg-press", name: "Leg Press", category: "legs", icon: "🦵" },
   { id: "romanian-deadlift", name: "Romanian Deadlift", category: "legs", icon: "🦵" },
@@ -1364,13 +1486,10 @@ const PRESET_EXERCISES = [
   { id: "walking-lunge", name: "Walking Lunge", category: "legs", icon: "🦵" },
   { id: "hack-squat", name: "Hack Squat", category: "legs", icon: "🦵" },
   { id: "bulgarian-split-squat", name: "Bulgarian Split Squat", category: "legs", icon: "🦵" },
-  // Compound
   { id: "deadlift", name: "Deadlift", category: "compound", icon: "⚡" },
-  // Core (existing + 2 new — no ab-wheel)
   { id: "cable-crunch", name: "Cable Crunch", category: "core", icon: "🎯" },
   { id: "hanging-knee-raise", name: "Hanging Knee Raise", category: "core", icon: "🎯" },
   { id: "plank", name: "Plank", category: "core", icon: "🎯" },
-  // Glutes (existing + 2 new)
   { id: "hip-thrust", name: "Hip Thrust", category: "glutes", icon: "🦵" },
   { id: "glute-kickback-cable", name: "Cable Glute Kickback", category: "glutes", icon: "🦵" },
   { id: "sumo-squat", name: "Sumo Squat / Goblet Squat", category: "glutes", icon: "🦵" }
@@ -1389,6 +1508,8 @@ let state = {
   favouriteIds: [],
   currentExercise: null,
   currentSets: [],
+  // Edit mode: null = new entry, string = log ID being edited
+  editingLogId: null,
   selectedProgressExercise: null,
   timeRange: 30,
   chart: null
@@ -1475,7 +1596,11 @@ function navigateTo(screenId) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const navItem = document.querySelector(`.nav-item[data-screen="${screenId}"]`);
   if (navItem) navItem.classList.add('active');
-  if (screenId === 'home') renderHome();
+  if (screenId === 'home') {
+    // Clear edit state when going home
+    state.editingLogId = null;
+    renderHome();
+  }
   else if (screenId === 'progress') renderProgressChart();
 }
 
@@ -1483,6 +1608,7 @@ function navigateTo(screenId) {
 function renderHome() {
   renderFavouritesCarousel();
   renderTodayLog();
+  renderLatestSection();
 }
 
 function renderFavouritesCarousel() {
@@ -1508,7 +1634,7 @@ function renderTodayLog() {
   const container = document.getElementById('today-log');
   const today = new Date().toISOString().split('T')[0];
   const todayLogs = state.logs.filter(log => log.date === today);
-  
+
   if (todayLogs.length === 0) {
     container.innerHTML = `
       <div class="empty-state">
@@ -1526,18 +1652,90 @@ function renderTodayLog() {
     const bestSet = log.sets.reduce((best, set) => set.weight > best.weight ? set : best, log.sets[0]);
     const setsSummary = log.sets.map(s => `${s.weight}×${s.reps}`).join(', ');
     return `
-      <div class="log-item">
+      <div class="log-item" onclick="editTodayLog('${log.id}')" role="button" aria-label="Edit ${exercise.alias || exercise.name}">
         <div class="log-item__left">
           <span class="log-item__icon">${exercise.icon}</span>
           <div>
             <div class="log-item__name">${exercise.alias || exercise.name}</div>
             <div class="log-item__sets">${log.sets.length} sets · ${setsSummary}</div>
+            <div class="log-item__edit-hint">Tap to edit</div>
           </div>
         </div>
         <span class="log-item__volume">${bestSet.weight}${state.settings.weightUnit} × ${bestSet.reps}</span>
       </div>
     `;
   }).join('');
+}
+
+// ── Latest Section (past sessions, read-only display, tap to start new today entry) ──
+function renderLatestSection() {
+  const section = document.getElementById('latest-section');
+  const container = document.getElementById('latest-log');
+  const dateEl = document.getElementById('latest-date');
+
+  const today = new Date().toISOString().split('T')[0];
+
+  // Find the most recent date that is not today
+  const pastDates = [...new Set(
+    state.logs
+      .filter(log => log.date !== today)
+      .map(log => log.date)
+  )].sort((a, b) => b.localeCompare(a));
+
+  if (pastDates.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+
+  const latestDate = pastDates[0];
+  const latestLogs = state.logs.filter(log => log.date === latestDate);
+
+  if (latestLogs.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+
+  // Format date nicely
+  const dateObj = new Date(latestDate + 'T00:00:00');
+  const formatted = dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+  dateEl.textContent = formatted;
+
+  container.innerHTML = latestLogs.map(log => {
+    const exercise = state.exercises.find(e => e.id === log.exerciseId);
+    if (!exercise) return '';
+    const bestSet = log.sets.reduce((best, set) => set.weight > best.weight ? set : best, log.sets[0]);
+    const setsSummary = log.sets.map(s => `${s.weight}×${s.reps}`).join(', ');
+    return `
+      <div class="log-item log-item--latest" onclick="quickLog('${exercise.id}')" role="button" aria-label="Log ${exercise.alias || exercise.name} again">
+        <div class="log-item__left">
+          <span class="log-item__icon">${exercise.icon}</span>
+          <div>
+            <div class="log-item__name">${exercise.alias || exercise.name}</div>
+            <div class="log-item__sets">${log.sets.length} sets · ${setsSummary}</div>
+            <div class="log-item__edit-hint">Tap to log again today</div>
+          </div>
+        </div>
+        <span class="log-item__volume">${bestSet.weight}${state.settings.weightUnit} × ${bestSet.reps}</span>
+      </div>
+    `;
+  }).join('');
+
+  section.style.display = 'block';
+}
+
+// ── Edit today's log entry ──
+function editTodayLog(logId) {
+  const log = state.logs.find(l => l.id === logId);
+  if (!log) return;
+  const exercise = state.exercises.find(e => e.id === log.exerciseId);
+  if (!exercise) return;
+
+  state.currentExercise = exercise;
+  state.currentSets = log.sets.map(s => ({...s}));
+  state.editingLogId = logId;
+
+  renderLogScreen();
+  navigateTo('log');
 }
 
 // ── Exercise Selection ──
@@ -1620,6 +1818,7 @@ function selectExercise(exerciseId) {
   const exercise = state.exercises.find(e => e.id === exerciseId);
   if (!exercise) return;
   state.currentExercise = exercise;
+  state.editingLogId = null; // always a new entry from selection screen
   state.currentSets = [];
   const lastSession = getLastSession(exerciseId);
   if (lastSession) {
@@ -1639,45 +1838,60 @@ function quickLog(exerciseId) {
 function renderLogScreen() {
   const exercise = state.currentExercise;
   if (!exercise) return;
+
   document.getElementById('log-exercise-icon').textContent = exercise.icon;
   document.getElementById('log-exercise-name').textContent = exercise.alias || exercise.name;
 
-  const lastSession = getLastSession(exercise.id);
+  // Edit mode badge
+  const badge = document.getElementById('edit-mode-badge');
+  badge.style.display = state.editingLogId ? 'inline-flex' : 'none';
+
+  // Delete entry button — only in edit mode
+  const deleteBtn = document.getElementById('delete-entry-btn');
+  deleteBtn.style.display = state.editingLogId ? 'flex' : 'none';
+
+  // Last session panel — hide in edit mode (they're editing the current entry, not comparing)
   const lastSessionEl = document.getElementById('last-session');
 
-  if (lastSession) {
-    const date = new Date(lastSession.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    const bestSet = lastSession.sets.reduce((best, s) => {
-      const e1rm = estimateOneRepMax(s.weight, s.reps);
-      return e1rm > estimateOneRepMax(best.weight, best.reps) ? s : best;
-    }, lastSession.sets[0]);
+  if (!state.editingLogId) {
+    const lastSession = getLastSession(exercise.id);
+    if (lastSession) {
+      const date = new Date(lastSession.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      const bestSet = lastSession.sets.reduce((best, s) => {
+        const e1rm = estimateOneRepMax(s.weight, s.reps);
+        return e1rm > estimateOneRepMax(best.weight, best.reps) ? s : best;
+      }, lastSession.sets[0]);
 
-    document.getElementById('last-session-date').textContent = date;
+      document.getElementById('last-session-date').textContent = date;
 
-    document.getElementById('last-session-track').innerHTML = lastSession.sets.map((s, i) => {
-      const isBest = s === bestSet;
-      return `
-        <div class="last-session__set">
-          <div class="last-session__dot ${isBest ? 'last-session__dot--best' : ''}"></div>
-          <span class="last-session__set-label">S${i + 1}</span>
-          <div class="last-session__set-row">
-            <span class="last-session__weight ${isBest ? 'last-session__weight--best' : ''}">${s.weight}</span>
-            <span class="last-session__unit">${state.settings.weightUnit}</span>
-            <span class="last-session__spacer"></span>
-            <span class="last-session__reps ${isBest ? 'last-session__reps--best' : ''}">${s.reps}</span>
-            <span class="last-session__reps-unit">reps</span>
+      document.getElementById('last-session-track').innerHTML = lastSession.sets.map((s, i) => {
+        const isBest = s === bestSet;
+        return `
+          <div class="last-session__set">
+            <div class="last-session__dot ${isBest ? 'last-session__dot--best' : ''}"></div>
+            <span class="last-session__set-label">S${i + 1}</span>
+            <div class="last-session__set-row">
+              <span class="last-session__weight ${isBest ? 'last-session__weight--best' : ''}">${s.weight}</span>
+              <span class="last-session__unit">${state.settings.weightUnit}</span>
+              <span class="last-session__spacer"></span>
+              <span class="last-session__reps ${isBest ? 'last-session__reps--best' : ''}">${s.reps}</span>
+              <span class="last-session__reps-unit">reps</span>
+            </div>
           </div>
-        </div>
-      `;
-    }).join('');
+        `;
+      }).join('');
 
-    document.getElementById('last-session-footer').innerHTML =
-      `Beat your best: <span>${bestSet.weight}${state.settings.weightUnit} × ${bestSet.reps} reps</span>`;
+      document.getElementById('last-session-footer').innerHTML =
+        `Beat your best: <span>${bestSet.weight}${state.settings.weightUnit} × ${bestSet.reps} reps</span>`;
 
-    lastSessionEl.style.display = 'block';
+      lastSessionEl.style.display = 'block';
+    } else {
+      lastSessionEl.style.display = 'none';
+    }
   } else {
     lastSessionEl.style.display = 'none';
   }
+
   renderSets();
 }
 
@@ -1697,6 +1911,10 @@ function renderSets() {
       </div>
     `;
   }).join('');
+
+  // Show/hide Remove Last Set button — always hide when only 1 set remains
+  const removeBtn = document.getElementById('remove-set-btn');
+  removeBtn.style.display = state.currentSets.length > 1 ? 'flex' : 'none';
 }
 
 function selectAllOnFocus(input) {
@@ -1706,6 +1924,13 @@ function selectAllOnFocus(input) {
 function addSet() {
   const lastSet = state.currentSets[state.currentSets.length - 1] || { weight: 0, reps: 10 };
   state.currentSets.push({ weight: lastSet.weight, reps: lastSet.reps });
+  renderSets();
+}
+
+// ── Change 1: Remove Last Set ──
+function removeLastSet() {
+  if (state.currentSets.length <= 1) return; // never remove the last remaining set
+  state.currentSets.pop();
   renderSets();
 }
 
@@ -1734,6 +1959,7 @@ function commitReps(index, input) {
   input.value = val > 0 ? val : '';
 }
 
+// ── Save: handles both new entry and edit mode ──
 function saveLog() {
   if (!state.currentExercise || state.currentSets.length === 0) return;
   const validSets = state.currentSets.filter(s => s.weight > 0 || s.reps > 0);
@@ -1741,18 +1967,65 @@ function saveLog() {
     alert('Please add at least one set with weight or reps.');
     return;
   }
-  const now = new Date();
-  const log = {
-    id: `log_${now.getTime()}`,
-    date: now.toISOString().split('T')[0],
-    timestamp: now.getTime(),
-    exerciseId: state.currentExercise.id,
-    sets: validSets
-  };
-  state.logs.push(log);
+
+  if (state.editingLogId) {
+    // Edit mode: overwrite existing log, preserve original date and timestamp
+    const logIndex = state.logs.findIndex(l => l.id === state.editingLogId);
+    if (logIndex !== -1) {
+      state.logs[logIndex].sets = validSets;
+    }
+  } else {
+    // New entry
+    const now = new Date();
+    const log = {
+      id: `log_${now.getTime()}`,
+      date: now.toISOString().split('T')[0],
+      timestamp: now.getTime(),
+      exerciseId: state.currentExercise.id,
+      sets: validSets
+    };
+    state.logs.push(log);
+  }
+
   saveData();
   state.currentExercise = null;
   state.currentSets = [];
+  state.editingLogId = null;
+  navigateTo('home');
+}
+
+// ── Change 3: Delete entry with confirmation modal ──
+function confirmDeleteEntry() {
+  if (!state.editingLogId) return;
+  const log = state.logs.find(l => l.id === state.editingLogId);
+  const exercise = log ? state.exercises.find(e => e.id === log.exerciseId) : null;
+  const name = exercise ? (exercise.alias || exercise.name) : 'this entry';
+
+  showModal(`
+    <div class="modal__header">
+      <h2 class="modal__title">Delete Entry?</h2>
+      <button class="modal__close" onclick="hideModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p style="color: var(--text-secondary); font-size: var(--text-sm); line-height: 1.6; margin-bottom: var(--space-2);">
+      This will permanently delete the logged entry for <strong style="color: var(--text-primary);">${name}</strong>. This cannot be undone.
+    </p>
+    <div class="modal__actions">
+      <button class="btn-destructive" onclick="deleteEntry()">Delete Entry</button>
+      <button class="btn-secondary" onclick="hideModal()">Cancel</button>
+    </div>
+  `);
+}
+
+function deleteEntry() {
+  if (!state.editingLogId) return;
+  state.logs = state.logs.filter(l => l.id !== state.editingLogId);
+  saveData();
+  hideModal();
+  state.currentExercise = null;
+  state.currentSets = [];
+  state.editingLogId = null;
   navigateTo('home');
 }
 
@@ -1795,7 +2068,9 @@ function setTimeRange(days, btn) {
   renderProgressChart();
 }
 
+// ── Change 5: 1RM-based progress chart ──
 function renderProgressChart() {
+  updateProgressDropdown();
   if (!state.selectedProgressExercise) return;
   const exerciseId = state.selectedProgressExercise.id;
   let logs = state.logs.filter(log => log.exerciseId === exerciseId);
@@ -1804,30 +2079,41 @@ function renderProgressChart() {
     logs = logs.filter(log => log.timestamp >= cutoff);
   }
   logs.sort((a, b) => a.timestamp - b.timestamp);
+
+  const unit = state.settings.weightUnit;
+
   if (logs.length === 0) {
-    document.getElementById('stat-start').innerHTML = `--<span class="stat-card__unit">${state.settings.weightUnit}</span>`;
-    document.getElementById('stat-current').innerHTML = `--<span class="stat-card__unit">${state.settings.weightUnit}</span>`;
+    document.getElementById('stat-start').innerHTML = `--<span class="stat-card__unit">${unit}</span>`;
+    document.getElementById('stat-current').innerHTML = `--<span class="stat-card__unit">${unit}</span>`;
     document.getElementById('stat-progress').textContent = '--%';
-    document.getElementById('stat-1rm').innerHTML = `--<span class="stat-card__unit">${state.settings.weightUnit}</span>`;
+    document.getElementById('stat-1rm').innerHTML = `--<span class="stat-card__unit">${unit}</span>`;
     if (state.chart) { state.chart.destroy(); state.chart = null; }
     return;
   }
-  const firstLog = logs[0];
-  const lastLog = logs[logs.length - 1];
-  const startWeight = Math.max(...firstLog.sets.map(s => s.weight));
-  const currentWeight = Math.max(...lastLog.sets.map(s => s.weight));
-  const progressPercent = startWeight > 0 ? Math.round(((currentWeight - startWeight) / startWeight) * 100) : 0;
-  const bestSet = lastLog.sets.reduce((best, set) => {
-    const e1rm = estimateOneRepMax(set.weight, set.reps);
-    return e1rm > best.e1rm ? { ...set, e1rm } : best;
-  }, { e1rm: 0 });
-  document.getElementById('stat-start').innerHTML = `${startWeight}<span class="stat-card__unit">${state.settings.weightUnit}</span>`;
-  document.getElementById('stat-current').innerHTML = `${currentWeight}<span class="stat-card__unit">${state.settings.weightUnit}</span>`;
+
+  // Compute best estimated 1RM per session
+  const sessionBest1RMs = logs.map(log => {
+    return Math.max(...log.sets.map(s => estimateOneRepMax(s.weight, s.reps)));
+  });
+
+  const first1RM = sessionBest1RMs[0];
+  const current1RM = sessionBest1RMs[sessionBest1RMs.length - 1];
+  const progressPercent = first1RM > 0 ? Math.round(((current1RM - first1RM) / first1RM) * 100) : 0;
+
+  // Best set across all time in range (raw weight × reps for display)
+  const allSets = logs.flatMap(log => log.sets);
+  const bestRawSet = allSets.reduce((best, s) => {
+    return s.weight > best.weight ? s : best;
+  }, allSets[0]);
+
+  document.getElementById('stat-start').innerHTML = `${first1RM}<span class="stat-card__unit">${unit}</span>`;
+  document.getElementById('stat-current').innerHTML = `${current1RM}<span class="stat-card__unit">${unit}</span>`;
   document.getElementById('stat-progress').innerHTML = `${progressPercent >= 0 ? '+' : ''}${progressPercent}%`;
   document.getElementById('stat-progress').className = `stat-card__value ${progressPercent >= 0 ? 'stat-card__change--positive' : 'stat-card__change--negative'}`;
-  document.getElementById('stat-1rm').innerHTML = `${bestSet.e1rm}<span class="stat-card__unit">${state.settings.weightUnit}</span>`;
+  document.getElementById('stat-1rm').innerHTML = `${bestRawSet.weight}<span class="stat-card__unit">${unit}</span> <span style="font-size:var(--text-xs);color:var(--text-muted)">×${bestRawSet.reps}</span>`;
+
   const labels = logs.map(log => new Date(log.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
-  const data = logs.map(log => Math.max(...log.sets.map(s => s.weight)));
+
   const ctx = document.getElementById('progress-chart').getContext('2d');
   if (state.chart) state.chart.destroy();
   state.chart = new Chart(ctx, {
@@ -1835,7 +2121,7 @@ function renderProgressChart() {
     data: {
       labels,
       datasets: [{
-        data,
+        data: sessionBest1RMs,
         borderColor: '#22c55e',
         backgroundColor: 'rgba(34, 197, 94, 0.1)',
         borderWidth: 2,
@@ -1861,12 +2147,17 @@ function renderProgressChart() {
           padding: 12,
           cornerRadius: 8,
           displayColors: false,
-          callbacks: { label: (ctx) => `${ctx.raw} ${state.settings.weightUnit}` }
+          callbacks: {
+            label: (ctx) => `Est. 1RM: ${ctx.raw} ${unit}`
+          }
         }
       },
       scales: {
         x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#a1a1a1', font: { size: 11 } } },
-        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#a1a1a1', font: { size: 11 } } }
+        y: {
+          grid: { color: 'rgba(255,255,255,0.04)' },
+          ticks: { color: '#a1a1a1', font: { size: 11 }, callback: (val) => `${val}${unit}` }
+        }
       }
     }
   });
@@ -2085,12 +2376,15 @@ function saveCustomExercise() {
 
 // ── Helpers ──
 function getLastSession(exerciseId) {
+  const today = new Date().toISOString().split('T')[0];
   return state.logs
-    .filter(log => log.exerciseId === exerciseId)
+    .filter(log => log.exerciseId === exerciseId && log.date !== today)
     .sort((a, b) => b.timestamp - a.timestamp)[0] || null;
 }
 
+// Epley formula: weight × (1 + reps/30)
 function estimateOneRepMax(weight, reps) {
+  if (reps <= 0 || weight <= 0) return 0;
   if (reps === 1) return weight;
   return Math.round(weight * (1 + reps / 30));
 }
