@@ -1521,9 +1521,6 @@ function init() {
   renderHome();
   updateProgressDropdown();
   applySettings();
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed:', err));
-  }
 }
 
 function loadData() {
@@ -2401,7 +2398,10 @@ init();
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js')
-      .then(r => console.log('[App] SW registered:', r.scope))
+      .then(r => {
+        console.log('[App] SW registered:', r.scope);
+        r.update(); // check for SW updates on every page load
+      })
       .catch(e => console.log('[App] SW failed:', e));
   });
 }
