@@ -15,6 +15,22 @@ A minimal, mobile-first PWA for tracking progressive overload at the gym. Built 
 - **Offline-First** — Works without internet after first load
 - **No Account Required** — All data stays on your device (localStorage)
 
+## 📋 Patch Notes
+
+### 2026-04-18
+- Cleaned up exercise list — removed 19 exercises, added chest-supported row, rear delt fly, hammer curl, goblet squat, seated calf raise, decline sit-up, russian twist
+- Progress tab now auto-selects the most recently logged exercise on open
+- Added dynamic 1RM explanation below the chart — reads from your actual numbers and explains the gap between what you lifted and the estimated max shown on the chart
+- Four explanation states: first session, progressing, declining, plateaued — each with a trend badge
+
+### 2026-04-07
+- Initial release
+- Exercise logging with set/rep/weight tracking
+- Progress chart with Epley-based 1RM estimation
+- Favourites carousel and latest session reference on home screen
+- Export/import data as JSON
+- PWA support — installable on iOS and Android
+
 ## 📱 Install on iPhone
 
 1. Open the app in Safari
