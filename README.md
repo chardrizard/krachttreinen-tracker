@@ -40,30 +40,6 @@ A minimal, mobile-first PWA for tracking progressive overload at the gym. Built 
 
 The app will appear on your home screen with a custom icon and run in full-screen mode.
 
-## 🚀 Deploy to GitHub Pages
-
-1. Fork this repository
-2. Go to **Settings → Pages**
-3. Under "Source", select **Deploy from a branch**
-4. Choose `main` branch and `/ (root)` folder
-5. Click **Save**
-
-Your app will be live at `https://yourusername.github.io/gym-tracker/`
-
-## 📂 Project Structure
-
-```
-gym-tracker/
-├── index.html      # Complete app (single file)
-├── manifest.json   # PWA configuration
-├── sw.js          # Service worker for offline support
-├── icons/
-│   ├── icon-192.png
-│   ├── icon-512.png
-│   └── apple-touch-icon.png
-└── README.md
-```
-
 ## 🎯 Usage
 
 ### Logging a Workout
