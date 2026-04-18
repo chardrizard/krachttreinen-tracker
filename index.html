@@ -18,1250 +18,320 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --surface-base: #0a0a0a;
-  --surface-raised: #141414;
-  --surface-overlay: #1a1a1a;
-  --surface-inset: #050505;
-  --text-primary: #fafafa;
-  --text-secondary: #a1a1a1;
-  --text-muted: #525252;
-  --text-faint: #3f3f3f;
-  --border-default: rgba(255, 255, 255, 0.08);
-  --border-subtle: rgba(255, 255, 255, 0.04);
-  --border-strong: rgba(255, 255, 255, 0.12);
-  --accent: #22c55e;
-  --accent-hover: #16a34a;
-  --accent-muted: rgba(34, 197, 94, 0.15);
-  --destructive: #ef4444;
-  --destructive-muted: rgba(239, 68, 68, 0.15);
-  --warning: #f59e0b;
-  --warning-muted: rgba(245, 158, 11, 0.15);
-  --star-active: #f59e0b;
-  --star-inactive: #525252;
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-8: 32px;
-  --space-10: 40px;
-  --space-12: 48px;
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
-  --radius-full: 9999px;
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'DM Mono', 'SF Mono', 'Fira Code', 'Consolas', monospace;
-  --text-xs: 12px;
-  --text-sm: 14px;
-  --text-base: 16px;
-  --text-lg: 18px;
-  --text-xl: 24px;
-  --text-2xl: 32px;
-  --transition-fast: 150ms ease-out;
-  --transition-normal: 200ms ease-out;
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-html {
-  font-family: var(--font-sans);
-  background: var(--surface-base);
-  color: var(--text-primary);
-  -webkit-font-smoothing: antialiased;
-  -webkit-tap-highlight-color: transparent;
-  overscroll-behavior: none;
-}
-
-body {
-  min-height: 100vh;
-  min-height: 100dvh;
-  overflow-x: hidden;
-}
-
-button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
-input { font-family: inherit; color: inherit; }
-a { color: inherit; text-decoration: none; }
-
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-#app {
-  min-height: 100vh;
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: calc(72px + env(safe-area-inset-bottom));
-}
-
-.screen {
-  flex: 1;
-  padding: var(--space-4);
-  padding-top: var(--space-4);
-  display: none;
-  flex-direction: column;
-  animation: fadeIn var(--transition-normal) var(--ease-out);
-}
-
-.screen.active { display: flex; }
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ── Bottom Nav ── */
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--surface-base);
-  border-top: 1px solid var(--border-default);
-  display: flex;
-  justify-content: space-around;
-  align-items: flex-start;
-  padding-top: var(--space-2);
-  padding-bottom: calc(var(--space-2) + env(safe-area-inset-bottom));
-  z-index: 100;
-}
-
-.nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-1);
-  color: var(--text-muted);
-  font-size: var(--text-xs);
-  padding: var(--space-2) var(--space-4);
-  transition: color var(--transition-fast);
-  min-width: 64px;
-}
-
-.nav-item svg {
-  width: 24px;
-  height: 24px;
-  stroke-width: 1.5;
-}
-
-.nav-item.active { color: var(--accent); }
-.nav-item:active { transform: scale(0.95); }
-
-/* ── Buttons ── */
-.btn-primary {
-  height: 48px;
-  padding: 0 var(--space-6);
-  background: var(--accent);
-  color: #000;
-  font-size: var(--text-base);
-  font-weight: 600;
-  border: none;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: background var(--transition-fast);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  width: 100%;
-}
-
-.btn-primary:hover { background: var(--accent-hover); }
-.btn-primary:active { transform: scale(0.98); }
-.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-
-.btn-secondary {
-  min-width: 48px;
-  height: 48px;
-  padding: 0 var(--space-4);
-  background: var(--surface-raised);
-  color: var(--text-primary);
-  font-size: var(--text-base);
-  font-weight: 500;
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-}
-
-.btn-secondary:hover {
-  background: var(--surface-overlay);
-  border-color: var(--border-strong);
-}
-
-.btn-secondary:active { transform: scale(0.96); }
-
-.btn-ghost {
-  height: 40px;
-  padding: 0 var(--space-3);
-  background: transparent;
-  color: var(--text-secondary);
-  font-size: var(--text-sm);
-  font-weight: 500;
-  border: none;
-  border-radius: var(--radius-sm);
-  transition: all var(--transition-fast);
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.btn-ghost:hover { color: var(--text-primary); background: var(--surface-raised); }
-
-.btn-destructive {
-  height: 48px;
-  padding: 0 var(--space-6);
-  background: var(--destructive-muted);
-  color: var(--destructive);
-  font-size: var(--text-base);
-  font-weight: 500;
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  width: 100%;
-}
-
-.btn-destructive:hover {
-  background: rgba(239, 68, 68, 0.25);
-}
-
-/* ── Inputs ── */
-.input {
-  width: 100%;
-  height: 48px;
-  padding: 0 var(--space-4);
-  background: var(--surface-inset);
-  color: var(--text-primary);
-  font-size: var(--text-lg);
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-md);
-  transition: border-color var(--transition-fast);
-}
-
-.input:focus {
-  outline: none;
-  border-color: var(--accent);
-}
-
-.input::placeholder { color: var(--text-muted); }
-
-.input-search {
-  background: var(--surface-raised);
-  font-family: var(--font-sans);
-  font-size: var(--text-base);
-  padding-left: var(--space-10);
-}
-
-/* ── Cards ── */
-.card {
-  background: var(--surface-raised);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: var(--space-4);
-}
-
-.card-interactive {
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.card-interactive:hover {
-  border-color: var(--border-default);
-  background: var(--surface-overlay);
-}
-
-.card-interactive:active {
-  transform: scale(0.98);
-}
-
-/* ── Section Headers ── */
-.section-header {
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  font-weight: 500;
-  margin-bottom: var(--space-3);
-}
-
-.page-header {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  margin-bottom: var(--space-6);
-}
-
-.page-title {
-  font-size: var(--text-xl);
-  font-weight: 600;
-  letter-spacing: -0.5px;
-}
-
-/* ── Favourites Carousel ── */
-.fav-section {
-  margin-bottom: var(--space-5);
-}
-
-.fav-carousel {
-  display: flex;
-  gap: var(--space-2);
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: var(--space-1);
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.fav-carousel::-webkit-scrollbar { display: none; }
-
-.fav-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-1);
-  flex-shrink: 0;
-  width: 76px;
-  min-height: 72px;
-  padding: var(--space-2) var(--space-2);
-  background: var(--surface-raised);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  scroll-snap-align: start;
-  transition: all var(--transition-fast);
-  text-align: center;
-}
-
-.fav-card:hover {
-  border-color: var(--border-default);
-  background: var(--surface-overlay);
-}
-
-.fav-card:active {
-  transform: scale(0.95);
-}
-
-.fav-card__icon {
-  font-size: 20px;
-  line-height: 1;
-}
-
-.fav-card__name {
-  font-size: 10px;
-  color: var(--text-secondary);
-  line-height: 1.2;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  word-break: break-word;
-  max-width: 100%;
-}
-
-/* ── Today Log ── */
-.today-log {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.log-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--space-3) var(--space-4);
-  background: var(--surface-raised);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.log-item:hover {
-  border-color: var(--border-default);
-  background: var(--surface-overlay);
-}
-
-.log-item:active { transform: scale(0.98); }
-
-/* Read-only variant for latest section */
-.log-item--readonly {
-  cursor: default;
-  opacity: 0.6;
-}
-
-.log-item--readonly:hover {
-  border-color: var(--border-subtle);
-  background: var(--surface-raised);
-  transform: none;
-}
-
-/* Latest section log items — tappable to start new entry */
-.log-item--latest {
-  cursor: pointer;
-  opacity: 0.75;
-}
-
-.log-item--latest:hover {
-  opacity: 1;
-  border-color: var(--border-default);
-  background: var(--surface-overlay);
-}
-
-.log-item__left {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-.log-item__icon { font-size: 20px; }
-
-.log-item__name {
-  font-size: var(--text-sm);
-  font-weight: 500;
-}
-
-.log-item__sets {
-  font-size: var(--text-xs);
-  color: var(--text-secondary);
-  margin-top: 2px;
-}
-
-.log-item__volume {
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  color: var(--text-secondary);
-  font-variant-numeric: tabular-nums;
-}
-
-.log-item__edit-hint {
-  font-size: 10px;
-  color: var(--text-muted);
-  margin-top: 2px;
-}
-
-/* ── Latest Section ── */
-.latest-section {
-  margin-top: var(--space-5);
-}
-
-.latest-section-header {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-2);
-  margin-bottom: var(--space-3);
-}
-
-.latest-date {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--text-faint);
-  letter-spacing: 0.3px;
-}
-
-/* ── Exercise List ── */
-.exercise-list {
-  display: flex;
-  flex-direction: column;
-}
-
-.exercise-group {
-  margin-bottom: var(--space-6);
-}
-
-.exercise-group__title {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  padding: var(--space-2) 0;
-  border-bottom: 1px solid var(--border-subtle);
-  margin-bottom: var(--space-2);
-}
-
-.exercise-group__title--favourites {
-  color: var(--star-active);
-}
-
-.exercise-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-3) 0;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: background var(--transition-fast);
-  position: relative;
-  width: 100%;
-}
-
-.exercise-row:hover { background: var(--surface-raised); }
-.exercise-row:active { background: var(--surface-overlay); }
-
-.exercise-row__icon {
-  font-size: 20px;
-  width: 32px;
-  text-align: center;
-}
-
-.exercise-row__name {
-  font-size: var(--text-base);
-  flex: 1;
-  min-width: 0;
-}
-
-.exercise-row__check {
-  color: var(--accent);
-  opacity: 0;
-}
-
-.exercise-row.selected .exercise-row__check { opacity: 1; }
-
-.star-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
-  margin-left: auto;
-  border-radius: var(--radius-sm);
-  color: var(--star-inactive);
-  transition: color var(--transition-fast), transform var(--transition-fast);
-  position: relative;
-  z-index: 2;
-}
-
-.star-btn svg {
-  width: 18px;
-  height: 18px;
-  stroke-width: 1.5;
-  fill: none;
-  stroke: currentColor;
-  transition: fill var(--transition-fast), stroke var(--transition-fast);
-}
-
-.star-btn.active { color: var(--star-active); }
-.star-btn.active svg { fill: var(--star-active); stroke: var(--star-active); }
-.star-btn:hover { color: var(--star-active); transform: scale(1.15); }
-.star-btn:active { transform: scale(0.9); }
-
-/* ── Log Sets Screen ── */
-.log-header {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  margin-bottom: var(--space-6);
-}
-
-.log-header__icon { font-size: 28px; }
-.log-header__title { font-size: var(--text-lg); font-weight: 600; flex: 1; }
-.log-header__edit { color: var(--text-muted); padding: var(--space-2); }
-.log-header__edit svg { width: 18px; height: 18px; }
-
-/* Edit mode indicator */
-.edit-mode-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  padding: 3px var(--space-2);
-  background: var(--warning-muted);
-  border: 1px solid rgba(245, 158, 11, 0.25);
-  border-radius: var(--radius-full);
-  font-size: 10px;
-  font-family: var(--font-mono);
-  color: var(--warning);
-  letter-spacing: 0.3px;
-  margin-bottom: var(--space-4);
-}
-
-.last-session {
-  background: var(--surface-raised);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: var(--space-3) var(--space-4);
-  margin-bottom: var(--space-6);
-}
-
-.last-session__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--space-3);
-}
-
-.last-session__label {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-
-.last-session__date {
-  font-size: var(--text-xs);
-  color: var(--text-faint);
-}
-
-.last-session__track {
-  display: flex;
-  flex-direction: column;
-  padding-left: 22px;
-  position: relative;
-}
-
-.last-session__track::before {
-  content: '';
-  position: absolute;
-  left: 5px;
-  top: 8px;
-  bottom: 8px;
-  width: 1px;
-  background: var(--border-default);
-}
-
-.last-session__set {
-  position: relative;
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-2);
-  padding: 4px 0;
-}
-
-.last-session__dot {
-  position: absolute;
-  left: -18px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--text-faint);
-  border: 1.5px solid var(--surface-raised);
-  flex-shrink: 0;
-}
-
-.last-session__dot--best { background: var(--accent); }
-
-.last-session__set-label {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--text-muted);
-  width: 16px;
-  flex-shrink: 0;
-}
-
-.last-session__set-row {
-  flex: 1;
-  display: flex;
-  align-items: baseline;
-}
-
-.last-session__weight {
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  font-weight: 500;
-  color: var(--text-secondary);
-  font-variant-numeric: tabular-nums;
-}
-
-.last-session__weight--best { color: var(--text-primary); }
-
-.last-session__unit {
-  font-size: 10px;
-  color: var(--text-muted);
-  margin-left: 2px;
-}
-
-.last-session__spacer { flex: 1; }
-
-.last-session__reps {
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  font-weight: 500;
-  color: var(--text-muted);
-  font-variant-numeric: tabular-nums;
-}
-
-.last-session__reps--best { color: var(--text-primary); }
-
-.last-session__reps-unit {
-  font-size: 10px;
-  color: var(--text-muted);
-  margin-left: 2px;
-}
-
-.last-session__footer {
-  margin-top: var(--space-2);
-  padding-top: var(--space-2);
-  border-top: 1px solid var(--border-subtle);
-  font-size: var(--text-xs);
-  color: var(--text-muted);
-}
-
-.last-session__footer span { color: var(--accent); }
-
-.set-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  margin-bottom: var(--space-4);
-  overflow: visible;
-}
-
-.set-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px;
-  background: var(--surface-raised);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  overflow: visible;
-}
-
-.set-row__number {
-  width: 24px;
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  color: var(--text-muted);
-  text-align: center;
-  flex-shrink: 0;
-}
-
-.set-row__btn {
-  width: 44px;
-  height: 44px;
-  background: var(--surface-overlay);
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-sm);
-  font-size: 20px;
-  font-weight: 500;
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.set-row__btn:active { background: var(--surface-raised); transform: scale(0.95); }
-
-.set-row__input {
-  height: 44px;
-  background: var(--surface-inset);
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-sm);
-  font-family: var(--font-mono);
-  font-size: var(--text-lg);
-  font-variant-numeric: tabular-nums;
-  text-align: center;
-  color: var(--text-primary);
-  -moz-appearance: textfield;
-}
-
-.set-row__input::-webkit-outer-spin-button,
-.set-row__input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-.set-row__input:focus { outline: none; border-color: var(--accent); }
-.set-row__input::placeholder { color: var(--text-muted); }
-.set-row__input--weight { flex: 1; min-width: 60px; }
-.set-row__input--reps { width: 56px; flex-shrink: 0; }
-
-.set-row__labels {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 var(--space-3);
-  margin-bottom: var(--space-2);
-}
-
-.set-row__label {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-
-.set-row__label--set { width: 24px; }
-.set-row__label--weight { flex: 1; text-align: center; margin-left: 52px; }
-.set-row__label--reps { width: 56px; text-align: center; }
-
-/* ── Set action buttons group ── */
-.set-actions {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  margin-bottom: var(--space-6);
-}
-
-/* ── Delete entry button ── */
-.btn-delete-entry {
-  height: 40px;
-  padding: 0 var(--space-4);
-  background: transparent;
-  color: var(--text-muted);
-  font-size: var(--text-sm);
-  font-weight: 500;
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  width: 100%;
-  margin-top: var(--space-2);
-}
-
-.btn-delete-entry:hover {
-  color: var(--destructive);
-  border-color: rgba(239, 68, 68, 0.3);
-  background: var(--destructive-muted);
-}
-
-/* ── Progress Screen ── */
-.progress-selector { margin-bottom: var(--space-4); }
-
-.progress-dropdown {
-  width: 100%;
-  height: 48px;
-  padding: 0 var(--space-4);
-  background: var(--surface-raised);
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-md);
-  font-size: var(--text-base);
-  color: var(--text-primary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.progress-dropdown svg { width: 20px; height: 20px; color: var(--text-muted); }
-
-.time-pills {
-  display: flex;
-  gap: var(--space-2);
-  margin-bottom: var(--space-6);
-}
-
-.time-pill {
-  flex: 1;
-  height: 36px;
-  background: var(--surface-raised);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-full);
-  font-size: var(--text-sm);
-  color: var(--text-secondary);
-  transition: all var(--transition-fast);
-}
-
-.time-pill:hover { border-color: var(--border-default); }
-.time-pill.active { background: var(--accent-muted); border-color: var(--accent); color: var(--accent); }
-
-.chart-container {
-  background: var(--surface-raised);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: var(--space-4);
-  margin-bottom: var(--space-6);
-}
-
-.chart-wrapper { height: 200px; position: relative; }
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-3);
-}
-
-.stat-card {
-  background: var(--surface-raised);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: var(--space-4);
-}
-
-.stat-card__label {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  margin-bottom: var(--space-2);
-}
-
-.stat-card__value {
-  font-family: var(--font-mono);
-  font-size: var(--text-xl);
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-
-.stat-card__unit { font-size: var(--text-sm); color: var(--text-secondary); font-weight: 400; }
-.stat-card__change { font-size: var(--text-xs); margin-top: var(--space-1); }
-.stat-card__change--positive { color: var(--accent); }
-.stat-card__change--negative { color: var(--destructive); }
-
-/* ── Settings ── */
-.settings-group { margin-bottom: var(--space-8); }
-
-.settings-group__title {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  margin-bottom: var(--space-3);
-}
-
-.settings-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--space-4);
-  background: var(--surface-raised);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  margin-bottom: var(--space-2);
-}
-
-.settings-row:last-child { margin-bottom: 0; }
-.settings-row__label { font-size: var(--text-base); }
-.settings-row__value { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--text-secondary); }
-.settings-row--button { cursor: pointer; transition: background var(--transition-fast); }
-.settings-row--button:hover { background: var(--surface-overlay); }
-.settings-row--destructive { border-color: rgba(239, 68, 68, 0.2); }
-.settings-row--destructive .settings-row__label { color: var(--destructive); }
-
-.data-info-banner {
-  background: var(--surface-inset);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: var(--space-4);
-  margin-bottom: var(--space-3);
-}
-
-.data-info-banner__title {
-  font-size: var(--text-sm);
-  font-weight: 500;
-  color: var(--text-secondary);
-  margin-bottom: var(--space-2);
-}
-
-.data-info-banner__body {
-  font-size: var(--text-xs);
-  color: var(--text-muted);
-  line-height: 1.6;
-}
-
-.data-info-banner__body strong {
-  color: var(--text-secondary);
-  font-weight: 500;
-}
-
-.toggle-pills {
-  display: flex;
-  background: var(--surface-inset);
-  border-radius: var(--radius-full);
-  padding: 3px;
-  border: 1px solid var(--border-default);
-}
-
-.toggle-pill {
-  padding: var(--space-2) var(--space-4);
-  font-size: var(--text-sm);
-  color: var(--text-muted);
-  border-radius: var(--radius-full);
-  transition: all var(--transition-fast);
-}
-
-.toggle-pill.active { background: var(--surface-overlay); color: var(--text-primary); }
-
-.increment-pills { display: flex; gap: var(--space-2); }
-
-.increment-pill {
-  padding: var(--space-2) var(--space-3);
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  background: var(--surface-inset);
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-sm);
-  color: var(--text-secondary);
-  transition: all var(--transition-fast);
-}
-
-.increment-pill.active { background: var(--accent-muted); border-color: var(--accent); color: var(--accent); }
-
-/* ── Modal ── */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  z-index: 200;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity var(--transition-normal);
-}
-
-.modal-overlay.active { opacity: 1; pointer-events: auto; }
-
-.modal {
-  background: var(--surface-raised);
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-  padding: var(--space-6);
-  padding-bottom: calc(var(--space-6) + env(safe-area-inset-bottom));
-  width: 100%;
-  max-width: 480px;
-  transform: translateY(100%);
-  transition: transform var(--transition-normal) var(--ease-out);
-}
-
-.modal-overlay.active .modal { transform: translateY(0); }
-.modal__header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-6); }
-.modal__title { font-size: var(--text-lg); font-weight: 600; }
-.modal__close { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); }
-.modal__close svg { width: 20px; height: 20px; }
-.modal__actions { display: flex; flex-direction: column; gap: var(--space-3); margin-top: var(--space-6); }
-
-/* ── Empty State ── */
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-12) var(--space-4);
-  text-align: center;
-}
-
-.empty-state__icon { font-size: 48px; margin-bottom: var(--space-4); opacity: 0.5; }
-.empty-state__title { font-size: var(--text-lg); font-weight: 500; margin-bottom: var(--space-2); }
-.empty-state__text { font-size: var(--text-sm); color: var(--text-secondary); max-width: 280px; }
-
-/* ── Search ── */
-.search-wrapper { position: relative; margin-bottom: var(--space-6); }
-
-.search-icon {
-  position: absolute;
-  left: var(--space-4);
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-muted);
-  width: 20px;
-  height: 20px;
-}
-
-/* ── Dropdown ── */
-.dropdown-menu {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: var(--surface-overlay);
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-md);
-  margin-top: var(--space-2);
-  max-height: 300px;
-  overflow-y: auto;
-  z-index: 50;
-  display: none;
-}
-
-.dropdown-menu.active { display: block; }
-
-.dropdown-item {
-  padding: var(--space-3) var(--space-4);
-  font-size: var(--text-base);
-  cursor: pointer;
-  transition: background var(--transition-fast);
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-.dropdown-item:hover { background: var(--surface-raised); }
-.dropdown-item.selected { color: var(--accent); }
-
-/* ── Utilities ── */
-.mt-auto { margin-top: auto; }
-.mb-4 { margin-bottom: var(--space-4); }
-.mb-6 { margin-bottom: var(--space-6); }
-.gap-3 { gap: var(--space-3); }
-.flex { display: flex; }
-.flex-1 { flex: 1; }
-.items-center { align-items: center; }
-.justify-between { justify-content: space-between; }
-.text-muted { color: var(--text-muted); }
-.text-secondary { color: var(--text-secondary); }
-.font-mono { font-family: var(--font-mono); }
-.tabular-nums { font-variant-numeric: tabular-nums; }
-
-/* ── Animations ── */
-@keyframes slideUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-.slide-up { animation: slideUp var(--transition-normal) var(--ease-out); }
-
-@keyframes starPop {
-  0%   { transform: scale(1); }
-  40%  { transform: scale(1.4); }
-  70%  { transform: scale(0.85); }
-  100% { transform: scale(1); }
-}
-
-.star-btn.popping { animation: starPop 300ms var(--ease-out); }
-
-/* ── Responsive ── */
-@media (max-width: 359px) {
-  :root {
-    --text-base: 15px;
-    --text-lg: 16px;
-    --text-xl: 20px;
-  }
-  .set-row { gap: 6px; padding: var(--space-2); }
-  .set-row__btn { width: 36px; height: 40px; font-size: 18px; }
-  .set-row__input { height: 40px; font-size: var(--text-base); }
-  .set-row__input--reps { width: 48px; }
-  .stats-grid { gap: var(--space-2); }
-  .stat-card { padding: var(--space-3); }
-  .stat-card__value { font-size: var(--text-lg); }
-  .page-title { font-size: var(--text-lg); }
-}
-
-@media (min-width: 414px) {
-  .set-row__input--reps { width: 64px; }
-  .stats-grid { grid-template-columns: repeat(4, 1fr); }
-}
-
-@media (min-width: 768px) {
-  #app { max-width: 480px; margin: 0 auto; }
-  .bottom-nav {
-    max-width: 480px;
-    left: 50%;
-    transform: translateX(-50%);
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-    border: 1px solid var(--border-subtle);
-    border-bottom: none;
-  }
+  --surface-base:#0a0a0a;--surface-raised:#141414;--surface-overlay:#1a1a1a;--surface-inset:#050505;
+  --text-primary:#fafafa;--text-secondary:#a1a1a1;--text-muted:#525252;--text-faint:#3f3f3f;
+  --border-default:rgba(255,255,255,0.08);--border-subtle:rgba(255,255,255,0.04);--border-strong:rgba(255,255,255,0.12);
+  --accent:#22c55e;--accent-hover:#16a34a;--accent-muted:rgba(34,197,94,0.15);
+  --destructive:#ef4444;--destructive-muted:rgba(239,68,68,0.15);
+  --warning:#f59e0b;--warning-muted:rgba(245,158,11,0.15);
+  --star-active:#f59e0b;--star-inactive:#525252;
+  --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--space-8:32px;--space-10:40px;--space-12:48px;
+  --radius-sm:6px;--radius-md:10px;--radius-lg:16px;--radius-full:9999px;
+  --font-sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --font-mono:'DM Mono','SF Mono','Fira Code','Consolas',monospace;
+  --text-xs:12px;--text-sm:14px;--text-base:16px;--text-lg:18px;--text-xl:24px;--text-2xl:32px;
+  --transition-fast:150ms ease-out;--transition-normal:200ms ease-out;--ease-out:cubic-bezier(0.16,1,0.3,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-family:var(--font-sans);background:var(--surface-base);color:var(--text-primary);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;overscroll-behavior:none;}
+body{min-height:100vh;min-height:100dvh;overflow-x:hidden;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+input{font-family:inherit;color:inherit;}
+a{color:inherit;text-decoration:none;}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+#app{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top);padding-bottom:calc(72px + env(safe-area-inset-bottom));}
+.screen{flex:1;padding:var(--space-4);display:none;flex-direction:column;animation:fadeIn var(--transition-normal) var(--ease-out);}
+.screen.active{display:flex;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* Nav */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--surface-base);border-top:1px solid var(--border-default);display:flex;justify-content:space-around;align-items:flex-start;padding-top:var(--space-2);padding-bottom:calc(var(--space-2) + env(safe-area-inset-bottom));z-index:100;}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:var(--space-1);color:var(--text-muted);font-size:var(--text-xs);padding:var(--space-2) var(--space-4);transition:color var(--transition-fast);min-width:64px;}
+.nav-item svg{width:24px;height:24px;stroke-width:1.5;}
+.nav-item.active{color:var(--accent);}
+.nav-item:active{transform:scale(0.95);}
+
+/* Buttons */
+.btn-primary{height:48px;padding:0 var(--space-6);background:var(--accent);color:#000;font-size:var(--text-base);font-weight:600;border-radius:var(--radius-md);transition:background var(--transition-fast);display:flex;align-items:center;justify-content:center;gap:var(--space-2);width:100%;}
+.btn-primary:hover{background:var(--accent-hover);}
+.btn-primary:active{transform:scale(0.98);}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed;}
+.btn-secondary{min-width:48px;height:48px;padding:0 var(--space-4);background:var(--surface-raised);color:var(--text-primary);font-size:var(--text-base);font-weight:500;border:1px solid var(--border-default);border-radius:var(--radius-sm);transition:all var(--transition-fast);display:flex;align-items:center;justify-content:center;gap:var(--space-2);}
+.btn-secondary:hover{background:var(--surface-overlay);border-color:var(--border-strong);}
+.btn-secondary:active{transform:scale(0.96);}
+.btn-ghost{height:40px;padding:0 var(--space-3);background:transparent;color:var(--text-secondary);font-size:var(--text-sm);font-weight:500;border-radius:var(--radius-sm);transition:all var(--transition-fast);display:flex;align-items:center;gap:var(--space-2);}
+.btn-ghost:hover{color:var(--text-primary);background:var(--surface-raised);}
+.btn-destructive{height:48px;padding:0 var(--space-6);background:var(--destructive-muted);color:var(--destructive);font-size:var(--text-base);font-weight:500;border:1px solid rgba(239,68,68,0.2);border-radius:var(--radius-md);width:100%;}
+.btn-destructive:hover{background:rgba(239,68,68,0.25);}
+
+/* Inputs */
+.input{width:100%;height:48px;padding:0 var(--space-4);background:var(--surface-inset);color:var(--text-primary);font-size:var(--text-lg);font-family:var(--font-mono);font-variant-numeric:tabular-nums;border:1px solid var(--border-default);border-radius:var(--radius-md);transition:border-color var(--transition-fast);}
+.input:focus{outline:none;border-color:var(--accent);}
+.input::placeholder{color:var(--text-muted);}
+.input-search{background:var(--surface-raised);font-family:var(--font-sans);font-size:var(--text-base);padding-left:var(--space-10);}
+
+/* Layout */
+.section-header{font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:0.5px;text-transform:uppercase;color:var(--text-muted);font-weight:500;margin-bottom:var(--space-3);}
+.page-header{display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-6);}
+.page-title{font-size:var(--text-xl);font-weight:600;letter-spacing:-0.5px;}
+
+/* Favourites */
+.fav-section{margin-bottom:var(--space-5);}
+.fav-carousel{display:flex;gap:var(--space-2);overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:var(--space-1);scrollbar-width:none;}
+.fav-carousel::-webkit-scrollbar{display:none;}
+.fav-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--space-1);flex-shrink:0;width:76px;min-height:72px;padding:var(--space-2);background:var(--surface-raised);border:1px solid var(--border-subtle);border-radius:var(--radius-md);cursor:pointer;scroll-snap-align:start;transition:all var(--transition-fast);text-align:center;}
+.fav-card:hover{border-color:var(--border-default);background:var(--surface-overlay);}
+.fav-card:active{transform:scale(0.95);}
+.fav-card__icon{font-size:20px;line-height:1;}
+.fav-card__name{font-size:10px;color:var(--text-secondary);line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+
+/* Log items */
+.today-log{display:flex;flex-direction:column;gap:var(--space-2);}
+.log-item{display:flex;align-items:center;justify-content:space-between;padding:var(--space-3) var(--space-4);background:var(--surface-raised);border:1px solid var(--border-subtle);border-radius:var(--radius-md);cursor:pointer;transition:all var(--transition-fast);}
+.log-item:hover{border-color:var(--border-default);background:var(--surface-overlay);}
+.log-item:active{transform:scale(0.98);}
+.log-item--latest{cursor:pointer;opacity:0.75;}
+.log-item--latest:hover{opacity:1;border-color:var(--border-default);background:var(--surface-overlay);}
+.log-item__left{display:flex;align-items:center;gap:var(--space-3);}
+.log-item__icon{font-size:20px;}
+.log-item__name{font-size:var(--text-sm);font-weight:500;}
+.log-item__sets{font-size:var(--text-xs);color:var(--text-secondary);margin-top:2px;}
+.log-item__volume{font-family:var(--font-mono);font-size:var(--text-sm);color:var(--text-secondary);font-variant-numeric:tabular-nums;}
+.log-item__edit-hint{font-size:10px;color:var(--text-muted);margin-top:2px;}
+.latest-section{margin-top:var(--space-5);}
+.latest-section-header{display:flex;align-items:baseline;gap:var(--space-2);margin-bottom:var(--space-3);}
+.latest-date{font-family:var(--font-mono);font-size:10px;color:var(--text-faint);letter-spacing:0.3px;}
+
+/* Exercise list */
+.exercise-list{display:flex;flex-direction:column;}
+.exercise-group{margin-bottom:var(--space-6);}
+.exercise-group__title{font-family:var(--font-mono);font-size:10px;letter-spacing:0.5px;text-transform:uppercase;color:var(--text-muted);padding:var(--space-2) 0;border-bottom:1px solid var(--border-subtle);margin-bottom:var(--space-2);}
+.exercise-group__title--favourites{color:var(--star-active);}
+.exercise-row{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) 0;border-radius:var(--radius-sm);cursor:pointer;transition:background var(--transition-fast);width:100%;}
+.exercise-row:hover{background:var(--surface-raised);}
+.exercise-row:active{background:var(--surface-overlay);}
+.exercise-row__icon{font-size:20px;width:32px;text-align:center;}
+.exercise-row__name{font-size:var(--text-base);flex:1;min-width:0;}
+.exercise-row__check{color:var(--accent);opacity:0;}
+.exercise-row.selected .exercise-row__check{opacity:1;}
+.star-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;flex-shrink:0;margin-left:auto;border-radius:var(--radius-sm);color:var(--star-inactive);transition:color var(--transition-fast),transform var(--transition-fast);position:relative;z-index:2;}
+.star-btn svg{width:18px;height:18px;stroke-width:1.5;fill:none;stroke:currentColor;transition:fill var(--transition-fast),stroke var(--transition-fast);}
+.star-btn.active{color:var(--star-active);}
+.star-btn.active svg{fill:var(--star-active);stroke:var(--star-active);}
+.star-btn:hover{color:var(--star-active);transform:scale(1.15);}
+.star-btn:active{transform:scale(0.9);}
+
+/* Log screen */
+.log-header{display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-6);}
+.log-header__icon{font-size:28px;}
+.log-header__title{font-size:var(--text-lg);font-weight:600;flex:1;}
+.log-header__edit{color:var(--text-muted);padding:var(--space-2);}
+.log-header__edit svg{width:18px;height:18px;}
+.edit-mode-badge{display:inline-flex;align-items:center;gap:var(--space-1);padding:3px var(--space-2);background:var(--warning-muted);border:1px solid rgba(245,158,11,0.25);border-radius:var(--radius-full);font-size:10px;font-family:var(--font-mono);color:var(--warning);letter-spacing:0.3px;margin-bottom:var(--space-4);}
+.last-session{background:var(--surface-raised);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:var(--space-3) var(--space-4);margin-bottom:var(--space-6);}
+.last-session__header{display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-3);}
+.last-session__label{font-family:var(--font-mono);font-size:9px;letter-spacing:0.6px;text-transform:uppercase;color:var(--text-muted);}
+.last-session__date{font-size:var(--text-xs);color:var(--text-faint);}
+.last-session__track{display:flex;flex-direction:column;padding-left:22px;position:relative;}
+.last-session__track::before{content:'';position:absolute;left:5px;top:8px;bottom:8px;width:1px;background:var(--border-default);}
+.last-session__set{position:relative;display:flex;align-items:baseline;gap:var(--space-2);padding:4px 0;}
+.last-session__dot{position:absolute;left:-18px;top:50%;transform:translateY(-50%);width:6px;height:6px;border-radius:50%;background:var(--text-faint);border:1.5px solid var(--surface-raised);}
+.last-session__dot--best{background:var(--accent);}
+.last-session__set-label{font-family:var(--font-mono);font-size:10px;color:var(--text-muted);width:16px;flex-shrink:0;}
+.last-session__set-row{flex:1;display:flex;align-items:baseline;}
+.last-session__weight{font-family:var(--font-mono);font-size:var(--text-sm);font-weight:500;color:var(--text-secondary);font-variant-numeric:tabular-nums;}
+.last-session__weight--best{color:var(--text-primary);}
+.last-session__unit{font-size:10px;color:var(--text-muted);margin-left:2px;}
+.last-session__spacer{flex:1;}
+.last-session__reps{font-family:var(--font-mono);font-size:var(--text-sm);font-weight:500;color:var(--text-muted);font-variant-numeric:tabular-nums;}
+.last-session__reps--best{color:var(--text-primary);}
+.last-session__reps-unit{font-size:10px;color:var(--text-muted);margin-left:2px;}
+.last-session__footer{margin-top:var(--space-2);padding-top:var(--space-2);border-top:1px solid var(--border-subtle);font-size:var(--text-xs);color:var(--text-muted);}
+.last-session__footer span{color:var(--accent);}
+.set-list{display:flex;flex-direction:column;gap:var(--space-3);margin-bottom:var(--space-4);}
+.set-row{display:flex;align-items:center;gap:8px;padding:12px;background:var(--surface-raised);border:1px solid var(--border-subtle);border-radius:var(--radius-md);}
+.set-row__number{width:24px;font-family:var(--font-mono);font-size:var(--text-sm);color:var(--text-muted);text-align:center;flex-shrink:0;}
+.set-row__btn{width:44px;height:44px;background:var(--surface-overlay);border:1px solid var(--border-default);border-radius:var(--radius-sm);font-size:20px;font-weight:500;color:var(--text-primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.set-row__btn:active{background:var(--surface-raised);transform:scale(0.95);}
+.set-row__input{height:44px;background:var(--surface-inset);border:1px solid var(--border-default);border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:var(--text-lg);font-variant-numeric:tabular-nums;text-align:center;color:var(--text-primary);-moz-appearance:textfield;}
+.set-row__input::-webkit-outer-spin-button,.set-row__input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+.set-row__input:focus{outline:none;border-color:var(--accent);}
+.set-row__input::placeholder{color:var(--text-muted);}
+.set-row__input--weight{flex:1;min-width:60px;}
+.set-row__input--reps{width:56px;flex-shrink:0;}
+.set-row__labels{display:flex;align-items:center;gap:8px;padding:0 var(--space-3);margin-bottom:var(--space-2);}
+.set-row__label{font-family:var(--font-mono);font-size:10px;letter-spacing:0.5px;text-transform:uppercase;color:var(--text-muted);}
+.set-row__label--set{width:24px;}
+.set-row__label--weight{flex:1;text-align:center;margin-left:52px;}
+.set-row__label--reps{width:56px;text-align:center;}
+.set-actions{display:flex;flex-direction:column;gap:var(--space-2);margin-bottom:var(--space-6);}
+.btn-delete-entry{height:40px;padding:0 var(--space-4);background:transparent;color:var(--text-muted);font-size:var(--text-sm);font-weight:500;border:1px solid var(--border-subtle);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;gap:var(--space-2);width:100%;margin-top:var(--space-2);transition:all var(--transition-fast);}
+.btn-delete-entry:hover{color:var(--destructive);border-color:rgba(239,68,68,0.3);background:var(--destructive-muted);}
+
+/* Progress */
+.progress-selector{margin-bottom:var(--space-4);position:relative;}
+.progress-dropdown{width:100%;height:48px;padding:0 var(--space-4);background:var(--surface-raised);border:1px solid var(--border-default);border-radius:var(--radius-md);font-size:var(--text-base);color:var(--text-primary);display:flex;align-items:center;justify-content:space-between;}
+.progress-dropdown svg{width:20px;height:20px;color:var(--text-muted);}
+.time-pills{display:flex;gap:var(--space-2);margin-bottom:var(--space-4);}
+.time-pill{flex:1;height:36px;background:var(--surface-raised);border:1px solid var(--border-subtle);border-radius:var(--radius-full);font-size:var(--text-sm);color:var(--text-secondary);transition:all var(--transition-fast);}
+.time-pill:hover{border-color:var(--border-default);}
+.time-pill.active{background:var(--accent-muted);border-color:var(--accent);color:var(--accent);}
+.chart-container{background:var(--surface-raised);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:var(--space-4);margin-bottom:var(--space-4);}
+.chart-wrapper{height:200px;position:relative;}
+
+/* 1RM explanation */
+.orm-explanation{background:var(--surface-raised);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:var(--space-4);margin-bottom:var(--space-4);}
+.orm-explanation__label{font-family:var(--font-mono);font-size:9px;letter-spacing:0.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:var(--space-2);}
+.orm-explanation__text{font-size:var(--text-sm);color:var(--text-secondary);line-height:1.65;}
+.orm-explanation__text strong{color:var(--text-primary);font-weight:500;}
+.orm-trend{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-mono);font-size:11px;font-weight:500;padding:2px 8px;border-radius:var(--radius-full);margin-top:var(--space-2);}
+.orm-trend--up{background:var(--accent-muted);color:var(--accent);}
+.orm-trend--flat{background:var(--surface-overlay);color:var(--text-muted);}
+.orm-trend--down{background:var(--destructive-muted);color:var(--destructive);}
+
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--space-3);}
+.stat-card{background:var(--surface-raised);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:var(--space-4);}
+.stat-card__label{font-family:var(--font-mono);font-size:10px;letter-spacing:0.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:var(--space-2);}
+.stat-card__value{font-family:var(--font-mono);font-size:var(--text-xl);font-weight:600;font-variant-numeric:tabular-nums;}
+.stat-card__unit{font-size:var(--text-sm);color:var(--text-secondary);font-weight:400;}
+.stat-card__change--positive{color:var(--accent);}
+.stat-card__change--negative{color:var(--destructive);}
+
+/* Settings */
+.settings-group{margin-bottom:var(--space-8);}
+.settings-group__title{font-family:var(--font-mono);font-size:10px;letter-spacing:0.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:var(--space-3);}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:var(--space-4);background:var(--surface-raised);border:1px solid var(--border-subtle);border-radius:var(--radius-md);margin-bottom:var(--space-2);}
+.settings-row:last-child{margin-bottom:0;}
+.settings-row__label{font-size:var(--text-base);}
+.settings-row--button{cursor:pointer;transition:background var(--transition-fast);}
+.settings-row--button:hover{background:var(--surface-overlay);}
+.settings-row--destructive{border-color:rgba(239,68,68,0.2);}
+.settings-row--destructive .settings-row__label{color:var(--destructive);}
+.data-info-banner{background:var(--surface-inset);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:var(--space-4);margin-bottom:var(--space-3);}
+.data-info-banner__title{font-size:var(--text-sm);font-weight:500;color:var(--text-secondary);margin-bottom:var(--space-2);}
+.data-info-banner__body{font-size:var(--text-xs);color:var(--text-muted);line-height:1.6;}
+.data-info-banner__body strong{color:var(--text-secondary);font-weight:500;}
+.toggle-pills{display:flex;background:var(--surface-inset);border-radius:var(--radius-full);padding:3px;border:1px solid var(--border-default);}
+.toggle-pill{padding:var(--space-2) var(--space-4);font-size:var(--text-sm);color:var(--text-muted);border-radius:var(--radius-full);transition:all var(--transition-fast);}
+.toggle-pill.active{background:var(--surface-overlay);color:var(--text-primary);}
+.increment-pills{display:flex;gap:var(--space-2);}
+.increment-pill{padding:var(--space-2) var(--space-3);font-family:var(--font-mono);font-size:var(--text-sm);background:var(--surface-inset);border:1px solid var(--border-default);border-radius:var(--radius-sm);color:var(--text-secondary);transition:all var(--transition-fast);}
+.increment-pill.active{background:var(--accent-muted);border-color:var(--accent);color:var(--accent);}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);display:flex;align-items:flex-end;justify-content:center;z-index:200;opacity:0;pointer-events:none;transition:opacity var(--transition-normal);}
+.modal-overlay.active{opacity:1;pointer-events:auto;}
+.modal{background:var(--surface-raised);border-radius:var(--radius-lg) var(--radius-lg) 0 0;padding:var(--space-6);padding-bottom:calc(var(--space-6) + env(safe-area-inset-bottom));width:100%;max-width:480px;transform:translateY(100%);transition:transform var(--transition-normal) var(--ease-out);}
+.modal-overlay.active .modal{transform:translateY(0);}
+.modal__header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-6);}
+.modal__title{font-size:var(--text-lg);font-weight:600;}
+.modal__close{width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);}
+.modal__close svg{width:20px;height:20px;}
+.modal__actions{display:flex;flex-direction:column;gap:var(--space-3);margin-top:var(--space-6);}
+
+/* Empty */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:var(--space-12) var(--space-4);text-align:center;}
+.empty-state__icon{font-size:48px;margin-bottom:var(--space-4);opacity:0.5;}
+.empty-state__title{font-size:var(--text-lg);font-weight:500;margin-bottom:var(--space-2);}
+.empty-state__text{font-size:var(--text-sm);color:var(--text-secondary);max-width:280px;}
+
+/* Search + dropdown */
+.search-wrapper{position:relative;margin-bottom:var(--space-6);}
+.search-icon{position:absolute;left:var(--space-4);top:50%;transform:translateY(-50%);color:var(--text-muted);width:20px;height:20px;}
+.dropdown-menu{position:absolute;top:100%;left:0;right:0;background:var(--surface-overlay);border:1px solid var(--border-default);border-radius:var(--radius-md);margin-top:var(--space-2);max-height:300px;overflow-y:auto;z-index:50;display:none;}
+.dropdown-menu.active{display:block;}
+.dropdown-item{padding:var(--space-3) var(--space-4);font-size:var(--text-base);cursor:pointer;transition:background var(--transition-fast);display:flex;align-items:center;gap:var(--space-3);}
+.dropdown-item:hover{background:var(--surface-raised);}
+.dropdown-item.selected{color:var(--accent);}
+
+/* Utils */
+.mt-auto{margin-top:auto;}
+.mb-4{margin-bottom:var(--space-4);}
+.mb-6{margin-bottom:var(--space-6);}
+
+@keyframes starPop{0%{transform:scale(1);}40%{transform:scale(1.4);}70%{transform:scale(0.85);}100%{transform:scale(1);}}
+.star-btn.popping{animation:starPop 300ms var(--ease-out);}
+
+@media(max-width:359px){
+  :root{--text-base:15px;--text-lg:16px;--text-xl:20px;}
+  .set-row{gap:6px;padding:var(--space-2);}
+  .set-row__btn{width:36px;height:40px;font-size:18px;}
+  .set-row__input{height:40px;font-size:var(--text-base);}
+  .set-row__input--reps{width:48px;}
+  .stats-grid{gap:var(--space-2);}
+  .stat-card{padding:var(--space-3);}
+  .stat-card__value{font-size:var(--text-lg);}
+}
+@media(min-width:414px){
+  .set-row__input--reps{width:64px;}
+  .stats-grid{grid-template-columns:repeat(4,1fr);}
+}
+@media(min-width:768px){
+  #app{max-width:480px;margin:0 auto;}
+  .bottom-nav{max-width:480px;left:50%;transform:translateX(-50%);border-radius:var(--radius-lg) var(--radius-lg) 0 0;border:1px solid var(--border-subtle);border-bottom:none;}
 }
 </style>
 </head>
 <body>
-
 <div id="app">
-  <!-- HOME SCREEN -->
-  <div id="screen-home" class="screen active">
-    <div class="page-header">
-      <h1 class="page-title">Gym Tracker</h1>
-    </div>
 
+  <!-- HOME -->
+  <div id="screen-home" class="screen active">
+    <div class="page-header"><h1 class="page-title">Gym Tracker</h1></div>
     <button class="btn-primary mb-6" onclick="navigateTo('select')">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M12 5v14M5 12h14"/>
-      </svg>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
       Log Exercise
     </button>
-
-    <!-- Favourites Carousel -->
-    <section id="fav-section" class="fav-section" style="display: none;">
+    <section id="fav-section" class="fav-section" style="display:none;">
       <div class="section-header">My Favourites</div>
       <div class="fav-carousel" id="fav-carousel"></div>
     </section>
-
-    <!-- Today's Log -->
     <section id="today-section">
       <div class="section-header">Today</div>
       <div class="today-log" id="today-log"></div>
     </section>
-
-    <!-- Latest (past) section — always shown if data exists -->
-    <section id="latest-section" class="latest-section" style="display: none;">
+    <section id="latest-section" class="latest-section" style="display:none;">
       <div class="latest-section-header">
-        <span class="section-header" style="margin-bottom: 0;">Latest</span>
+        <span class="section-header" style="margin-bottom:0;">Latest</span>
         <span class="latest-date" id="latest-date"></span>
       </div>
       <div class="today-log" id="latest-log"></div>
     </section>
   </div>
 
-  <!-- EXERCISE SELECTION SCREEN -->
+  <!-- SELECT -->
   <div id="screen-select" class="screen">
     <div class="page-header">
       <button class="btn-ghost" onclick="navigateTo('home')">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M19 12H5M12 19l-7-7 7-7"/>
-        </svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         Back
       </button>
     </div>
-
     <div class="search-wrapper">
-      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="11" cy="11" r="8"/>
-        <path d="m21 21-4.35-4.35"/>
-      </svg>
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       <input type="text" class="input input-search" id="exercise-search" placeholder="Search exercises..." oninput="filterExercises(this.value)">
     </div>
-
     <div class="exercise-list" id="exercise-list"></div>
-
     <button class="btn-secondary mt-auto" onclick="showCustomExerciseModal()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M12 5v14M5 12h14"/>
-      </svg>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
       Add Custom Exercise
     </button>
   </div>
 
-  <!-- LOG SETS SCREEN -->
+  <!-- LOG -->
   <div id="screen-log" class="screen">
     <div class="log-header">
-      <button class="btn-ghost" onclick="navigateTo('home')" style="margin-right: auto;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M19 12H5M12 19l-7-7 7-7"/>
-        </svg>
+      <button class="btn-ghost" onclick="navigateTo('home')" style="margin-right:auto;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
       </button>
       <span class="log-header__icon" id="log-exercise-icon">🏋️</span>
       <span class="log-header__title" id="log-exercise-name">Exercise</span>
       <button class="log-header__edit" onclick="showRenameModal()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
       </button>
     </div>
-
-    <!-- Edit mode badge — only shown when editing an existing log -->
-    <div id="edit-mode-badge" class="edit-mode-badge" style="display: none;">
-      ✎ Editing today's entry
-    </div>
-
-    <div class="last-session" id="last-session" style="display: none;">
+    <div id="edit-mode-badge" class="edit-mode-badge" style="display:none;">✎ Editing today's entry</div>
+    <div class="last-session" id="last-session" style="display:none;">
       <div class="last-session__header">
         <span class="last-session__label">Last Session</span>
         <span class="last-session__date" id="last-session-date"></span>
@@ -1269,153 +339,101 @@ a { color: inherit; text-decoration: none; }
       <div class="last-session__track" id="last-session-track"></div>
       <div class="last-session__footer" id="last-session-footer"></div>
     </div>
-
     <div class="set-row__labels">
       <span class="set-row__label set-row__label--set">Set</span>
       <span class="set-row__label set-row__label--weight">Weight (kg)</span>
       <span class="set-row__label set-row__label--reps">Reps</span>
     </div>
-
     <div class="set-list" id="set-list"></div>
-
-    <!-- Add / Remove set buttons -->
     <div class="set-actions">
       <button class="btn-secondary" onclick="addSet()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 5v14M5 12h14"/>
-        </svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
         Add Set
       </button>
-      <button class="btn-secondary" id="remove-set-btn" onclick="removeLastSet()" style="display: none;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M5 12h14"/>
-        </svg>
+      <button class="btn-secondary" id="remove-set-btn" onclick="removeLastSet()" style="display:none;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/></svg>
         Remove Last Set
       </button>
-      <!-- Delete entry — only shown in edit mode -->
-      <button class="btn-delete-entry" id="delete-entry-btn" style="display: none;" onclick="confirmDeleteEntry()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-        </svg>
+      <button class="btn-delete-entry" id="delete-entry-btn" style="display:none;" onclick="confirmDeleteEntry()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
         Delete This Entry
       </button>
     </div>
-
-    <button class="btn-primary mt-auto" onclick="saveLog()" id="save-btn">
-      Save Workout
-    </button>
+    <button class="btn-primary mt-auto" onclick="saveLog()">Save Workout</button>
   </div>
 
-  <!-- PROGRESS SCREEN -->
+  <!-- PROGRESS -->
   <div id="screen-progress" class="screen">
-    <div class="page-header">
-      <h1 class="page-title">Progress</h1>
-    </div>
-
-    <div class="progress-selector" style="position: relative;">
+    <div class="page-header"><h1 class="page-title">Progress</h1></div>
+    <div class="progress-selector">
       <button class="progress-dropdown" id="progress-dropdown" onclick="toggleExerciseDropdown()">
         <span id="selected-exercise-name">Select Exercise</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="m6 9 6 6 6-6"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
       </button>
       <div class="dropdown-menu" id="exercise-dropdown"></div>
     </div>
-
     <div class="time-pills">
-      <button class="time-pill active" data-range="30" onclick="setTimeRange(30, this)">30 days</button>
-      <button class="time-pill" data-range="90" onclick="setTimeRange(90, this)">90 days</button>
-      <button class="time-pill" data-range="0" onclick="setTimeRange(0, this)">All time</button>
+      <button class="time-pill active" data-range="30" onclick="setTimeRange(30,this)">30 days</button>
+      <button class="time-pill" data-range="90" onclick="setTimeRange(90,this)">90 days</button>
+      <button class="time-pill" data-range="0" onclick="setTimeRange(0,this)">All time</button>
     </div>
-
     <div class="chart-container">
-      <div class="chart-wrapper">
-        <canvas id="progress-chart"></canvas>
-      </div>
+      <div class="chart-wrapper"><canvas id="progress-chart"></canvas></div>
     </div>
-
-    <div class="stats-grid" id="progress-stats">
-      <div class="stat-card">
-        <div class="stat-card__label">Start 1RM</div>
-        <div class="stat-card__value" id="stat-start">--<span class="stat-card__unit">kg</span></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-card__label">Current 1RM</div>
-        <div class="stat-card__value" id="stat-current">--<span class="stat-card__unit">kg</span></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-card__label">Progress</div>
-        <div class="stat-card__value" id="stat-progress">--%</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-card__label">Best Set</div>
-        <div class="stat-card__value" id="stat-1rm">--<span class="stat-card__unit">kg</span></div>
-      </div>
+    <div class="orm-explanation" id="orm-explanation" style="display:none;">
+      <div class="orm-explanation__label">What am I looking at?</div>
+      <div class="orm-explanation__text" id="orm-explanation-text"></div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-card__label">Start 1RM</div><div class="stat-card__value" id="stat-start">--<span class="stat-card__unit">kg</span></div></div>
+      <div class="stat-card"><div class="stat-card__label">Current 1RM</div><div class="stat-card__value" id="stat-current">--<span class="stat-card__unit">kg</span></div></div>
+      <div class="stat-card"><div class="stat-card__label">Progress</div><div class="stat-card__value" id="stat-progress">--%</div></div>
+      <div class="stat-card"><div class="stat-card__label">Best Set</div><div class="stat-card__value" id="stat-1rm">--<span class="stat-card__unit">kg</span></div></div>
     </div>
   </div>
 
-  <!-- SETTINGS SCREEN -->
+  <!-- SETTINGS -->
   <div id="screen-settings" class="screen">
-    <div class="page-header">
-      <h1 class="page-title">Settings</h1>
-    </div>
-
+    <div class="page-header"><h1 class="page-title">Settings</h1></div>
     <div class="settings-group">
       <div class="settings-group__title">Preferences</div>
-      
       <div class="settings-row">
         <span class="settings-row__label">Weight Increment</span>
         <div class="increment-pills">
-          <button class="increment-pill" data-increment="1.25" onclick="setIncrement(1.25, this)">1.25</button>
-          <button class="increment-pill active" data-increment="2.5" onclick="setIncrement(2.5, this)">2.5</button>
-          <button class="increment-pill" data-increment="5" onclick="setIncrement(5, this)">5</button>
+          <button class="increment-pill" data-increment="1.25" onclick="setIncrement(1.25,this)">1.25</button>
+          <button class="increment-pill active" data-increment="2.5" onclick="setIncrement(2.5,this)">2.5</button>
+          <button class="increment-pill" data-increment="5" onclick="setIncrement(5,this)">5</button>
         </div>
       </div>
-      
       <div class="settings-row">
         <span class="settings-row__label">Weight Unit</span>
         <div class="toggle-pills">
-          <button class="toggle-pill active" data-unit="kg" onclick="setUnit('kg', this)">kg</button>
-          <button class="toggle-pill" data-unit="lbs" onclick="setUnit('lbs', this)">lbs</button>
+          <button class="toggle-pill active" data-unit="kg" onclick="setUnit('kg',this)">kg</button>
+          <button class="toggle-pill" data-unit="lbs" onclick="setUnit('lbs',this)">lbs</button>
         </div>
       </div>
     </div>
-
     <div class="settings-group">
       <div class="settings-group__title">Data</div>
-
       <div class="data-info-banner">
         <div class="data-info-banner__title">Where is my data stored?</div>
-        <div class="data-info-banner__body">
-          Your workout data is saved <strong>only on this device</strong>, in your browser's local storage. There is no account and no cloud backup — if you clear your browser data, history, or site cache, your logs will be permanently deleted.<br><br>
-          Use <strong>Export Data</strong> regularly to save a backup file. The export is a <strong>.json file</strong> containing all your logs, custom exercises, settings, and favourites. You can re-import it anytime using <strong>Import Data</strong> — it only accepts .json files exported from this app, and merges them with any existing data (nothing is overwritten).
-        </div>
+        <div class="data-info-banner__body">Your workout data is saved <strong>only on this device</strong>, in your browser's local storage. No account, no cloud backup — clearing browser data deletes your logs permanently.<br><br>Use <strong>Export Data</strong> regularly. The .json export contains all logs, exercises, settings, and favourites. Import merges without overwriting existing data.</div>
       </div>
-      
       <div class="settings-row settings-row--button" onclick="exportData()">
         <span class="settings-row__label">Export Data</span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--text-muted)">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
-        </svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-muted)"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
       </div>
-      
       <div class="settings-row settings-row--button" onclick="document.getElementById('import-input').click()">
         <span class="settings-row__label">Import Data</span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--text-muted)">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
-        </svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-muted)"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
         <input type="file" id="import-input" accept=".json" style="display:none" onchange="importData(event)">
       </div>
     </div>
-
     <div class="settings-group">
       <div class="settings-group__title">Danger Zone</div>
-      
       <div class="settings-row settings-row--button settings-row--destructive" onclick="confirmClearData()">
         <span class="settings-row__label">Clear All Data</span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--destructive)">
-          <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-        </svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--destructive)"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
       </div>
     </div>
   </div>
@@ -1424,985 +442,508 @@ a { color: inherit; text-decoration: none; }
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
   <button class="nav-item active" data-screen="home" onclick="navigateTo('home')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-      <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-      <polyline points="9 22 9 12 15 12 15 22"/>
-    </svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
     <span>Home</span>
   </button>
   <button class="nav-item" data-screen="progress" onclick="navigateTo('progress')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-      <line x1="12" y1="20" x2="12" y2="10"/>
-      <line x1="18" y1="20" x2="18" y2="4"/>
-      <line x1="6" y1="20" x2="6" y2="16"/>
-    </svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
     <span>Progress</span>
   </button>
   <button class="nav-item" data-screen="settings" onclick="navigateTo('settings')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-      <circle cx="12" cy="12" r="3"/>
-      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-    </svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     <span>Settings</span>
   </button>
 </nav>
 
-<!-- MODALS -->
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal" id="modal-content"></div>
 </div>
 
 <script>
-const STORAGE_KEYS = {
-  exercises: 'gym_exercises',
-  logs: 'gym_logs',
-  settings: 'gym_settings',
-  favourites: 'gym_favourites'
-};
+const STORAGE_KEYS={exercises:'gym_exercises',logs:'gym_logs',settings:'gym_settings',favourites:'gym_favourites'};
 
-const PRESET_EXERCISES = [
-  { id: "bench-press-flat-barbell", name: "Flat Barbell Bench Press", category: "chest", icon: "🏋️" },
-  { id: "incline-dumbbell-press", name: "Incline Dumbbell Press", category: "chest", icon: "🏋️" },
-  { id: "cable-fly", name: "Cable Fly / Pec Deck", category: "chest", icon: "🏋️" },
-  { id: "chest-press-machine", name: "Chest Press Machine", category: "chest", icon: "🏋️" },
-  { id: "lat-pulldown", name: "Lat Pulldown", category: "back", icon: "🔙" },
-  { id: "seated-cable-row", name: "Seated Cable Row", category: "back", icon: "🔙" },
-  { id: "barbell-row", name: "Barbell Row", category: "back", icon: "🔙" },
-  { id: "pull-up", name: "Pull-Up / Assisted Pull-Up", category: "back", icon: "🔙" },
-  { id: "overhead-press", name: "Overhead Press", category: "shoulders", icon: "🎯" },
-  { id: "lateral-raise", name: "Lateral Raise", category: "shoulders", icon: "🎯" },
-  { id: "face-pull", name: "Face Pull", category: "shoulders", icon: "🎯" },
-  { id: "shoulder-press-machine", name: "Shoulder Press Machine", category: "shoulders", icon: "🎯" },
-  { id: "barbell-curl", name: "Barbell Curl", category: "arms", icon: "💪" },
-  { id: "dumbbell-curl", name: "Dumbbell Curl", category: "arms", icon: "💪" },
-  { id: "tricep-pushdown", name: "Tricep Pushdown", category: "arms", icon: "💪" },
-  { id: "overhead-tricep-extension", name: "Overhead Tricep Extension", category: "arms", icon: "💪" },
-  { id: "barbell-squat", name: "Barbell Squat", category: "legs", icon: "🦵" },
-  { id: "leg-press", name: "Leg Press", category: "legs", icon: "🦵" },
-  { id: "romanian-deadlift", name: "Romanian Deadlift", category: "legs", icon: "🦵" },
-  { id: "leg-curl-machine", name: "Leg Curl Machine", category: "legs", icon: "🦵" },
-  { id: "leg-extension-machine", name: "Leg Extension Machine", category: "legs", icon: "🦵" },
-  { id: "calf-raise", name: "Calf Raise", category: "legs", icon: "🦵" },
-  { id: "walking-lunge", name: "Walking Lunge", category: "legs", icon: "🦵" },
-  { id: "hack-squat", name: "Hack Squat", category: "legs", icon: "🦵" },
-  { id: "bulgarian-split-squat", name: "Bulgarian Split Squat", category: "legs", icon: "🦵" },
-  { id: "deadlift", name: "Deadlift", category: "compound", icon: "⚡" },
-  { id: "cable-crunch", name: "Cable Crunch", category: "core", icon: "🎯" },
-  { id: "hanging-knee-raise", name: "Hanging Knee Raise", category: "core", icon: "🎯" },
-  { id: "plank", name: "Plank", category: "core", icon: "🎯" },
-  { id: "hip-thrust", name: "Hip Thrust", category: "glutes", icon: "🦵" },
-  { id: "glute-kickback-cable", name: "Cable Glute Kickback", category: "glutes", icon: "🦵" },
-  { id: "sumo-squat", name: "Sumo Squat / Goblet Squat", category: "glutes", icon: "🦵" }
+const PRESET_EXERCISES=[
+  // Chest
+  {id:"bench-press-flat-barbell",name:"Flat Barbell Bench Press",category:"chest",icon:"🏋️"},
+  {id:"incline-dumbbell-press",name:"Incline Dumbbell Press",category:"chest",icon:"🏋️"},
+  {id:"cable-fly",name:"Cable Fly / Pec Deck",category:"chest",icon:"🏋️"},
+  {id:"chest-press-machine",name:"Chest Press Machine",category:"chest",icon:"🏋️"},
+  {id:"dips-chest",name:"Dips (Chest-focused)",category:"chest",icon:"🏋️"},
+  // Back
+  {id:"lat-pulldown",name:"Lat Pulldown",category:"back",icon:"🔙"},
+  {id:"seated-cable-row",name:"Seated Cable Row",category:"back",icon:"🔙"},
+  {id:"barbell-row",name:"Barbell Row",category:"back",icon:"🔙"},
+  {id:"pull-up",name:"Pull-Up / Assisted Pull-Up",category:"back",icon:"🔙"},
+  {id:"chest-supported-row",name:"Chest-Supported Row",category:"back",icon:"🔙"},
+  // Shoulders
+  {id:"overhead-press",name:"Overhead Press",category:"shoulders",icon:"🎯"},
+  {id:"lateral-raise",name:"Lateral Raise",category:"shoulders",icon:"🎯"},
+  {id:"face-pull",name:"Face Pull",category:"shoulders",icon:"🎯"},
+  {id:"shoulder-press-machine",name:"Shoulder Press Machine",category:"shoulders",icon:"🎯"},
+  {id:"rear-delt-fly",name:"Rear Delt Fly / Reverse Pec Deck",category:"shoulders",icon:"🎯"},
+  // Arms
+  {id:"barbell-curl",name:"Barbell Curl",category:"arms",icon:"💪"},
+  {id:"dumbbell-curl",name:"Dumbbell Curl",category:"arms",icon:"💪"},
+  {id:"tricep-pushdown",name:"Tricep Pushdown",category:"arms",icon:"💪"},
+  {id:"overhead-tricep-extension",name:"Overhead Tricep Extension",category:"arms",icon:"💪"},
+  {id:"hammer-curl",name:"Hammer Curl",category:"arms",icon:"💪"},
+  // Legs
+  {id:"barbell-squat",name:"Barbell Squat",category:"legs",icon:"🦵"},
+  {id:"leg-press",name:"Leg Press",category:"legs",icon:"🦵"},
+  {id:"romanian-deadlift",name:"Romanian Deadlift",category:"legs",icon:"🦵"},
+  {id:"leg-curl-machine",name:"Leg Curl Machine",category:"legs",icon:"🦵"},
+  {id:"leg-extension-machine",name:"Leg Extension Machine",category:"legs",icon:"🦵"},
+  {id:"calf-raise",name:"Calf Raise",category:"legs",icon:"🦵"},
+  {id:"walking-lunge",name:"Walking Lunge",category:"legs",icon:"🦵"},
+  {id:"goblet-squat",name:"Goblet Squat",category:"legs",icon:"🦵"},
+  {id:"seated-calf-raise",name:"Seated Calf Raise",category:"legs",icon:"🦵"},
+  // Compound
+  {id:"deadlift",name:"Deadlift",category:"compound",icon:"⚡"},
+  {id:"power-clean",name:"Power Clean",category:"compound",icon:"⚡"},
+  {id:"farmers-carry",name:"Farmer's Carry",category:"compound",icon:"⚡"},
+  {id:"dips-compound",name:"Dips (Tricep-focused)",category:"compound",icon:"⚡"},
+  // Core
+  {id:"cable-crunch",name:"Cable Crunch",category:"core",icon:"🎯"},
+  {id:"hanging-knee-raise",name:"Hanging Knee Raise",category:"core",icon:"🎯"},
+  {id:"plank",name:"Plank",category:"core",icon:"🎯"},
+  {id:"decline-sit-up",name:"Decline Sit-Up",category:"core",icon:"🎯"},
+  {id:"russian-twist",name:"Russian Twist",category:"core",icon:"🎯"},
+  // Glutes
+  {id:"hip-thrust",name:"Hip Thrust",category:"glutes",icon:"🦵"},
+  {id:"glute-kickback-cable",name:"Cable Glute Kickback",category:"glutes",icon:"🦵"},
+  {id:"sumo-squat",name:"Sumo Squat",category:"glutes",icon:"🦵"},
+  {id:"smith-machine-hip-thrust",name:"Smith Machine Hip Thrust",category:"glutes",icon:"🦵"},
 ];
 
-const CATEGORY_ORDER = ['chest', 'back', 'shoulders', 'arms', 'legs', 'compound', 'core', 'glutes', 'custom'];
-const CATEGORY_LABELS = {
-  chest: 'Chest', back: 'Back', shoulders: 'Shoulders', arms: 'Arms',
-  legs: 'Legs', compound: 'Compound', core: 'Core', glutes: 'Glutes', custom: 'Custom'
-};
+const CATEGORY_ORDER=['chest','back','shoulders','arms','legs','compound','core','glutes','custom'];
+const CATEGORY_LABELS={chest:'Chest',back:'Back',shoulders:'Shoulders',arms:'Arms',legs:'Legs',compound:'Compound',core:'Core',glutes:'Glutes',custom:'Custom'};
 
-let state = {
-  exercises: [],
-  logs: [],
-  settings: { weightIncrement: 2.5, weightUnit: 'kg', theme: 'dark' },
-  favouriteIds: [],
-  currentExercise: null,
-  currentSets: [],
-  // Edit mode: null = new entry, string = log ID being edited
-  editingLogId: null,
-  selectedProgressExercise: null,
-  timeRange: 30,
-  chart: null
-};
+let state={exercises:[],logs:[],settings:{weightIncrement:2.5,weightUnit:'kg'},favouriteIds:[],currentExercise:null,currentSets:[],editingLogId:null,selectedProgressExercise:null,timeRange:30,chart:null};
 
-function init() {
-  loadData();
-  renderExerciseList();
-  renderHome();
-  updateProgressDropdown();
-  applySettings();
+function init(){loadData();renderExerciseList();renderHome();applySettings();}
+
+function loadData(){
+  try{
+    const se=localStorage.getItem(STORAGE_KEYS.exercises);
+    const sl=localStorage.getItem(STORAGE_KEYS.logs);
+    const ss=localStorage.getItem(STORAGE_KEYS.settings);
+    const sf=localStorage.getItem(STORAGE_KEYS.favourites);
+    const custom=se?JSON.parse(se).filter(e=>e.isCustom):[];
+    state.exercises=[...PRESET_EXERCISES.map(e=>({...e,isCustom:false,alias:null})),...custom];
+    if(se){const saved=JSON.parse(se);saved.forEach(s=>{const ex=state.exercises.find(e=>e.id===s.id);if(ex&&s.alias)ex.alias=s.alias;});}
+    state.logs=sl?JSON.parse(sl):[];
+    state.settings=ss?{...state.settings,...JSON.parse(ss)}:state.settings;
+    state.favouriteIds=sf?JSON.parse(sf):[];
+  }catch(e){console.error('loadData:',e);}
 }
 
-function loadData() {
-  try {
-    const savedExercises = localStorage.getItem(STORAGE_KEYS.exercises);
-    const savedLogs = localStorage.getItem(STORAGE_KEYS.logs);
-    const savedSettings = localStorage.getItem(STORAGE_KEYS.settings);
-    const savedFavourites = localStorage.getItem(STORAGE_KEYS.favourites);
-
-    const customExercises = savedExercises ? JSON.parse(savedExercises).filter(e => e.isCustom) : [];
-    state.exercises = [...PRESET_EXERCISES.map(e => ({...e, isCustom: false, alias: null})), ...customExercises];
-
-    if (savedExercises) {
-      const saved = JSON.parse(savedExercises);
-      saved.forEach(se => {
-        const ex = state.exercises.find(e => e.id === se.id);
-        if (ex && se.alias) ex.alias = se.alias;
-      });
-    }
-
-    state.logs = savedLogs ? JSON.parse(savedLogs) : [];
-    state.settings = savedSettings ? {...state.settings, ...JSON.parse(savedSettings)} : state.settings;
-    state.favouriteIds = savedFavourites ? JSON.parse(savedFavourites) : [];
-  } catch (e) {
-    console.error('Error loading data:', e);
-  }
+function saveData(){
+  try{
+    localStorage.setItem(STORAGE_KEYS.exercises,JSON.stringify(state.exercises));
+    localStorage.setItem(STORAGE_KEYS.logs,JSON.stringify(state.logs));
+    localStorage.setItem(STORAGE_KEYS.settings,JSON.stringify(state.settings));
+    localStorage.setItem(STORAGE_KEYS.favourites,JSON.stringify(state.favouriteIds));
+  }catch(e){alert('Unable to save. Storage may be full.');}
 }
 
-function saveData() {
-  try {
-    localStorage.setItem(STORAGE_KEYS.exercises, JSON.stringify(state.exercises));
-    localStorage.setItem(STORAGE_KEYS.logs, JSON.stringify(state.logs));
-    localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(state.settings));
-    localStorage.setItem(STORAGE_KEYS.favourites, JSON.stringify(state.favouriteIds));
-  } catch (e) {
-    console.error('Error saving data:', e);
-    alert('Unable to save data. Storage may be full.');
-  }
-}
-
-// ── Favourites ──
-function toggleFavourite(exerciseId, event) {
+function toggleFavourite(id,event){
   event.stopPropagation();
-  const idx = state.favouriteIds.indexOf(exerciseId);
-  if (idx === -1) {
-    state.favouriteIds.push(exerciseId);
-  } else {
-    state.favouriteIds.splice(idx, 1);
-  }
+  const idx=state.favouriteIds.indexOf(id);
+  if(idx===-1)state.favouriteIds.push(id);else state.favouriteIds.splice(idx,1);
   saveData();
-
-  const starBtn = document.querySelector(`.star-btn[data-id="${exerciseId}"]`);
-  if (starBtn) {
-    const isFav = state.favouriteIds.includes(exerciseId);
-    starBtn.classList.toggle('active', isFav);
-    starBtn.setAttribute('aria-label', isFav ? 'Remove from favourites' : 'Add to favourites');
-    starBtn.classList.add('popping');
-    starBtn.addEventListener('animationend', () => starBtn.classList.remove('popping'), { once: true });
-  }
-
-  const currentSearch = document.getElementById('exercise-search')?.value || '';
-  renderExerciseList(currentSearch);
+  const btn=document.querySelector(`.star-btn[data-id="${id}"]`);
+  if(btn){const f=state.favouriteIds.includes(id);btn.classList.toggle('active',f);btn.classList.add('popping');btn.addEventListener('animationend',()=>btn.classList.remove('popping'),{once:true});}
+  renderExerciseList(document.getElementById('exercise-search')?.value||'');
   renderFavouritesCarousel();
 }
 
-// ── Navigation ──
-function navigateTo(screenId) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+function navigateTo(screenId){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(`screen-${screenId}`).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const navItem = document.querySelector(`.nav-item[data-screen="${screenId}"]`);
-  if (navItem) navItem.classList.add('active');
-  if (screenId === 'home') {
-    // Clear edit state when going home
-    state.editingLogId = null;
-    renderHome();
-  }
-  else if (screenId === 'progress') renderProgressChart();
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const nav=document.querySelector(`.nav-item[data-screen="${screenId}"]`);
+  if(nav)nav.classList.add('active');
+  if(screenId==='home'){state.editingLogId=null;renderHome();}
+  else if(screenId==='progress'){autoSelectLastExercise();renderProgressChart();}
 }
 
-// ── Home ──
-function renderHome() {
-  renderFavouritesCarousel();
-  renderTodayLog();
-  renderLatestSection();
+// Auto-select most recently logged exercise on Progress tab
+function autoSelectLastExercise(){
+  if(state.logs.length===0)return;
+  const latest=state.logs.reduce((a,b)=>b.timestamp>a.timestamp?b:a,state.logs[0]);
+  if(!latest)return;
+  const exercise=state.exercises.find(e=>e.id===latest.exerciseId);
+  if(!exercise)return;
+  state.selectedProgressExercise=exercise;
+  const el=document.getElementById('selected-exercise-name');
+  if(el)el.textContent=exercise.alias||exercise.name;
 }
 
-function renderFavouritesCarousel() {
-  const section = document.getElementById('fav-section');
-  const carousel = document.getElementById('fav-carousel');
-  if (state.favouriteIds.length === 0) {
-    section.style.display = 'none';
-    return;
-  }
-  section.style.display = 'block';
-  const favExercises = state.favouriteIds
-    .map(id => state.exercises.find(e => e.id === id))
-    .filter(Boolean);
-  carousel.innerHTML = favExercises.map(ex => `
-    <div class="fav-card" onclick="quickLog('${ex.id}')" role="button" aria-label="Log ${ex.alias || ex.name}">
+function renderHome(){renderFavouritesCarousel();renderTodayLog();renderLatestSection();}
+
+function renderFavouritesCarousel(){
+  const sec=document.getElementById('fav-section');
+  const car=document.getElementById('fav-carousel');
+  if(state.favouriteIds.length===0){sec.style.display='none';return;}
+  sec.style.display='block';
+  car.innerHTML=state.favouriteIds.map(id=>state.exercises.find(e=>e.id===id)).filter(Boolean).map(ex=>`
+    <div class="fav-card" onclick="quickLog('${ex.id}')">
       <span class="fav-card__icon">${ex.icon}</span>
-      <span class="fav-card__name">${ex.alias || ex.name}</span>
-    </div>
-  `).join('');
+      <span class="fav-card__name">${ex.alias||ex.name}</span>
+    </div>`).join('');
 }
 
-function renderTodayLog() {
-  const container = document.getElementById('today-log');
-  const today = new Date().toISOString().split('T')[0];
-  const todayLogs = state.logs.filter(log => log.date === today);
-
-  if (todayLogs.length === 0) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-state__icon">🏋️</div>
-        <div class="empty-state__title">No exercises logged</div>
-        <div class="empty-state__text">Tap "Log Exercise" to start tracking your workout</div>
-      </div>
-    `;
-    return;
-  }
-
-  container.innerHTML = todayLogs.map(log => {
-    const exercise = state.exercises.find(e => e.id === log.exerciseId);
-    if (!exercise) return '';
-    const bestSet = log.sets.reduce((best, set) => set.weight > best.weight ? set : best, log.sets[0]);
-    const setsSummary = log.sets.map(s => `${s.weight}×${s.reps}`).join(', ');
-    return `
-      <div class="log-item" onclick="editTodayLog('${log.id}')" role="button" aria-label="Edit ${exercise.alias || exercise.name}">
-        <div class="log-item__left">
-          <span class="log-item__icon">${exercise.icon}</span>
-          <div>
-            <div class="log-item__name">${exercise.alias || exercise.name}</div>
-            <div class="log-item__sets">${log.sets.length} sets · ${setsSummary}</div>
-            <div class="log-item__edit-hint">Tap to edit</div>
-          </div>
-        </div>
-        <span class="log-item__volume">${bestSet.weight}${state.settings.weightUnit} × ${bestSet.reps}</span>
-      </div>
-    `;
+function renderTodayLog(){
+  const el=document.getElementById('today-log');
+  const today=new Date().toISOString().split('T')[0];
+  const logs=state.logs.filter(l=>l.date===today);
+  if(logs.length===0){el.innerHTML=`<div class="empty-state"><div class="empty-state__icon">🏋️</div><div class="empty-state__title">No exercises logged</div><div class="empty-state__text">Tap "Log Exercise" to start tracking your workout</div></div>`;return;}
+  el.innerHTML=logs.map(log=>{
+    const ex=state.exercises.find(e=>e.id===log.exerciseId);if(!ex)return'';
+    const best=log.sets.reduce((b,s)=>s.weight>b.weight?s:b,log.sets[0]);
+    return`<div class="log-item" onclick="editTodayLog('${log.id}')">
+      <div class="log-item__left"><span class="log-item__icon">${ex.icon}</span><div>
+        <div class="log-item__name">${ex.alias||ex.name}</div>
+        <div class="log-item__sets">${log.sets.length} sets · ${log.sets.map(s=>`${s.weight}×${s.reps}`).join(', ')}</div>
+        <div class="log-item__edit-hint">Tap to edit</div>
+      </div></div>
+      <span class="log-item__volume">${best.weight}${state.settings.weightUnit} × ${best.reps}</span>
+    </div>`;
   }).join('');
 }
 
-// ── Latest Section (past sessions, read-only display, tap to start new today entry) ──
-function renderLatestSection() {
-  const section = document.getElementById('latest-section');
-  const container = document.getElementById('latest-log');
-  const dateEl = document.getElementById('latest-date');
-
-  const today = new Date().toISOString().split('T')[0];
-
-  // Find the most recent date that is not today
-  const pastDates = [...new Set(
-    state.logs
-      .filter(log => log.date !== today)
-      .map(log => log.date)
-  )].sort((a, b) => b.localeCompare(a));
-
-  if (pastDates.length === 0) {
-    section.style.display = 'none';
-    return;
-  }
-
-  const latestDate = pastDates[0];
-  const latestLogs = state.logs.filter(log => log.date === latestDate);
-
-  if (latestLogs.length === 0) {
-    section.style.display = 'none';
-    return;
-  }
-
-  // Format date nicely
-  const dateObj = new Date(latestDate + 'T00:00:00');
-  const formatted = dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-  dateEl.textContent = formatted;
-
-  container.innerHTML = latestLogs.map(log => {
-    const exercise = state.exercises.find(e => e.id === log.exerciseId);
-    if (!exercise) return '';
-    const bestSet = log.sets.reduce((best, set) => set.weight > best.weight ? set : best, log.sets[0]);
-    const setsSummary = log.sets.map(s => `${s.weight}×${s.reps}`).join(', ');
-    return `
-      <div class="log-item log-item--latest" onclick="quickLog('${exercise.id}')" role="button" aria-label="Log ${exercise.alias || exercise.name} again">
-        <div class="log-item__left">
-          <span class="log-item__icon">${exercise.icon}</span>
-          <div>
-            <div class="log-item__name">${exercise.alias || exercise.name}</div>
-            <div class="log-item__sets">${log.sets.length} sets · ${setsSummary}</div>
-            <div class="log-item__edit-hint">Tap to log again today</div>
-          </div>
-        </div>
-        <span class="log-item__volume">${bestSet.weight}${state.settings.weightUnit} × ${bestSet.reps}</span>
-      </div>
-    `;
+function renderLatestSection(){
+  const sec=document.getElementById('latest-section');
+  const el=document.getElementById('latest-log');
+  const dateEl=document.getElementById('latest-date');
+  const today=new Date().toISOString().split('T')[0];
+  const pastDates=[...new Set(state.logs.filter(l=>l.date!==today).map(l=>l.date))].sort((a,b)=>b.localeCompare(a));
+  if(pastDates.length===0){sec.style.display='none';return;}
+  const latestDate=pastDates[0];
+  const logs=state.logs.filter(l=>l.date===latestDate);
+  if(logs.length===0){sec.style.display='none';return;}
+  dateEl.textContent=new Date(latestDate+'T00:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+  el.innerHTML=logs.map(log=>{
+    const ex=state.exercises.find(e=>e.id===log.exerciseId);if(!ex)return'';
+    const best=log.sets.reduce((b,s)=>s.weight>b.weight?s:b,log.sets[0]);
+    return`<div class="log-item log-item--latest" onclick="quickLog('${ex.id}')">
+      <div class="log-item__left"><span class="log-item__icon">${ex.icon}</span><div>
+        <div class="log-item__name">${ex.alias||ex.name}</div>
+        <div class="log-item__sets">${log.sets.length} sets · ${log.sets.map(s=>`${s.weight}×${s.reps}`).join(', ')}</div>
+        <div class="log-item__edit-hint">Tap to log again today</div>
+      </div></div>
+      <span class="log-item__volume">${best.weight}${state.settings.weightUnit} × ${best.reps}</span>
+    </div>`;
   }).join('');
-
-  section.style.display = 'block';
+  sec.style.display='block';
 }
 
-// ── Edit today's log entry ──
-function editTodayLog(logId) {
-  const log = state.logs.find(l => l.id === logId);
-  if (!log) return;
-  const exercise = state.exercises.find(e => e.id === log.exerciseId);
-  if (!exercise) return;
-
-  state.currentExercise = exercise;
-  state.currentSets = log.sets.map(s => ({...s}));
-  state.editingLogId = logId;
-
-  renderLogScreen();
-  navigateTo('log');
+function editTodayLog(logId){
+  const log=state.logs.find(l=>l.id===logId);if(!log)return;
+  const ex=state.exercises.find(e=>e.id===log.exerciseId);if(!ex)return;
+  state.currentExercise=ex;state.currentSets=log.sets.map(s=>({...s}));state.editingLogId=logId;
+  renderLogScreen();navigateTo('log');
 }
 
-// ── Exercise Selection ──
-function renderExerciseList(filter = '') {
-  const container = document.getElementById('exercise-list');
-  const filterLower = filter.toLowerCase();
-
-  const grouped = {};
-  state.exercises.forEach(ex => {
-    if (filter && !(ex.name.toLowerCase().includes(filterLower) || (ex.alias && ex.alias.toLowerCase().includes(filterLower)))) return;
-    const cat = ex.isCustom ? 'custom' : ex.category;
-    if (!grouped[cat]) grouped[cat] = [];
-    grouped[cat].push(ex);
+function renderExerciseList(filter=''){
+  const el=document.getElementById('exercise-list');
+  const fl=filter.toLowerCase();
+  const grouped={};
+  state.exercises.forEach(ex=>{
+    if(filter&&!(ex.name.toLowerCase().includes(fl)||(ex.alias&&ex.alias.toLowerCase().includes(fl))))return;
+    const cat=ex.isCustom?'custom':ex.category;
+    if(!grouped[cat])grouped[cat]=[];grouped[cat].push(ex);
   });
-
-  let html = '';
-
-  if (!filter && state.favouriteIds.length > 0) {
-    const favExercises = state.favouriteIds.map(id => state.exercises.find(e => e.id === id)).filter(Boolean);
-    if (favExercises.length > 0) {
-      html += `<div class="exercise-group">
-        <div class="exercise-group__title exercise-group__title--favourites">⭐ My Favourites</div>
-        ${favExercises.map(ex => exerciseRowHTML(ex)).join('')}
-      </div>`;
-    }
-  }
-
-  if (filter && state.favouriteIds.length > 0) {
-    const favMatches = state.favouriteIds
-      .map(id => state.exercises.find(e => e.id === id))
-      .filter(ex => ex && (ex.name.toLowerCase().includes(filterLower) || (ex.alias && ex.alias.toLowerCase().includes(filterLower))));
-    if (favMatches.length > 0) {
-      html += `<div class="exercise-group">
-        <div class="exercise-group__title exercise-group__title--favourites">⭐ My Favourites</div>
-        ${favMatches.map(ex => exerciseRowHTML(ex)).join('')}
-      </div>`;
-    }
-  }
-
-  CATEGORY_ORDER.forEach(cat => {
-    if (grouped[cat] && grouped[cat].length > 0) {
-      html += `<div class="exercise-group">
-        <div class="exercise-group__title">${CATEGORY_LABELS[cat]}</div>
-        ${grouped[cat].map(ex => exerciseRowHTML(ex)).join('')}
-      </div>`;
-    }
-  });
-
-  container.innerHTML = html;
+  let html='';
+  const favMatch=id=>{const ex=state.exercises.find(e=>e.id===id);return ex&&(!filter||ex.name.toLowerCase().includes(fl)||(ex.alias&&ex.alias.toLowerCase().includes(fl)));};
+  const favs=state.favouriteIds.filter(favMatch).map(id=>state.exercises.find(e=>e.id===id)).filter(Boolean);
+  if(favs.length>0)html+=`<div class="exercise-group"><div class="exercise-group__title exercise-group__title--favourites">⭐ My Favourites</div>${favs.map(ex=>rowHTML(ex)).join('')}</div>`;
+  CATEGORY_ORDER.forEach(cat=>{if(grouped[cat]?.length>0)html+=`<div class="exercise-group"><div class="exercise-group__title">${CATEGORY_LABELS[cat]}</div>${grouped[cat].map(ex=>rowHTML(ex)).join('')}</div>`;});
+  el.innerHTML=html;
 }
 
-function exerciseRowHTML(ex) {
-  const isFav = state.favouriteIds.includes(ex.id);
-  return `
-    <div class="exercise-row" onclick="selectExercise('${ex.id}')">
-      <span class="exercise-row__icon">${ex.icon}</span>
-      <span class="exercise-row__name">${ex.alias || ex.name}</span>
-      <button
-        class="star-btn ${isFav ? 'active' : ''}"
-        data-id="${ex.id}"
-        aria-label="${isFav ? 'Remove from favourites' : 'Add to favourites'}"
-        onclick="toggleFavourite('${ex.id}', event)"
-      >
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-        </svg>
-      </button>
-      <svg class="exercise-row__check" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <polyline points="20 6 9 17 4 12"/>
-      </svg>
-    </div>
-  `;
+function rowHTML(ex){
+  const f=state.favouriteIds.includes(ex.id);
+  return`<div class="exercise-row" onclick="selectExercise('${ex.id}')">
+    <span class="exercise-row__icon">${ex.icon}</span>
+    <span class="exercise-row__name">${ex.alias||ex.name}</span>
+    <button class="star-btn ${f?'active':''}" data-id="${ex.id}" onclick="toggleFavourite('${ex.id}',event)">
+      <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    </button>
+    <svg class="exercise-row__check" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+  </div>`;
 }
 
-function filterExercises(query) {
-  renderExerciseList(query);
+function filterExercises(q){renderExerciseList(q);}
+
+function selectExercise(id){
+  const ex=state.exercises.find(e=>e.id===id);if(!ex)return;
+  state.currentExercise=ex;state.editingLogId=null;
+  const last=getLastSession(id);
+  state.currentSets=last?last.sets.map(s=>({...s})):[{weight:0,reps:10}];
+  renderLogScreen();navigateTo('log');
 }
+function quickLog(id){selectExercise(id);}
 
-function selectExercise(exerciseId) {
-  const exercise = state.exercises.find(e => e.id === exerciseId);
-  if (!exercise) return;
-  state.currentExercise = exercise;
-  state.editingLogId = null; // always a new entry from selection screen
-  state.currentSets = [];
-  const lastSession = getLastSession(exerciseId);
-  if (lastSession) {
-    state.currentSets = lastSession.sets.map(s => ({...s}));
-  } else {
-    state.currentSets = [{ weight: 0, reps: 10 }];
-  }
-  renderLogScreen();
-  navigateTo('log');
-}
-
-function quickLog(exerciseId) {
-  selectExercise(exerciseId);
-}
-
-// ── Log Sets ──
-function renderLogScreen() {
-  const exercise = state.currentExercise;
-  if (!exercise) return;
-
-  document.getElementById('log-exercise-icon').textContent = exercise.icon;
-  document.getElementById('log-exercise-name').textContent = exercise.alias || exercise.name;
-
-  // Edit mode badge
-  const badge = document.getElementById('edit-mode-badge');
-  badge.style.display = state.editingLogId ? 'inline-flex' : 'none';
-
-  // Delete entry button — only in edit mode
-  const deleteBtn = document.getElementById('delete-entry-btn');
-  deleteBtn.style.display = state.editingLogId ? 'flex' : 'none';
-
-  // Last session panel — hide in edit mode (they're editing the current entry, not comparing)
-  const lastSessionEl = document.getElementById('last-session');
-
-  if (!state.editingLogId) {
-    const lastSession = getLastSession(exercise.id);
-    if (lastSession) {
-      const date = new Date(lastSession.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-      const bestSet = lastSession.sets.reduce((best, s) => {
-        const e1rm = estimateOneRepMax(s.weight, s.reps);
-        return e1rm > estimateOneRepMax(best.weight, best.reps) ? s : best;
-      }, lastSession.sets[0]);
-
-      document.getElementById('last-session-date').textContent = date;
-
-      document.getElementById('last-session-track').innerHTML = lastSession.sets.map((s, i) => {
-        const isBest = s === bestSet;
-        return `
-          <div class="last-session__set">
-            <div class="last-session__dot ${isBest ? 'last-session__dot--best' : ''}"></div>
-            <span class="last-session__set-label">S${i + 1}</span>
-            <div class="last-session__set-row">
-              <span class="last-session__weight ${isBest ? 'last-session__weight--best' : ''}">${s.weight}</span>
-              <span class="last-session__unit">${state.settings.weightUnit}</span>
-              <span class="last-session__spacer"></span>
-              <span class="last-session__reps ${isBest ? 'last-session__reps--best' : ''}">${s.reps}</span>
-              <span class="last-session__reps-unit">reps</span>
-            </div>
+function renderLogScreen(){
+  const ex=state.currentExercise;if(!ex)return;
+  document.getElementById('log-exercise-icon').textContent=ex.icon;
+  document.getElementById('log-exercise-name').textContent=ex.alias||ex.name;
+  document.getElementById('edit-mode-badge').style.display=state.editingLogId?'inline-flex':'none';
+  document.getElementById('delete-entry-btn').style.display=state.editingLogId?'flex':'none';
+  const lsEl=document.getElementById('last-session');
+  if(!state.editingLogId){
+    const last=getLastSession(ex.id);
+    if(last){
+      const best=last.sets.reduce((b,s)=>estimateOneRepMax(s.weight,s.reps)>estimateOneRepMax(b.weight,b.reps)?s:b,last.sets[0]);
+      document.getElementById('last-session-date').textContent=new Date(last.date).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+      document.getElementById('last-session-track').innerHTML=last.sets.map((s,i)=>{
+        const ib=s===best;
+        return`<div class="last-session__set">
+          <div class="last-session__dot ${ib?'last-session__dot--best':''}"></div>
+          <span class="last-session__set-label">S${i+1}</span>
+          <div class="last-session__set-row">
+            <span class="last-session__weight ${ib?'last-session__weight--best':''}">${s.weight}</span>
+            <span class="last-session__unit">${state.settings.weightUnit}</span>
+            <span class="last-session__spacer"></span>
+            <span class="last-session__reps ${ib?'last-session__reps--best':''}">${s.reps}</span>
+            <span class="last-session__reps-unit">reps</span>
           </div>
-        `;
+        </div>`;
       }).join('');
+      document.getElementById('last-session-footer').innerHTML=`Beat your best: <span>${best.weight}${state.settings.weightUnit} × ${best.reps} reps</span>`;
+      lsEl.style.display='block';
+    }else{lsEl.style.display='none';}
+  }else{lsEl.style.display='none';}
+  renderSets();
+}
 
-      document.getElementById('last-session-footer').innerHTML =
-        `Beat your best: <span>${bestSet.weight}${state.settings.weightUnit} × ${bestSet.reps} reps</span>`;
+function renderSets(){
+  const el=document.getElementById('set-list');
+  const inc=state.settings.weightIncrement;
+  el.innerHTML=state.currentSets.map((s,i)=>`
+    <div class="set-row">
+      <span class="set-row__number">${i+1}</span>
+      <button class="set-row__btn" onclick="adjustWeight(${i},-${inc})">−</button>
+      <input type="number" class="set-row__input set-row__input--weight" value="${s.weight>0?s.weight:''}" placeholder="0" inputmode="decimal" onfocus="selectAllOnFocus(this)" onchange="updateWeight(${i},this.value)" onblur="commitWeight(${i},this)">
+      <button class="set-row__btn" onclick="adjustWeight(${i},${inc})">+</button>
+      <input type="number" class="set-row__input set-row__input--reps" value="${s.reps>0?s.reps:''}" placeholder="0" inputmode="numeric" onfocus="selectAllOnFocus(this)" onchange="updateReps(${i},this.value)" onblur="commitReps(${i},this)">
+    </div>`).join('');
+  document.getElementById('remove-set-btn').style.display=state.currentSets.length>1?'flex':'none';
+}
 
-      lastSessionEl.style.display = 'block';
-    } else {
-      lastSessionEl.style.display = 'none';
-    }
-  } else {
-    lastSessionEl.style.display = 'none';
+function selectAllOnFocus(input){setTimeout(()=>input.select(),0);}
+function addSet(){const l=state.currentSets[state.currentSets.length-1]||{weight:0,reps:10};state.currentSets.push({weight:l.weight,reps:l.reps});renderSets();}
+function removeLastSet(){if(state.currentSets.length<=1)return;state.currentSets.pop();renderSets();}
+function adjustWeight(i,d){state.currentSets[i].weight=Math.max(0,parseFloat(state.currentSets[i].weight||0)+d);renderSets();}
+function updateWeight(i,v){state.currentSets[i].weight=Math.max(0,parseFloat(v)||0);}
+function commitWeight(i,input){const v=parseFloat(input.value)||0;state.currentSets[i].weight=v;input.value=v>0?v:'';}
+function updateReps(i,v){state.currentSets[i].reps=Math.max(0,parseInt(v)||0);}
+function commitReps(i,input){const v=parseInt(input.value)||0;state.currentSets[i].reps=v;input.value=v>0?v:'';}
+
+function saveLog(){
+  if(!state.currentExercise||state.currentSets.length===0)return;
+  const valid=state.currentSets.filter(s=>s.weight>0||s.reps>0);
+  if(valid.length===0){alert('Please add at least one set with weight or reps.');return;}
+  if(state.editingLogId){
+    const idx=state.logs.findIndex(l=>l.id===state.editingLogId);
+    if(idx!==-1)state.logs[idx].sets=valid;
+  }else{
+    const now=new Date();
+    state.logs.push({id:`log_${now.getTime()}`,date:now.toISOString().split('T')[0],timestamp:now.getTime(),exerciseId:state.currentExercise.id,sets:valid});
   }
-
-  renderSets();
+  saveData();state.currentExercise=null;state.currentSets=[];state.editingLogId=null;navigateTo('home');
 }
 
-function renderSets() {
-  const container = document.getElementById('set-list');
-  const increment = state.settings.weightIncrement;
-  container.innerHTML = state.currentSets.map((set, index) => {
-    const weightVal = set.weight > 0 ? set.weight : '';
-    const repsVal   = set.reps > 0   ? set.reps   : '';
-    return `
-      <div class="set-row" data-index="${index}">
-        <span class="set-row__number">${index + 1}</span>
-        <button class="set-row__btn" onclick="adjustWeight(${index}, -${increment})">−</button>
-        <input type="number" class="set-row__input set-row__input--weight" value="${weightVal}" placeholder="0" inputmode="decimal" onfocus="selectAllOnFocus(this)" onchange="updateWeight(${index}, this.value)" onblur="commitWeight(${index}, this)">
-        <button class="set-row__btn" onclick="adjustWeight(${index}, ${increment})">+</button>
-        <input type="number" class="set-row__input set-row__input--reps" value="${repsVal}" placeholder="0" inputmode="numeric" onfocus="selectAllOnFocus(this)" onchange="updateReps(${index}, this.value)" onblur="commitReps(${index}, this)">
-      </div>
-    `;
-  }).join('');
-
-  // Show/hide Remove Last Set button — always hide when only 1 set remains
-  const removeBtn = document.getElementById('remove-set-btn');
-  removeBtn.style.display = state.currentSets.length > 1 ? 'flex' : 'none';
+function confirmDeleteEntry(){
+  const log=state.logs.find(l=>l.id===state.editingLogId);
+  const ex=log?state.exercises.find(e=>e.id===log.exerciseId):null;
+  showModal(`<div class="modal__header"><h2 class="modal__title">Delete Entry?</h2><button class="modal__close" onclick="hideModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+    <p style="color:var(--text-secondary);font-size:var(--text-sm);line-height:1.6;margin-bottom:var(--space-2);">Permanently delete the entry for <strong style="color:var(--text-primary)">${ex?ex.alias||ex.name:'this entry'}</strong>. Cannot be undone.</p>
+    <div class="modal__actions"><button class="btn-destructive" onclick="deleteEntry()">Delete Entry</button><button class="btn-secondary" onclick="hideModal()">Cancel</button></div>`);
 }
-
-function selectAllOnFocus(input) {
-  setTimeout(() => input.select(), 0);
-}
-
-function addSet() {
-  const lastSet = state.currentSets[state.currentSets.length - 1] || { weight: 0, reps: 10 };
-  state.currentSets.push({ weight: lastSet.weight, reps: lastSet.reps });
-  renderSets();
-}
-
-// ── Change 1: Remove Last Set ──
-function removeLastSet() {
-  if (state.currentSets.length <= 1) return; // never remove the last remaining set
-  state.currentSets.pop();
-  renderSets();
-}
-
-function adjustWeight(index, delta) {
-  state.currentSets[index].weight = Math.max(0, parseFloat(state.currentSets[index].weight || 0) + delta);
-  renderSets();
-}
-
-function updateWeight(index, value) {
-  state.currentSets[index].weight = Math.max(0, parseFloat(value) || 0);
-}
-
-function commitWeight(index, input) {
-  const val = parseFloat(input.value) || 0;
-  state.currentSets[index].weight = val;
-  input.value = val > 0 ? val : '';
-}
-
-function updateReps(index, value) {
-  state.currentSets[index].reps = Math.max(0, parseInt(value) || 0);
-}
-
-function commitReps(index, input) {
-  const val = parseInt(input.value) || 0;
-  state.currentSets[index].reps = val;
-  input.value = val > 0 ? val : '';
-}
-
-// ── Save: handles both new entry and edit mode ──
-function saveLog() {
-  if (!state.currentExercise || state.currentSets.length === 0) return;
-  const validSets = state.currentSets.filter(s => s.weight > 0 || s.reps > 0);
-  if (validSets.length === 0) {
-    alert('Please add at least one set with weight or reps.');
-    return;
-  }
-
-  if (state.editingLogId) {
-    // Edit mode: overwrite existing log, preserve original date and timestamp
-    const logIndex = state.logs.findIndex(l => l.id === state.editingLogId);
-    if (logIndex !== -1) {
-      state.logs[logIndex].sets = validSets;
-    }
-  } else {
-    // New entry
-    const now = new Date();
-    const log = {
-      id: `log_${now.getTime()}`,
-      date: now.toISOString().split('T')[0],
-      timestamp: now.getTime(),
-      exerciseId: state.currentExercise.id,
-      sets: validSets
-    };
-    state.logs.push(log);
-  }
-
-  saveData();
-  state.currentExercise = null;
-  state.currentSets = [];
-  state.editingLogId = null;
-  navigateTo('home');
-}
-
-// ── Change 3: Delete entry with confirmation modal ──
-function confirmDeleteEntry() {
-  if (!state.editingLogId) return;
-  const log = state.logs.find(l => l.id === state.editingLogId);
-  const exercise = log ? state.exercises.find(e => e.id === log.exerciseId) : null;
-  const name = exercise ? (exercise.alias || exercise.name) : 'this entry';
-
-  showModal(`
-    <div class="modal__header">
-      <h2 class="modal__title">Delete Entry?</h2>
-      <button class="modal__close" onclick="hideModal()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
-      </button>
-    </div>
-    <p style="color: var(--text-secondary); font-size: var(--text-sm); line-height: 1.6; margin-bottom: var(--space-2);">
-      This will permanently delete the logged entry for <strong style="color: var(--text-primary);">${name}</strong>. This cannot be undone.
-    </p>
-    <div class="modal__actions">
-      <button class="btn-destructive" onclick="deleteEntry()">Delete Entry</button>
-      <button class="btn-secondary" onclick="hideModal()">Cancel</button>
-    </div>
-  `);
-}
-
-function deleteEntry() {
-  if (!state.editingLogId) return;
-  state.logs = state.logs.filter(l => l.id !== state.editingLogId);
-  saveData();
-  hideModal();
-  state.currentExercise = null;
-  state.currentSets = [];
-  state.editingLogId = null;
-  navigateTo('home');
+function deleteEntry(){
+  state.logs=state.logs.filter(l=>l.id!==state.editingLogId);saveData();hideModal();
+  state.currentExercise=null;state.currentSets=[];state.editingLogId=null;navigateTo('home');
 }
 
 // ── Progress ──
-function updateProgressDropdown() {
-  const dropdown = document.getElementById('exercise-dropdown');
-  const exercisesWithLogs = state.exercises.filter(ex => state.logs.some(log => log.exerciseId === ex.id));
-  if (exercisesWithLogs.length === 0) {
-    dropdown.innerHTML = '<div class="dropdown-item" style="color: var(--text-muted)">No logged exercises yet</div>';
-    return;
-  }
-  dropdown.innerHTML = exercisesWithLogs.map(ex => `
-    <div class="dropdown-item ${state.selectedProgressExercise?.id === ex.id ? 'selected' : ''}" onclick="selectProgressExercise('${ex.id}')">
-      <span>${ex.icon}</span>
-      <span>${ex.alias || ex.name}</span>
-    </div>
-  `).join('');
-  if (!state.selectedProgressExercise && exercisesWithLogs.length > 0) {
-    selectProgressExercise(exercisesWithLogs[0].id);
-  }
+function updateProgressDropdown(){
+  const el=document.getElementById('exercise-dropdown');
+  const exercisesWithLogs=state.exercises.filter(ex=>state.logs.some(l=>l.exerciseId===ex.id));
+  if(exercisesWithLogs.length===0){el.innerHTML='<div class="dropdown-item" style="color:var(--text-muted)">No logged exercises yet</div>';return;}
+  el.innerHTML=exercisesWithLogs.map(ex=>`<div class="dropdown-item ${state.selectedProgressExercise?.id===ex.id?'selected':''}" onclick="selectProgressExercise('${ex.id}')"><span>${ex.icon}</span><span>${ex.alias||ex.name}</span></div>`).join('');
 }
 
-function toggleExerciseDropdown() {
-  document.getElementById('exercise-dropdown').classList.toggle('active');
-}
+function toggleExerciseDropdown(){updateProgressDropdown();document.getElementById('exercise-dropdown').classList.toggle('active');}
 
-function selectProgressExercise(exerciseId) {
-  const exercise = state.exercises.find(e => e.id === exerciseId);
-  if (!exercise) return;
-  state.selectedProgressExercise = exercise;
-  document.getElementById('selected-exercise-name').textContent = exercise.alias || exercise.name;
+function selectProgressExercise(id){
+  const ex=state.exercises.find(e=>e.id===id);if(!ex)return;
+  state.selectedProgressExercise=ex;
+  document.getElementById('selected-exercise-name').textContent=ex.alias||ex.name;
   document.getElementById('exercise-dropdown').classList.remove('active');
   renderProgressChart();
 }
 
-function setTimeRange(days, btn) {
-  state.timeRange = days;
-  document.querySelectorAll('.time-pill').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
+function setTimeRange(days,btn){
+  state.timeRange=days;
+  document.querySelectorAll('.time-pill').forEach(p=>p.classList.remove('active'));btn.classList.add('active');
   renderProgressChart();
 }
 
-// ── Change 5: 1RM-based progress chart ──
-function renderProgressChart() {
+// Dynamic 1RM explanation — 4 states
+function render1RMExplanation(logs,sessionBest1RMs,unit){
+  const el=document.getElementById('orm-explanation');
+  const textEl=document.getElementById('orm-explanation-text');
+  if(!logs||logs.length===0){el.style.display='none';return;}
+  const allSets=logs.flatMap(l=>l.sets);
+  const bestSet=allSets.reduce((b,s)=>estimateOneRepMax(s.weight,s.reps)>estimateOneRepMax(b.weight,b.reps)?s:b,allSets[0]);
+  const best1RM=estimateOneRepMax(bestSet.weight,bestSet.reps);
+  const first1RM=sessionBest1RMs[0];
+  const cur1RM=sessionBest1RMs[sessionBest1RMs.length-1];
+  const gainKg=cur1RM-first1RM;
+  const gainPct=first1RM>0?Math.round((gainKg/first1RM)*100):0;
+  let html='';
+  if(logs.length===1){
+    html=`Your best set is <strong>${bestSet.weight}${unit} × ${bestSet.reps} reps</strong>. Using the Epley formula, that estimates a <strong>1-rep max of ~${best1RM}${unit}</strong> — roughly the most you could lift for a single all-out rep. Keep logging to see your progress over time.`;
+  }else if(gainPct>3){
+    html=`Your estimated max has gone from <strong>${first1RM}${unit}</strong> to <strong>${cur1RM}${unit}</strong> — a gain of <strong>+${gainKg}${unit} (+${gainPct}%)</strong>. Your best set so far: <strong>${bestSet.weight}${unit} × ${bestSet.reps} reps</strong>. The chart uses the Epley formula so adding reps counts as progress, not just adding weight.<br><span class="orm-trend orm-trend--up">↑ +${gainKg}${unit} est. max</span>`;
+  }else if(gainPct<-3){
+    html=`Your estimated max has dipped from <strong>${first1RM}${unit}</strong> to <strong>${cur1RM}${unit}</strong> this period. Could be fatigue, deload, or fewer reps — the Epley formula counts reps, so logging fewer reps at the same weight shows a lower estimate. Best set logged: <strong>${bestSet.weight}${unit} × ${bestSet.reps} reps</strong>.<br><span class="orm-trend orm-trend--down">↓ ${gainKg}${unit} est. max</span>`;
+  }else{
+    html=`Your estimated max has stayed around <strong>${cur1RM}${unit}</strong> this period — holding steady. Try adding a rep or 2.5${unit} to your best set to nudge the number. Best set: <strong>${bestSet.weight}${unit} × ${bestSet.reps} reps</strong>.<br><span class="orm-trend orm-trend--flat">→ Holding steady</span>`;
+  }
+  el.style.display='block';textEl.innerHTML=html;
+}
+
+function renderProgressChart(){
   updateProgressDropdown();
-  if (!state.selectedProgressExercise) return;
-  const exerciseId = state.selectedProgressExercise.id;
-  let logs = state.logs.filter(log => log.exerciseId === exerciseId);
-  if (state.timeRange > 0) {
-    const cutoff = Date.now() - (state.timeRange * 24 * 60 * 60 * 1000);
-    logs = logs.filter(log => log.timestamp >= cutoff);
+  const unit=state.settings.weightUnit;
+  const ormEl=document.getElementById('orm-explanation');
+  if(!state.selectedProgressExercise){ormEl.style.display='none';return;}
+  let logs=state.logs.filter(l=>l.exerciseId===state.selectedProgressExercise.id);
+  if(state.timeRange>0){const cutoff=Date.now()-(state.timeRange*24*60*60*1000);logs=logs.filter(l=>l.timestamp>=cutoff);}
+  logs.sort((a,b)=>a.timestamp-b.timestamp);
+  if(logs.length===0){
+    ['stat-start','stat-current'].forEach(id=>document.getElementById(id).innerHTML=`--<span class="stat-card__unit">${unit}</span>`);
+    document.getElementById('stat-progress').textContent='--%';
+    document.getElementById('stat-1rm').innerHTML=`--<span class="stat-card__unit">${unit}</span>`;
+    ormEl.style.display='none';
+    if(state.chart){state.chart.destroy();state.chart=null;}return;
   }
-  logs.sort((a, b) => a.timestamp - b.timestamp);
-
-  const unit = state.settings.weightUnit;
-
-  if (logs.length === 0) {
-    document.getElementById('stat-start').innerHTML = `--<span class="stat-card__unit">${unit}</span>`;
-    document.getElementById('stat-current').innerHTML = `--<span class="stat-card__unit">${unit}</span>`;
-    document.getElementById('stat-progress').textContent = '--%';
-    document.getElementById('stat-1rm').innerHTML = `--<span class="stat-card__unit">${unit}</span>`;
-    if (state.chart) { state.chart.destroy(); state.chart = null; }
-    return;
-  }
-
-  // Compute best estimated 1RM per session
-  const sessionBest1RMs = logs.map(log => {
-    return Math.max(...log.sets.map(s => estimateOneRepMax(s.weight, s.reps)));
+  const s1RMs=logs.map(l=>Math.max(...l.sets.map(s=>estimateOneRepMax(s.weight,s.reps))));
+  const first=s1RMs[0],cur=s1RMs[s1RMs.length-1];
+  const pct=first>0?Math.round(((cur-first)/first)*100):0;
+  const allSets=logs.flatMap(l=>l.sets);
+  const bestRaw=allSets.reduce((b,s)=>s.weight>b.weight?s:b,allSets[0]);
+  document.getElementById('stat-start').innerHTML=`${first}<span class="stat-card__unit">${unit}</span>`;
+  document.getElementById('stat-current').innerHTML=`${cur}<span class="stat-card__unit">${unit}</span>`;
+  document.getElementById('stat-progress').innerHTML=`${pct>=0?'+':''}${pct}%`;
+  document.getElementById('stat-progress').className=`stat-card__value ${pct>=0?'stat-card__change--positive':'stat-card__change--negative'}`;
+  document.getElementById('stat-1rm').innerHTML=`${bestRaw.weight}<span class="stat-card__unit">${unit}</span> <span style="font-size:var(--text-xs);color:var(--text-muted)">×${bestRaw.reps}</span>`;
+  const labels=logs.map(l=>new Date(l.date).toLocaleDateString('en-US',{month:'short',day:'numeric'}));
+  const ctx=document.getElementById('progress-chart').getContext('2d');
+  if(state.chart)state.chart.destroy();
+  state.chart=new Chart(ctx,{
+    type:'line',
+    data:{labels,datasets:[{data:s1RMs,borderColor:'#22c55e',backgroundColor:'rgba(34,197,94,0.1)',borderWidth:2,fill:true,tension:0.1,pointRadius:4,pointBackgroundColor:'#22c55e',pointBorderColor:'#22c55e',pointHoverRadius:6}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a1a1a',titleColor:'#fafafa',bodyColor:'#a1a1a1',borderColor:'rgba(255,255,255,0.08)',borderWidth:1,padding:12,cornerRadius:8,displayColors:false,callbacks:{label:c=>`Est. 1RM: ${c.raw} ${unit}`}}},scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#a1a1a1',font:{size:11}}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#a1a1a1',font:{size:11},callback:v=>`${v}${unit}`}}}}
   });
-
-  const first1RM = sessionBest1RMs[0];
-  const current1RM = sessionBest1RMs[sessionBest1RMs.length - 1];
-  const progressPercent = first1RM > 0 ? Math.round(((current1RM - first1RM) / first1RM) * 100) : 0;
-
-  // Best set across all time in range (raw weight × reps for display)
-  const allSets = logs.flatMap(log => log.sets);
-  const bestRawSet = allSets.reduce((best, s) => {
-    return s.weight > best.weight ? s : best;
-  }, allSets[0]);
-
-  document.getElementById('stat-start').innerHTML = `${first1RM}<span class="stat-card__unit">${unit}</span>`;
-  document.getElementById('stat-current').innerHTML = `${current1RM}<span class="stat-card__unit">${unit}</span>`;
-  document.getElementById('stat-progress').innerHTML = `${progressPercent >= 0 ? '+' : ''}${progressPercent}%`;
-  document.getElementById('stat-progress').className = `stat-card__value ${progressPercent >= 0 ? 'stat-card__change--positive' : 'stat-card__change--negative'}`;
-  document.getElementById('stat-1rm').innerHTML = `${bestRawSet.weight}<span class="stat-card__unit">${unit}</span> <span style="font-size:var(--text-xs);color:var(--text-muted)">×${bestRawSet.reps}</span>`;
-
-  const labels = logs.map(log => new Date(log.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
-
-  const ctx = document.getElementById('progress-chart').getContext('2d');
-  if (state.chart) state.chart.destroy();
-  state.chart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        data: sessionBest1RMs,
-        borderColor: '#22c55e',
-        backgroundColor: 'rgba(34, 197, 94, 0.1)',
-        borderWidth: 2,
-        fill: true,
-        tension: 0.1,
-        pointRadius: 4,
-        pointBackgroundColor: '#22c55e',
-        pointBorderColor: '#22c55e',
-        pointHoverRadius: 6
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#1a1a1a',
-          titleColor: '#fafafa',
-          bodyColor: '#a1a1a1',
-          borderColor: 'rgba(255,255,255,0.08)',
-          borderWidth: 1,
-          padding: 12,
-          cornerRadius: 8,
-          displayColors: false,
-          callbacks: {
-            label: (ctx) => `Est. 1RM: ${ctx.raw} ${unit}`
-          }
-        }
-      },
-      scales: {
-        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#a1a1a1', font: { size: 11 } } },
-        y: {
-          grid: { color: 'rgba(255,255,255,0.04)' },
-          ticks: { color: '#a1a1a1', font: { size: 11 }, callback: (val) => `${val}${unit}` }
-        }
-      }
-    }
-  });
+  render1RMExplanation(logs,s1RMs,unit);
 }
 
-// ── Settings ──
-function applySettings() {
-  document.querySelectorAll('.increment-pill').forEach(pill => {
-    pill.classList.toggle('active', parseFloat(pill.dataset.increment) === state.settings.weightIncrement);
-  });
-  document.querySelectorAll('.toggle-pill').forEach(pill => {
-    pill.classList.toggle('active', pill.dataset.unit === state.settings.weightUnit);
-  });
+// Settings
+function applySettings(){
+  document.querySelectorAll('.increment-pill').forEach(p=>p.classList.toggle('active',parseFloat(p.dataset.increment)===state.settings.weightIncrement));
+  document.querySelectorAll('.toggle-pill').forEach(p=>p.classList.toggle('active',p.dataset.unit===state.settings.weightUnit));
 }
+function setIncrement(v,btn){state.settings.weightIncrement=v;document.querySelectorAll('.increment-pill').forEach(p=>p.classList.remove('active'));btn.classList.add('active');saveData();}
+function setUnit(u,btn){state.settings.weightUnit=u;document.querySelectorAll('.toggle-pill').forEach(p=>p.classList.remove('active'));btn.classList.add('active');saveData();}
 
-function setIncrement(value, btn) {
-  state.settings.weightIncrement = value;
-  document.querySelectorAll('.increment-pill').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  saveData();
+function exportData(){
+  const data={exportVersion:1,exportDate:new Date().toISOString(),exercises:state.exercises.filter(e=>e.isCustom||e.alias),logs:state.logs,settings:state.settings,favourites:state.favouriteIds};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`gym-data-${new Date().toISOString().split('T')[0]}.json`;a.click();URL.revokeObjectURL(url);
 }
-
-function setUnit(unit, btn) {
-  state.settings.weightUnit = unit;
-  document.querySelectorAll('.toggle-pill').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  saveData();
-}
-
-function exportData() {
-  const data = {
-    exportVersion: 1,
-    exportDate: new Date().toISOString(),
-    exercises: state.exercises.filter(e => e.isCustom || e.alias),
-    logs: state.logs,
-    settings: state.settings,
-    favourites: state.favouriteIds
+function importData(event){
+  const file=event.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(data.exportVersion!==1){alert('Unsupported export version.');return;}
+      (data.exercises||[]).filter(e=>e.isCustom).forEach(ex=>{if(!state.exercises.find(e=>e.id===ex.id))state.exercises.push(ex);});
+      (data.exercises||[]).forEach(ex=>{const found=state.exercises.find(e=>e.id===ex.id);if(found&&ex.alias)found.alias=ex.alias;});
+      const ids=new Set(state.logs.map(l=>l.id));
+      (data.logs||[]).forEach(l=>{if(!ids.has(l.id))state.logs.push(l);});
+      state.settings={...state.settings,...(data.settings||{})};
+      if(data.favourites)state.favouriteIds=[...new Set([...state.favouriteIds,...data.favourites])];
+      saveData();alert('Imported successfully!');location.reload();
+    }catch(err){alert('Invalid file format.');}
   };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `gym-data-${new Date().toISOString().split('T')[0]}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
+  reader.readAsText(file);event.target.value='';
 }
 
-function importData(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    try {
-      const data = JSON.parse(e.target.result);
-      if (data.exportVersion !== 1) { alert('Unsupported export version.'); return; }
-      const customExercises = (data.exercises || []).filter(e => e.isCustom);
-      customExercises.forEach(ex => {
-        if (!state.exercises.find(e => e.id === ex.id)) state.exercises.push(ex);
-      });
-      (data.exercises || []).forEach(ex => {
-        const existing = state.exercises.find(e => e.id === ex.id);
-        if (existing && ex.alias) existing.alias = ex.alias;
-      });
-      const existingLogIds = new Set(state.logs.map(l => l.id));
-      (data.logs || []).forEach(log => {
-        if (!existingLogIds.has(log.id)) state.logs.push(log);
-      });
-      state.settings = { ...state.settings, ...(data.settings || {}) };
-      if (data.favourites) {
-        const merged = new Set([...state.favouriteIds, ...data.favourites]);
-        state.favouriteIds = [...merged];
-      }
-      saveData();
-      alert('Data imported successfully!');
-      location.reload();
-    } catch (err) {
-      alert('Invalid file format.');
-      console.error(err);
-    }
-  };
-  reader.readAsText(file);
-  event.target.value = '';
+function confirmClearData(){
+  showModal(`<div class="modal__header"><h2 class="modal__title">Clear All Data?</h2><button class="modal__close" onclick="hideModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+    <p style="color:var(--text-secondary);margin-bottom:var(--space-4);">Permanently deletes all exercises, logs, settings and favourites. Cannot be undone.</p>
+    <div class="modal__actions"><button class="btn-destructive" onclick="clearAllData()">Delete Everything</button><button class="btn-secondary" onclick="hideModal()">Cancel</button></div>`);
+}
+function clearAllData(){localStorage.clear();hideModal();location.reload();}
+
+function showModal(html){document.getElementById('modal-content').innerHTML=html;document.getElementById('modal-overlay').classList.add('active');}
+function hideModal(){document.getElementById('modal-overlay').classList.remove('active');}
+
+function showRenameModal(){
+  if(!state.currentExercise)return;
+  showModal(`<div class="modal__header"><h2 class="modal__title">Rename Exercise</h2><button class="modal__close" onclick="hideModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+    <input type="text" class="input" id="rename-input" value="${state.currentExercise.alias||state.currentExercise.name}" placeholder="Exercise name" style="margin-bottom:var(--space-4);">
+    <div class="modal__actions"><button class="btn-primary" onclick="saveRename()">Save</button>${state.currentExercise.alias?'<button class="btn-ghost" onclick="resetName()">Reset to default</button>':''}</div>`);
+  setTimeout(()=>document.getElementById('rename-input').focus(),100);
+}
+function saveRename(){
+  const name=document.getElementById('rename-input').value.trim();
+  if(name&&state.currentExercise){const ex=state.exercises.find(e=>e.id===state.currentExercise.id);if(ex){ex.alias=name===ex.name?null:name;state.currentExercise=ex;saveData();renderLogScreen();}}hideModal();
+}
+function resetName(){
+  if(state.currentExercise){const ex=state.exercises.find(e=>e.id===state.currentExercise.id);if(ex){ex.alias=null;state.currentExercise=ex;saveData();renderLogScreen();}}hideModal();
 }
 
-function confirmClearData() {
-  showModal(`
-    <div class="modal__header">
-      <h2 class="modal__title">Clear All Data?</h2>
-      <button class="modal__close" onclick="hideModal()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
-      </button>
+let selectedCategory='custom';
+function showCustomExerciseModal(){
+  showModal(`<div class="modal__header"><h2 class="modal__title">Add Custom Exercise</h2><button class="modal__close" onclick="hideModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+    <input type="text" class="input" id="custom-name-input" placeholder="Exercise name" style="margin-bottom:var(--space-3);">
+    <div class="section-header" style="margin-top:var(--space-4);">Category</div>
+    <div style="display:flex;flex-wrap:wrap;gap:var(--space-2);margin-bottom:var(--space-4);">
+      ${Object.entries(CATEGORY_LABELS).filter(([k])=>k!=='custom').map(([k,v])=>`<button class="increment-pill category-pill" data-category="${k}" onclick="selectCategory('${k}',this)">${v}</button>`).join('')}
     </div>
-    <p style="color: var(--text-secondary); margin-bottom: var(--space-4);">
-      This will permanently delete all your exercises, logs, settings and favourites. This action cannot be undone.
-    </p>
-    <div class="modal__actions">
-      <button class="btn-destructive" onclick="clearAllData()">Delete Everything</button>
-      <button class="btn-secondary" onclick="hideModal()">Cancel</button>
-    </div>
-  `);
+    <div class="modal__actions"><button class="btn-primary" onclick="saveCustomExercise()">Add Exercise</button></div>`);
+  setTimeout(()=>document.getElementById('custom-name-input').focus(),100);
+}
+function selectCategory(cat,btn){selectedCategory=cat;document.querySelectorAll('.category-pill').forEach(p=>p.classList.remove('active'));btn.classList.add('active');}
+function saveCustomExercise(){
+  const name=document.getElementById('custom-name-input').value.trim();
+  if(!name){alert('Please enter an exercise name.');return;}
+  const ex={id:`custom-${Date.now()}`,name,alias:null,category:selectedCategory,icon:selectedCategory==='arms'?'💪':selectedCategory==='legs'||selectedCategory==='glutes'?'🦵':selectedCategory==='back'?'🔙':selectedCategory==='chest'?'🏋️':'⭐',isCustom:true};
+  state.exercises.push(ex);saveData();renderExerciseList();hideModal();selectExercise(ex.id);
 }
 
-function clearAllData() {
-  localStorage.clear();
-  hideModal();
-  location.reload();
+function getLastSession(id){
+  const today=new Date().toISOString().split('T')[0];
+  return state.logs.filter(l=>l.exerciseId===id&&l.date!==today).sort((a,b)=>b.timestamp-a.timestamp)[0]||null;
 }
+function estimateOneRepMax(w,r){if(r<=0||w<=0)return 0;if(r===1)return w;return Math.round(w*(1+r/30));}
 
-// ── Modals ──
-function showModal(content) {
-  document.getElementById('modal-content').innerHTML = content;
-  document.getElementById('modal-overlay').classList.add('active');
-}
-
-function hideModal() {
-  document.getElementById('modal-overlay').classList.remove('active');
-}
-
-function showRenameModal() {
-  if (!state.currentExercise) return;
-  showModal(`
-    <div class="modal__header">
-      <h2 class="modal__title">Rename Exercise</h2>
-      <button class="modal__close" onclick="hideModal()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
-      </button>
-    </div>
-    <input type="text" class="input" id="rename-input" value="${state.currentExercise.alias || state.currentExercise.name}" placeholder="Exercise name" style="margin-bottom: var(--space-4);">
-    <div class="modal__actions">
-      <button class="btn-primary" onclick="saveRename()">Save</button>
-      ${state.currentExercise.alias ? '<button class="btn-ghost" onclick="resetName()">Reset to default</button>' : ''}
-    </div>
-  `);
-  setTimeout(() => document.getElementById('rename-input').focus(), 100);
-}
-
-function saveRename() {
-  const input = document.getElementById('rename-input');
-  const newName = input.value.trim();
-  if (newName && state.currentExercise) {
-    const exercise = state.exercises.find(e => e.id === state.currentExercise.id);
-    if (exercise) {
-      exercise.alias = newName === exercise.name ? null : newName;
-      state.currentExercise = exercise;
-      saveData();
-      renderLogScreen();
-    }
-  }
-  hideModal();
-}
-
-function resetName() {
-  if (state.currentExercise) {
-    const exercise = state.exercises.find(e => e.id === state.currentExercise.id);
-    if (exercise) {
-      exercise.alias = null;
-      state.currentExercise = exercise;
-      saveData();
-      renderLogScreen();
-    }
-  }
-  hideModal();
-}
-
-function showCustomExerciseModal() {
-  showModal(`
-    <div class="modal__header">
-      <h2 class="modal__title">Add Custom Exercise</h2>
-      <button class="modal__close" onclick="hideModal()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
-      </button>
-    </div>
-    <input type="text" class="input" id="custom-name-input" placeholder="Exercise name" style="margin-bottom: var(--space-3);">
-    <div class="section-header" style="margin-top: var(--space-4);">Category</div>
-    <div style="display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-4);">
-      ${Object.entries(CATEGORY_LABELS).filter(([k]) => k !== 'custom').map(([key, label]) =>
-        `<button class="increment-pill category-pill" data-category="${key}" onclick="selectCategory('${key}', this)">${label}</button>`
-      ).join('')}
-    </div>
-    <div class="modal__actions">
-      <button class="btn-primary" onclick="saveCustomExercise()">Add Exercise</button>
-    </div>
-  `);
-  setTimeout(() => document.getElementById('custom-name-input').focus(), 100);
-}
-
-let selectedCategory = 'custom';
-
-function selectCategory(category, btn) {
-  selectedCategory = category;
-  document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-}
-
-function saveCustomExercise() {
-  const input = document.getElementById('custom-name-input');
-  const name = input.value.trim();
-  if (!name) { alert('Please enter an exercise name.'); return; }
-  const exercise = {
-    id: `custom-${Date.now()}`,
-    name,
-    alias: null,
-    category: selectedCategory,
-    icon: selectedCategory === 'arms' ? '💪' :
-          selectedCategory === 'legs' ? '🦵' :
-          selectedCategory === 'back' ? '🔙' :
-          selectedCategory === 'chest' ? '🏋️' : '⭐',
-    isCustom: true
-  };
-  state.exercises.push(exercise);
-  saveData();
-  renderExerciseList();
-  hideModal();
-  selectExercise(exercise.id);
-}
-
-// ── Helpers ──
-function getLastSession(exerciseId) {
-  const today = new Date().toISOString().split('T')[0];
-  return state.logs
-    .filter(log => log.exerciseId === exerciseId && log.date !== today)
-    .sort((a, b) => b.timestamp - a.timestamp)[0] || null;
-}
-
-// Epley formula: weight × (1 + reps/30)
-function estimateOneRepMax(weight, reps) {
-  if (reps <= 0 || weight <= 0) return 0;
-  if (reps === 1) return weight;
-  return Math.round(weight * (1 + reps / 30));
-}
-
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('.progress-selector')) {
-    document.getElementById('exercise-dropdown').classList.remove('active');
-  }
-  if (e.target.classList.contains('modal-overlay')) hideModal();
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.progress-selector'))document.getElementById('exercise-dropdown').classList.remove('active');
+  if(e.target.classList.contains('modal-overlay'))hideModal();
 });
 
 init();
 
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
-      .then(r => {
-        console.log('[App] SW registered:', r.scope);
-        r.update(); // check for SW updates on every page load
-      })
-      .catch(e => console.log('[App] SW failed:', e));
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js').then(r=>{r.update();}).catch(e=>console.log('[SW]',e));
   });
 }
 </script>
