@@ -805,13 +805,13 @@ function render1RMExplanation(logs,sessionBest1RMs,unit){
   const gainPct=first1RM>0?Math.round((gainKg/first1RM)*100):0;
   let html='';
   if(logs.length===1){
-    html=`Your best set is <strong>${bestSet.weight}${unit} × ${bestSet.reps} reps</strong>. Using the Epley formula, that estimates a <strong>1-rep max of ~${best1RM}${unit}</strong> — roughly the most you could lift for a single all-out rep. Keep logging to see your progress over time.`;
+    html=`Your best set is <strong>${bestSet.weight}${unit} × ${bestSet.reps} reps</strong>. If you can lift ${bestSet.weight}${unit} for ${bestSet.reps} reps, the formula estimates you could lift <strong>~${best1RM}${unit} once</strong>, all-out — that's your 1RM. Keep logging to see it move over time.`;
   }else if(gainPct>3){
-    html=`Your estimated max has gone from <strong>${first1RM}${unit}</strong> to <strong>${cur1RM}${unit}</strong> — a gain of <strong>+${gainKg}${unit} (+${gainPct}%)</strong>. Your best set so far: <strong>${bestSet.weight}${unit} × ${bestSet.reps} reps</strong>. The chart uses the Epley formula so adding reps counts as progress, not just adding weight.<br><span class="orm-trend orm-trend--up">↑ +${gainKg}${unit} est. max</span>`;
+    html=`Your estimated max has gone from <strong>${first1RM}${unit}</strong> to <strong>${cur1RM}${unit}</strong> — a gain of <strong>+${gainKg}${unit} (+${gainPct}%)</strong>. Best set: <strong>${bestSet.weight}${unit} × ${bestSet.reps} reps</strong>. If you can lift ${bestSet.weight}${unit} for ${bestSet.reps} reps, that estimates to ~${best1RM}${unit} for one rep — so adding reps counts as progress, not just adding weight.<br><span class="orm-trend orm-trend--up">↑ +${gainKg}${unit} est. max</span>`;
   }else if(gainPct<-3){
-    html=`Your estimated max has dipped from <strong>${first1RM}${unit}</strong> to <strong>${cur1RM}${unit}</strong> this period. Could be fatigue, deload, or fewer reps — the Epley formula counts reps, so logging fewer reps at the same weight shows a lower estimate. Best set logged: <strong>${bestSet.weight}${unit} × ${bestSet.reps} reps</strong>.<br><span class="orm-trend orm-trend--down">↓ ${gainKg}${unit} est. max</span>`;
+    html=`Your estimated max has dipped from <strong>${first1RM}${unit}</strong> to <strong>${cur1RM}${unit}</strong> this period. Best set: <strong>${bestSet.weight}${unit} × ${bestSet.reps} reps</strong>. If you log fewer reps at the same weight, the estimate drops — lifting ${bestSet.weight}${unit} for ${bestSet.reps} reps calculates to ~${best1RM}${unit} for one rep. Could be fatigue or a deload week.<br><span class="orm-trend orm-trend--down">↓ ${gainKg}${unit} est. max</span>`;
   }else{
-    html=`Your estimated max has stayed around <strong>${cur1RM}${unit}</strong> this period — holding steady. Try adding a rep or 2.5${unit} to your best set to nudge the number. Best set: <strong>${bestSet.weight}${unit} × ${bestSet.reps} reps</strong>.<br><span class="orm-trend orm-trend--flat">→ Holding steady</span>`;
+    html=`Your estimated max has stayed around <strong>${cur1RM}${unit}</strong> this period — holding steady. Best set: <strong>${bestSet.weight}${unit} × ${bestSet.reps} reps</strong>. If you can lift ${bestSet.weight}${unit} for ${bestSet.reps} reps, that estimates to ~${best1RM}${unit} for one rep. Try adding a rep or 2.5${unit} to nudge the number up.<br><span class="orm-trend orm-trend--flat">→ Holding steady</span>`;
   }
   el.style.display='block';textEl.innerHTML=html;
 }
