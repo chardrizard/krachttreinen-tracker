@@ -5,7 +5,7 @@
 //     Format: 'gym-tracker-YYYY-MM-DD'
 //     This is the only string you need to change per deploy.
 
-const CACHE_NAME = 'gym-tracker-2026-04-18';
+const CACHE_NAME = 'gym-tracker-2026-04-28';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

@@ -98,6 +98,9 @@ a{color:inherit;text-decoration:none;}
 .log-item__sets{font-size:var(--text-xs);color:var(--text-secondary);margin-top:2px;}
 .log-item__volume{font-family:var(--font-mono);font-size:var(--text-sm);color:var(--text-secondary);font-variant-numeric:tabular-nums;}
 .log-item__edit-hint{font-size:10px;color:var(--text-muted);margin-top:2px;}
+.log-item__demo{display:inline-flex;width:max-content;margin-top:var(--space-1);padding:2px 6px;border:1px solid var(--border-default);border-radius:var(--radius-full);font-family:var(--font-mono);font-size:9px;letter-spacing:0.4px;text-transform:uppercase;color:var(--text-muted);}
+.demo-note{margin-bottom:var(--space-3);padding:var(--space-3) var(--space-4);background:var(--surface-inset);border:1px solid var(--border-subtle);border-radius:var(--radius-md);font-size:var(--text-xs);line-height:1.5;color:var(--text-muted);}
+.demo-note strong{color:var(--text-secondary);font-weight:500;}
 .latest-section{margin-top:var(--space-5);}
 .latest-section-header{display:flex;align-items:baseline;gap:var(--space-2);margin-bottom:var(--space-3);}
 .latest-date{font-family:var(--font-mono);font-size:10px;color:var(--text-faint);letter-spacing:0.3px;}
@@ -283,7 +286,7 @@ a{color:inherit;text-decoration:none;}
       Log Exercise
     </button>
     <section id="fav-section" class="fav-section" style="display:none;">
-      <div class="section-header">My Favourites</div>
+      <div class="section-header" id="fav-section-title">My Favourites</div>
       <div class="fav-carousel" id="fav-carousel"></div>
     </section>
     <section id="today-section">
@@ -517,6 +520,7 @@ const PRESET_EXERCISES=[
 
 const CATEGORY_ORDER=['chest','back','shoulders','arms','legs','compound','core','glutes','custom'];
 const CATEGORY_LABELS={chest:'Chest',back:'Back',shoulders:'Shoulders',arms:'Arms',legs:'Legs',compound:'Compound',core:'Core',glutes:'Glutes',custom:'Custom'};
+const DEMO_EXERCISE_IDS=['bench-press-flat-barbell','barbell-squat','deadlift'];
 
 let state={exercises:[],logs:[],settings:{weightIncrement:2.5,weightUnit:'kg'},favouriteIds:[],currentExercise:null,currentSets:[],editingLogId:null,selectedProgressExercise:null,timeRange:30,chart:null};
 
@@ -546,6 +550,27 @@ function saveData(){
   }catch(e){alert('Unable to save. Storage may be full.');}
 }
 
+function shouldShowDemoData(){return state.logs.length===0;}
+function offsetDate(daysAgo){
+  const date=new Date();
+  date.setDate(date.getDate()-daysAgo);
+  return date.toISOString().split('T')[0];
+}
+function demoTimestamp(daysAgo){
+  const date=new Date(`${offsetDate(daysAgo)}T18:30:00`);
+  return date.getTime();
+}
+function getDemoLogs(){
+  return [
+    {id:'demo_today_bench',date:offsetDate(0),timestamp:demoTimestamp(0),exerciseId:'bench-press-flat-barbell',sets:[{weight:60,reps:8},{weight:60,reps:7},{weight:57.5,reps:8}],isDemo:true},
+    {id:'demo_bench_1',date:offsetDate(7),timestamp:demoTimestamp(7),exerciseId:'bench-press-flat-barbell',sets:[{weight:57.5,reps:8},{weight:57.5,reps:7},{weight:55,reps:8}],isDemo:true},
+    {id:'demo_bench_2',date:offsetDate(14),timestamp:demoTimestamp(14),exerciseId:'bench-press-flat-barbell',sets:[{weight:55,reps:8},{weight:55,reps:8},{weight:52.5,reps:9}],isDemo:true},
+    {id:'demo_squat_1',date:offsetDate(3),timestamp:demoTimestamp(3),exerciseId:'barbell-squat',sets:[{weight:90,reps:5},{weight:90,reps:5},{weight:85,reps:6}],isDemo:true},
+    {id:'demo_deadlift_1',date:offsetDate(5),timestamp:demoTimestamp(5),exerciseId:'deadlift',sets:[{weight:110,reps:5},{weight:105,reps:5}],isDemo:true}
+  ];
+}
+function getVisibleLogs(){return shouldShowDemoData()?getDemoLogs():state.logs;}
+
 function toggleFavourite(id,event){
   event.stopPropagation();
   const idx=state.favouriteIds.indexOf(id);
@@ -569,8 +594,9 @@ function navigateTo(screenId){
 
 // Auto-select most recently logged exercise on Progress tab
 function autoSelectLastExercise(){
-  if(state.logs.length===0)return;
-  const latest=state.logs.reduce((a,b)=>b.timestamp>a.timestamp?b:a,state.logs[0]);
+  const logs=getVisibleLogs();
+  if(logs.length===0)return;
+  const latest=logs.reduce((a,b)=>b.timestamp>a.timestamp?b:a,logs[0]);
   if(!latest)return;
   const exercise=state.exercises.find(e=>e.id===latest.exerciseId);
   if(!exercise)return;
@@ -584,9 +610,12 @@ function renderHome(){renderFavouritesCarousel();renderTodayLog();renderLatestSe
 function renderFavouritesCarousel(){
   const sec=document.getElementById('fav-section');
   const car=document.getElementById('fav-carousel');
-  if(state.favouriteIds.length===0){sec.style.display='none';return;}
+  const title=document.getElementById('fav-section-title');
+  const ids=state.favouriteIds.length>0?state.favouriteIds:(shouldShowDemoData()?DEMO_EXERCISE_IDS:[]);
+  if(ids.length===0){sec.style.display='none';return;}
+  if(title)title.textContent=state.favouriteIds.length>0?'My Favourites':'Examples';
   sec.style.display='block';
-  car.innerHTML=state.favouriteIds.map(id=>state.exercises.find(e=>e.id===id)).filter(Boolean).map(ex=>`
+  car.innerHTML=ids.map(id=>state.exercises.find(e=>e.id===id)).filter(Boolean).map(ex=>`
     <div class="fav-card" onclick="quickLog('${ex.id}')">
       <span class="fav-card__icon">${ex.icon}</span>
       <span class="fav-card__name">${ex.alias||ex.name}</span>
@@ -596,16 +625,18 @@ function renderFavouritesCarousel(){
 function renderTodayLog(){
   const el=document.getElementById('today-log');
   const today=new Date().toISOString().split('T')[0];
-  const logs=state.logs.filter(l=>l.date===today);
+  const logs=getVisibleLogs().filter(l=>l.date===today);
   if(logs.length===0){el.innerHTML=`<div class="empty-state"><div class="empty-state__icon">🏋️</div><div class="empty-state__title">No exercises logged</div><div class="empty-state__text">Tap "Log Exercise" to start tracking your workout</div></div>`;return;}
-  el.innerHTML=logs.map(log=>{
+  const demoNote=shouldShowDemoData()?`<div class="demo-note"><strong>Example data.</strong> Replaced when you log your first set.</div>`:'';
+  el.innerHTML=demoNote+logs.map(log=>{
     const ex=state.exercises.find(e=>e.id===log.exerciseId);if(!ex)return'';
     const best=log.sets.reduce((b,s)=>s.weight>b.weight?s:b,log.sets[0]);
-    return`<div class="log-item" onclick="editTodayLog('${log.id}')">
+    const action=log.isDemo?`quickLog('${ex.id}')`:`editTodayLog('${log.id}')`;
+    return`<div class="log-item" onclick="${action}">
       <div class="log-item__left"><span class="log-item__icon">${ex.icon}</span><div>
         <div class="log-item__name">${ex.alias||ex.name}</div>
         <div class="log-item__sets">${log.sets.length} sets · ${log.sets.map(s=>`${s.weight}×${s.reps}`).join(', ')}</div>
-        <div class="log-item__edit-hint">Tap to edit</div>
+        ${log.isDemo?'<div class="log-item__demo">Example</div>':'<div class="log-item__edit-hint">Tap to edit</div>'}
       </div></div>
       <span class="log-item__volume">${best.weight}${state.settings.weightUnit} × ${best.reps}</span>
     </div>`;
@@ -617,10 +648,11 @@ function renderLatestSection(){
   const el=document.getElementById('latest-log');
   const dateEl=document.getElementById('latest-date');
   const today=new Date().toISOString().split('T')[0];
-  const pastDates=[...new Set(state.logs.filter(l=>l.date!==today).map(l=>l.date))].sort((a,b)=>b.localeCompare(a));
+  const visibleLogs=getVisibleLogs();
+  const pastDates=[...new Set(visibleLogs.filter(l=>l.date!==today).map(l=>l.date))].sort((a,b)=>b.localeCompare(a));
   if(pastDates.length===0){sec.style.display='none';return;}
   const latestDate=pastDates[0];
-  const logs=state.logs.filter(l=>l.date===latestDate);
+  const logs=visibleLogs.filter(l=>l.date===latestDate);
   if(logs.length===0){sec.style.display='none';return;}
   dateEl.textContent=new Date(latestDate+'T00:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
   el.innerHTML=logs.map(log=>{
@@ -630,7 +662,7 @@ function renderLatestSection(){
       <div class="log-item__left"><span class="log-item__icon">${ex.icon}</span><div>
         <div class="log-item__name">${ex.alias||ex.name}</div>
         <div class="log-item__sets">${log.sets.length} sets · ${log.sets.map(s=>`${s.weight}×${s.reps}`).join(', ')}</div>
-        <div class="log-item__edit-hint">Tap to log again today</div>
+        <div class="log-item__edit-hint">${log.isDemo?'Tap to try logging this':'Tap to log again today'}</div>
       </div></div>
       <span class="log-item__volume">${best.weight}${state.settings.weightUnit} × ${best.reps}</span>
     </div>`;
@@ -711,7 +743,7 @@ function renderLogScreen(){
           </div>
         </div>`;
       }).join('');
-      document.getElementById('last-session-footer').innerHTML=`Beat your best: <span>${best.weight}${state.settings.weightUnit} × ${best.reps} reps</span>`;
+      document.getElementById('last-session-footer').innerHTML=last.isDemo?`Example session. Save your first workout to replace it.`:`Beat your best: <span>${best.weight}${state.settings.weightUnit} × ${best.reps} reps</span>`;
       lsEl.style.display='block';
     }else{lsEl.style.display='none';}
   }else{lsEl.style.display='none';}
@@ -770,9 +802,10 @@ function deleteEntry(){
 // ── Progress ──
 function updateProgressDropdown(){
   const el=document.getElementById('exercise-dropdown');
-  const exercisesWithLogs=state.exercises.filter(ex=>state.logs.some(l=>l.exerciseId===ex.id));
+  const visibleLogs=getVisibleLogs();
+  const exercisesWithLogs=state.exercises.filter(ex=>visibleLogs.some(l=>l.exerciseId===ex.id));
   if(exercisesWithLogs.length===0){el.innerHTML='<div class="dropdown-item" style="color:var(--text-muted)">No logged exercises yet</div>';return;}
-  el.innerHTML=exercisesWithLogs.map(ex=>`<div class="dropdown-item ${state.selectedProgressExercise?.id===ex.id?'selected':''}" onclick="selectProgressExercise('${ex.id}')"><span>${ex.icon}</span><span>${ex.alias||ex.name}</span></div>`).join('');
+  el.innerHTML=exercisesWithLogs.map(ex=>`<div class="dropdown-item ${state.selectedProgressExercise?.id===ex.id?'selected':''}" onclick="selectProgressExercise('${ex.id}')"><span>${ex.icon}</span><span>${ex.alias||ex.name}${shouldShowDemoData()?' · Example':''}</span></div>`).join('');
 }
 
 function toggleExerciseDropdown(){updateProgressDropdown();document.getElementById('exercise-dropdown').classList.toggle('active');}
@@ -821,7 +854,7 @@ function renderProgressChart(){
   const unit=state.settings.weightUnit;
   const ormEl=document.getElementById('orm-explanation');
   if(!state.selectedProgressExercise){ormEl.style.display='none';return;}
-  let logs=state.logs.filter(l=>l.exerciseId===state.selectedProgressExercise.id);
+  let logs=getVisibleLogs().filter(l=>l.exerciseId===state.selectedProgressExercise.id);
   if(state.timeRange>0){const cutoff=Date.now()-(state.timeRange*24*60*60*1000);logs=logs.filter(l=>l.timestamp>=cutoff);}
   logs.sort((a,b)=>a.timestamp-b.timestamp);
   if(logs.length===0){
@@ -930,7 +963,7 @@ function saveCustomExercise(){
 
 function getLastSession(id){
   const today=new Date().toISOString().split('T')[0];
-  return state.logs.filter(l=>l.exerciseId===id&&l.date!==today).sort((a,b)=>b.timestamp-a.timestamp)[0]||null;
+  return getVisibleLogs().filter(l=>l.exerciseId===id&&l.date!==today).sort((a,b)=>b.timestamp-a.timestamp)[0]||null;
 }
 function estimateOneRepMax(w,r){if(r<=0||w<=0)return 0;if(r===1)return w;return Math.round(w*(1+r/30));}
 
