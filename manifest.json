@@ -1,6 +1,6 @@
 {
-  "name": "Gym Progress Tracker",
-  "short_name": "Gym Tracker",
+  "name": "Liftd",
+  "short_name": "Liftd",
   "description": "Track progressive overload with zero friction. Log sets fast, see your gains over time.",
   "start_url": "./index.html",
   "scope": "./",

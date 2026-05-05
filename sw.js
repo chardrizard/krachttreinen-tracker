@@ -1,11 +1,11 @@
-// Service Worker for Gym Progress Tracker PWA
+// Service Worker for Liftd PWA
 // Provides offline caching for the app shell
 //
 // ⚠️  DEPLOY CHECKLIST: bump CACHE_NAME to today's date on every push.
-//     Format: 'gym-tracker-YYYY-MM-DD'
+//     Format: 'liftd-YYYY-MM-DD'
 //     This is the only string you need to change per deploy.
 
-const CACHE_NAME = 'gym-tracker-2026-04-28';
+const CACHE_NAME = 'liftd-2026-05-05';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

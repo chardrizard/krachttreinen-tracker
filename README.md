@@ -1,4 +1,4 @@
-# 🏋️ Krachttreinen Tracker
+# Liftd
 
 A minimal, mobile-first PWA for tracking progressive overload at the gym. Built for speed and simplicity — log your sets in seconds, track your gains over time.
 
