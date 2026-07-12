@@ -83,10 +83,15 @@ p,.empty-state__text,.demo-note,.data-info-banner__body,.orm-explanation__text{t
 .fav-section{margin-bottom:var(--space-5);}
 .fav-carousel{display:flex;gap:var(--space-2);overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:var(--space-1);scrollbar-width:none;}
 .fav-carousel::-webkit-scrollbar{display:none;}
-.fav-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--space-1);flex-shrink:0;width:76px;min-height:72px;padding:var(--space-2);background:var(--surface-raised);box-shadow:0 0 0 1px var(--border-subtle);border-radius:var(--radius-md);cursor:pointer;scroll-snap-align:start;transition:background-color var(--transition-fast),box-shadow var(--transition-fast),transform var(--transition-fast);text-align:center;}
+.fav-card{display:flex;flex-direction:column;align-items:flex-start;gap:6px;flex-shrink:0;width:132px;min-height:98px;padding:12px;background:var(--surface-raised);box-shadow:0 0 0 1px var(--border-subtle);border-radius:var(--radius-md);cursor:pointer;scroll-snap-align:start;transition:background-color var(--transition-fast),box-shadow var(--transition-fast),transform var(--transition-fast);text-align:left;}
 .fav-card:hover{box-shadow:var(--shadow-border);background:var(--surface-overlay);}
-.fav-card:active{transform:scale(0.96);}
-.fav-card__name{font-size:10px;color:var(--text-secondary);line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.fav-card:active{transform:scale(0.97);}
+.fav-card__icon{display:flex;color:var(--text-muted);}
+.fav-card__icon svg{width:18px;height:18px;}
+.fav-card__name{font-size:13px;font-weight:500;color:var(--text-primary);line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.fav-card__stat{margin-top:auto;display:flex;align-items:center;gap:4px;font-size:12px;color:var(--text-secondary);font-variant-numeric:tabular-nums;letter-spacing:0.2px;}
+.fav-card__stat--empty{color:var(--text-muted);}
+.fav-card__trend{color:var(--accent);font-size:12px;line-height:1;}
 
 /* Log items */
 .today-log{display:flex;flex-direction:column;gap:var(--space-2);}
@@ -338,13 +343,8 @@ body[data-screen="log"] .bottom-nav,body[data-screen="select"] .bottom-nav{displ
 .input-search{background:var(--surface-raised);}
 
 .fav-section{margin-bottom:28px;}
-.fav-carousel{display:grid;gap:1px;padding:0;border:1px solid var(--border-subtle);border-radius:var(--radius-md);overflow:hidden;background:var(--border-subtle);}
-.fav-card{display:grid;grid-template-columns:1fr;align-items:center;justify-items:start;width:100%;min-height:60px;padding:9px 12px;background:var(--surface-raised);box-shadow:none;border-radius:0;text-align:left;}
-.fav-card:hover{background:var(--surface-overlay);box-shadow:none;}
-.fav-card:active{transform:scale(.992);}
-.fav-card__copy,.exercise-row__copy,.log-header__copy,.dropdown-item__copy{display:block;min-width:0;}
-.fav-card__name{font-size:.9375rem;color:var(--text-primary);line-height:1.25;-webkit-line-clamp:1;}
-.fav-card__meta,.exercise-row__meta,.log-header__meta,.dropdown-item__meta{display:block;margin-top:3px;color:var(--text-muted);font-size:.6875rem;line-height:1.25;}
+.exercise-row__copy,.log-header__copy,.dropdown-item__copy{display:block;min-width:0;}
+.exercise-row__meta,.log-header__meta,.dropdown-item__meta{display:block;margin-top:3px;color:var(--text-muted);font-size:.6875rem;line-height:1.25;}
 
 .today-log{gap:0;border-top:1px solid var(--border-default);}
 .log-item{width:100%;min-height:76px;padding:10px 0;background:transparent;box-shadow:none;border-bottom:1px solid var(--border-subtle);border-radius:0;gap:12px;text-align:left;}
@@ -366,7 +366,8 @@ body[data-screen="log"] .bottom-nav,body[data-screen="select"] .bottom-nav{displ
 .empty-state__text{font-size:.875rem;color:var(--text-muted);}
 
 .exercise-group{margin-bottom:28px;}
-.exercise-group__title{padding:8px 0;border-bottom:1px solid var(--border-default);margin-bottom:0;}
+.exercise-group__title{padding:8px 0;border-bottom:1px solid var(--border-default);margin-bottom:0;display:flex;align-items:center;gap:7px;}
+.exercise-group__title svg{width:14px;height:14px;flex-shrink:0;}
 .exercise-group__title--favourites{color:var(--accent);}
 .exercise-row{min-height:56px;padding:6px 0;gap:12px;border-bottom:1px solid var(--border-subtle);border-radius:0;}
 .exercise-row:hover{background:var(--surface-raised);}
@@ -539,7 +540,7 @@ body[data-screen="log"] .bottom-nav,body[data-screen="select"] .bottom-nav{displ
     </div>
     <div id="edit-mode-badge" class="edit-mode-badge" style="display:none;">✎ Editing today's entry</div>
     <div class="log-summary" aria-label="Current workout summary">
-      <div><span>Volume</span><strong id="log-volume">0 kg</strong></div>
+      <div><span>Top set</span><strong id="log-topset">—</strong></div>
       <div><span>Done</span><strong id="log-completed">0 of 0 sets</strong></div>
     </div>
     <div class="last-session" id="last-session" style="display:none;">
@@ -764,6 +765,31 @@ function exerciseMeta(ex){
   const parts=[exerciseEquipment(ex),CATEGORY_LABELS[ex?.isCustom?'custom':ex?.category]].filter(Boolean);
   return parts.join(' · ');
 }
+const CATEGORY_ICONS={
+  chest:'<rect x="4" y="14" width="16" height="3.5" rx="1.5"/><path d="M12 14v-3M6 11h12M6 9.5v3M18 9.5v3"/>',
+  back:'<path d="M4 5h16M6 5v2M18 5v2"/><path d="M9 7v3a3 3 0 0 0 6 0V7"/>',
+  shoulders:'<path d="M4 16c0-5 3.5-8 8-8s8 3 8 8M4 16h16"/>',
+  arms:'<path d="M6 5v6c0 3 2 5 5 5h2M13 16l4-2-2-4"/>',
+  legs:'<path d="M9 4v7l-2 9M15 4v7l2 9M9 4h6"/>',
+  glutes:'<circle cx="8" cy="12" r="4"/><circle cx="16" cy="12" r="4"/>',
+  core:'<rect x="7" y="3" width="10" height="18" rx="4"/><path d="M12 3v18"/><path d="M7.5 9h9"/><path d="M7.5 15h9"/>',
+  compound:'<path d="M2 12h20M5 8.5v7M8 7v10M16 7v10M19 8.5v7"/>',
+  custom:'<path d="M12 4v16M4 12h16"/>'
+};
+function categoryKey(ex){return ex?.isCustom?'custom':ex?.category;}
+function iconSvg(cat){return`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${CATEGORY_ICONS[cat]||CATEGORY_ICONS.compound}</svg>`;}
+function lastTopSet(exId){
+  const logs=getVisibleLogs().filter(l=>l.exerciseId===exId&&l.sets&&l.sets.length).sort((a,b)=>b.timestamp-a.timestamp);
+  if(!logs.length)return null;
+  const top=logs[0].sets.reduce((b,s)=>s.weight>b.weight?s:b,logs[0].sets[0]);
+  let trend=null;
+  if(logs.length>1){
+    const p=logs[1].sets.reduce((b,s)=>estimateOneRepMax(s.weight,s.reps)>estimateOneRepMax(b.weight,b.reps)?s:b,logs[1].sets[0]);
+    const cur=estimateOneRepMax(top.weight,top.reps),prev=estimateOneRepMax(p.weight,p.reps);
+    trend=cur>prev+0.5?'up':cur<prev-0.5?'down':'flat';
+  }
+  return{weight:top.weight,reps:top.reps,trend};
+}
 
 function init(){loadData();renderExerciseList();renderHome();applySettings();setTimeout(showBackupReminderIfDue,300);}
 
@@ -776,6 +802,8 @@ function loadData(){
     const custom=se?JSON.parse(se).filter(e=>e.isCustom):[];
     state.exercises=[...PRESET_EXERCISES.map(e=>({...e,isCustom:false,alias:null})),...custom];
     if(se){const saved=JSON.parse(se);saved.forEach(s=>{const ex=state.exercises.find(e=>e.id===s.id);if(ex&&s.alias)ex.alias=s.alias;});}
+    const cleanText=t=>typeof t==='string'?t.replace(/\s+/g,' ').trim():t;
+    state.exercises.forEach(e=>{if(e.isCustom)e.name=cleanText(e.name);if(e.alias)e.alias=cleanText(e.alias);});
     state.logs=sl?JSON.parse(sl):[];
     state.settings=ss?{...state.settings,...JSON.parse(ss)}:state.settings;
     state.favouriteIds=sf?JSON.parse(sf):[];
@@ -862,10 +890,15 @@ function renderFavouritesCarousel(){
   if(ids.length===0){sec.style.display='none';return;}
   if(title)title.textContent=state.favouriteIds.length>0?'My Favourites':'Examples';
   sec.style.display='block';
-  car.innerHTML=ids.map(id=>state.exercises.find(e=>e.id===id)).filter(Boolean).map(ex=>`
+  car.innerHTML=ids.map(id=>state.exercises.find(e=>e.id===id)).filter(Boolean).map(ex=>{
+    const ts=lastTopSet(ex.id);
+    const stat=ts?`${formatWeight(ts.weight)}${state.settings.weightUnit} × ${ts.reps}${ts.trend==='up'?'<span class="fav-card__trend">↑</span>':''}`:'No sets yet';
+    return`
     <button type="button" class="fav-card" onclick="quickLog('${ex.id}')">
-      <span class="fav-card__copy"><span class="fav-card__name">${ex.alias||ex.name}</span><span class="fav-card__meta">${exerciseMeta(ex)}</span></span>
-    </button>`).join('');
+      <span class="fav-card__icon">${iconSvg(categoryKey(ex))}</span>
+      <span class="fav-card__name">${ex.alias||ex.name}</span>
+      <span class="fav-card__stat${ts?'':' fav-card__stat--empty'}">${stat}</span>
+    </button>`;}).join('');
 }
 
 function renderTodayLog(){
@@ -936,7 +969,7 @@ function renderExerciseList(filter=''){
   const favMatch=id=>{const ex=state.exercises.find(e=>e.id===id);return ex&&(!filter||ex.name.toLowerCase().includes(fl)||(ex.alias&&ex.alias.toLowerCase().includes(fl)));};
   const favs=state.favouriteIds.filter(favMatch).map(id=>state.exercises.find(e=>e.id===id)).filter(Boolean);
   if(favs.length>0)html+=`<div class="exercise-group"><div class="exercise-group__title exercise-group__title--favourites">My Favourites</div>${favs.map(ex=>rowHTML(ex)).join('')}</div>`;
-  CATEGORY_ORDER.forEach(cat=>{if(grouped[cat]?.length>0)html+=`<div class="exercise-group"><div class="exercise-group__title">${CATEGORY_LABELS[cat]}</div>${grouped[cat].map(ex=>rowHTML(ex)).join('')}</div>`;});
+  CATEGORY_ORDER.forEach(cat=>{if(grouped[cat]?.length>0)html+=`<div class="exercise-group"><div class="exercise-group__title">${iconSvg(cat)}${CATEGORY_LABELS[cat]}</div>${grouped[cat].map(ex=>rowHTML(ex)).join('')}</div>`;});
   el.innerHTML=html;
 }
 
@@ -1033,8 +1066,9 @@ function toggleSetComplete(i){
 }
 function updateLogSummary(){
   const completed=[...state.completedSetIndices];
-  const volume=completed.reduce((sum,i)=>{const set=state.currentSets[i];return set?sum+(set.weight||0)*(set.reps||0):sum;},0);
-  document.getElementById('log-volume').textContent=`${formatWeight(volume)} ${state.settings.weightUnit}`;
+  const sets=completed.map(i=>state.currentSets[i]).filter(Boolean);
+  const top=sets.reduce((b,s)=>(s.weight||0)>((b&&b.weight)||0)?s:b,null);
+  document.getElementById('log-topset').textContent=top?`${formatWeight(top.weight)}${state.settings.weightUnit} × ${top.reps}`:'—';
   document.getElementById('log-completed').textContent=`${completed.length} of ${state.currentSets.length} sets`;
 }
 function addSet(){const l=state.currentSets[state.currentSets.length-1]||{weight:0,reps:10};state.currentSets.push({weight:l.weight,reps:l.reps});state.activeSetIndex=state.currentSets.length-1;renderSets();}
