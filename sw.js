@@ -5,7 +5,7 @@
 //     Format: 'gym-tracker-YYYY-MM-DD'
 //     This is the only string you need to change per deploy.
 
-const CACHE_NAME = 'gym-tracker-2026-06-28';
+const CACHE_NAME = 'gym-tracker-2026-07-12';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -14,8 +14,7 @@ const ASSETS_TO_CACHE = [
   './icons/icon-192.svg',
   './icons/icon-512.svg',
   './icons/apple-touch-icon.svg',
-  'https://cdn.jsdelivr.net/npm/chart.js',
-  'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap'
+  'https://cdn.jsdelivr.net/npm/chart.js'
 ];
 
 // Install event - cache assets
