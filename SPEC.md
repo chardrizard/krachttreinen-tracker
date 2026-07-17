@@ -1,4 +1,47 @@
-# Spec: Performance Ledger redesign
+# Spec: Set-completion motion
+
+> Confirmed from the 2026-07-17 motion-opportunity review and Richard's approval to implement its top recommendation.
+
+**Status:** done
+**Date:** 2026-07-17
+
+## Goal
+
+Make the core set-completion handoff legible without slowing workout logging: the completed check should register immediately and the next active row should arrive as the consequence of that action.
+
+## Scope
+
+- **In:** Completion feedback on the affected checkbox.
+- **In:** A restrained entrance cue on only the newly active set row.
+- **In:** Equivalent feedback when reopening a completed set.
+- **In:** Rapid-toggle cleanup and a gentler reduced-motion variant.
+- **In:** Mobile QA at 320px and 390px.
+- **Out:** Progress dropdown motion, add/remove-set motion, chart animation, navigation changes, or new dependencies.
+
+## Constraints
+
+- Keep all application HTML, CSS, and JavaScript in `index.html`.
+- Use only `transform` and `opacity`, with the existing 160ms `cubic-bezier(.22,1,.36,1)` motion vocabulary.
+- Do not delay state updates, move focus, auto-scroll, animate unaffected rows, or persist transient motion state.
+- Preserve the current localStorage schemas, accessibility state, and touch targets.
+- Use a 120ms, 1px/0.94-scale reduced-motion variant rather than the standard cue.
+
+## Acceptance
+
+- Completing a set animates only its tick and the next active row.
+- Reopening a set gives immediate feedback on that row.
+- Completing the final set does not try to animate a nonexistent next row.
+- Rapid repeated toggles do not queue motion or leave stale classes.
+- Weight, rep, focus, add-set, and remove-set updates do not trigger this motion.
+- The interaction has no clipping, horizontal overflow, console errors, or accessibility regressions at 320px and 390px.
+
+## Open questions
+
+None blocking.
+
+---
+
+# Previous spec: Performance Ledger redesign
 
 > Confirmed from the approved mobile prototype and Richard's instruction to uplift the production app.
 

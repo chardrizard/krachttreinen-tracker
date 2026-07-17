@@ -409,6 +409,11 @@ body[data-screen="log"] .bottom-nav,body[data-screen="select"] .bottom-nav{displ
 .set-row__done span{display:grid;place-items:center;width:22px;height:22px;border:2px solid currentColor;border-radius:5px;font-size:.875rem;font-weight:900;}
 .set-row.is-complete .set-row__done{color:var(--accent);}
 .set-row.is-complete .set-row__done span{background:var(--accent);border-color:var(--accent);color:oklch(21% 0.04 125);}
+.set-row.has-activation-motion{transition:transform var(--transition-fast),opacity var(--transition-fast);}
+.set-row.has-activation-motion.is-motion-start{opacity:.88;transform:translateY(4px);}
+.set-row.has-completion-motion .set-row__done span,.set-row.has-reopen-motion .set-row__done span{transition:transform var(--transition-fast),opacity var(--transition-fast);}
+.set-row.has-completion-motion.is-motion-start .set-row__done span{opacity:0;transform:scale(.78);}
+.set-row.has-reopen-motion.is-motion-start .set-row__done span{opacity:.75;transform:scale(.94);}
 .set-actions{gap:8px;margin-bottom:18px;}
 .set-actions .btn-secondary{background:transparent;border:1px dashed var(--border-default);box-shadow:none;}
 .btn-delete-entry{border-color:var(--border-subtle);border-radius:var(--radius-sm);}
@@ -475,6 +480,10 @@ body[data-screen="log"] .bottom-nav,body[data-screen="select"] .bottom-nav{displ
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important;}
+  .set-row.has-activation-motion{transition-duration:120ms!important;}
+  .set-row.has-activation-motion.is-motion-start{opacity:.94;transform:translateY(1px);}
+  .set-row.has-completion-motion .set-row__done span,.set-row.has-reopen-motion .set-row__done span{transition-duration:120ms!important;}
+  .set-row.has-completion-motion.is-motion-start .set-row__done span,.set-row.has-reopen-motion.is-motion-start .set-row__done span{opacity:.94;transform:scale(.94);}
 }
 </style>
 </head>
@@ -1029,14 +1038,20 @@ function renderLogScreen(){
   renderSets();
 }
 
-function renderSets(){
+function renderSets(motion=null){
   const el=document.getElementById('set-list');
   const previous=getLastSession(state.currentExercise?.id);
   el.innerHTML=state.currentSets.map((s,i)=>{
     const prior=previous?.sets?.[i];
     const complete=state.completedSetIndices.has(i);
     const active=!complete&&state.activeSetIndex===i;
-    return`<div class="set-row ${complete?'is-complete':''} ${active?'is-active':''}">
+    const motionClasses=[
+      motion?.completedIndex===i?'has-completion-motion':'',
+      motion?.activatedIndex===i?'has-activation-motion':'',
+      motion?.reopenedIndex===i?'has-reopen-motion':'',
+      motion&&(motion.completedIndex===i||motion.activatedIndex===i||motion.reopenedIndex===i)?'is-motion-start':''
+    ].filter(Boolean).join(' ');
+    return`<div class="set-row ${complete?'is-complete':''} ${active?'is-active':''} ${motionClasses}">
       <span class="set-row__number">${String(i+1).padStart(2,'0')}</span>
       <span class="set-row__previous">${prior?`${formatWeight(prior.weight)} × ${prior.reps}`:'None'}</span>
       <label class="set-row__field"><span class="sr-only">Set ${i+1} weight in ${state.settings.weightUnit}</span><input type="number" class="set-row__input set-row__input--weight" value="${s.weight>0?formatWeight(s.weight):''}" placeholder="0" inputmode="decimal" ${complete?'disabled':''} onfocus="activateSet(${i},this)" onchange="updateWeight(${i},this.value)" onblur="commitWeight(${i},this)"></label>
@@ -1044,6 +1059,20 @@ function renderSets(){
       <button class="set-row__done" onclick="toggleSetComplete(${i})" aria-label="${complete?`Set ${i+1} completed`:`Mark set ${i+1} completed`}" aria-pressed="${complete}"><span>${complete?'✓':''}</span></button>
     </div>`;
   }).join('');
+  const movingRows=[...el.querySelectorAll('.set-row.is-motion-start')];
+  if(movingRows.length){
+    requestAnimationFrame(()=>movingRows.forEach(row=>{
+      if(!row.isConnected)return;
+      row.classList.remove('is-motion-start');
+      let fallback;
+      const cleanup=()=>{
+        clearTimeout(fallback);
+        row.classList.remove('has-completion-motion','has-activation-motion','has-reopen-motion');
+      };
+      row.addEventListener('transitionend',cleanup,{once:true});
+      fallback=setTimeout(cleanup,220);
+    }));
+  }
   document.getElementById('remove-set-btn').style.display=state.currentSets.length>1?'flex':'none';
   updateLogSummary();
 }
@@ -1056,13 +1085,18 @@ function activateSet(i,input){
   setTimeout(()=>{const fields=document.querySelectorAll('.set-row.is-active input');const target=fields[repsField?1:0];if(target){target.focus();target.select();}},0);
 }
 function toggleSetComplete(i){
-  if(state.completedSetIndices.has(i)){state.completedSetIndices.delete(i);state.activeSetIndex=i;}
+  let motion;
+  if(state.completedSetIndices.has(i)){
+    state.completedSetIndices.delete(i);state.activeSetIndex=i;
+    motion={reopenedIndex:i,activatedIndex:i};
+  }
   else{
     state.completedSetIndices.add(i);
     const next=state.currentSets.findIndex((_,index)=>!state.completedSetIndices.has(index));
     state.activeSetIndex=next;
+    motion={completedIndex:i,activatedIndex:next};
   }
-  renderSets();
+  renderSets(motion);
 }
 function updateLogSummary(){
   const completed=[...state.completedSetIndices];
