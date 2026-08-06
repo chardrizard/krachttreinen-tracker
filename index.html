@@ -1403,19 +1403,22 @@ function renderProgressChart(){
 }
 
 // Settings
+// Selection must be exposed to assistive tech, not just styled (DESIGN.md).
+function setPillState(p,on){p.classList.toggle('active',on);p.setAttribute('aria-pressed',on?'true':'false');}
+
 function applySettings(){
-  document.querySelectorAll('.increment-pill[data-increment]').forEach(p=>p.classList.toggle('active',parseFloat(p.dataset.increment)===state.settings.weightIncrement));
-  document.querySelectorAll('.toggle-pill[data-unit]').forEach(p=>p.classList.toggle('active',p.dataset.unit===state.settings.weightUnit));
+  document.querySelectorAll('.increment-pill[data-increment]').forEach(p=>setPillState(p,parseFloat(p.dataset.increment)===state.settings.weightIncrement));
+  document.querySelectorAll('.toggle-pill[data-unit]').forEach(p=>setPillState(p,p.dataset.unit===state.settings.weightUnit));
   syncRestSettingsUI();
 }
-function setIncrement(v,btn){state.settings.weightIncrement=v;document.querySelectorAll('.increment-pill[data-increment]').forEach(p=>p.classList.remove('active'));btn.classList.add('active');saveData();}
-function setUnit(u,btn){state.settings.weightUnit=u;document.querySelectorAll('.toggle-pill[data-unit]').forEach(p=>p.classList.remove('active'));btn.classList.add('active');saveData();}
+function setIncrement(v,btn){state.settings.weightIncrement=v;document.querySelectorAll('.increment-pill[data-increment]').forEach(p=>setPillState(p,p===btn));saveData();}
+function setUnit(u,btn){state.settings.weightUnit=u;document.querySelectorAll('.toggle-pill[data-unit]').forEach(p=>setPillState(p,p===btn));saveData();}
 function setRestTimerEnabled(on){state.settings.restTimerEnabled=on;if(!on)hideRestDock();saveData();syncRestSettingsUI();}
 function setRestDuration(sec){state.settings.restDuration=sec;saveData();syncRestSettingsUI();}
 function syncRestSettingsUI(){
   const on=state.settings.restTimerEnabled!==false;
-  document.querySelectorAll('.toggle-pill[data-rest]').forEach(p=>p.classList.toggle('active',(p.dataset.rest==='on')===on));
-  document.querySelectorAll('.increment-pill[data-duration]').forEach(p=>p.classList.toggle('active',Number(p.dataset.duration)===state.settings.restDuration));
+  document.querySelectorAll('.toggle-pill[data-rest]').forEach(p=>setPillState(p,(p.dataset.rest==='on')===on));
+  document.querySelectorAll('.increment-pill[data-duration]').forEach(p=>setPillState(p,Number(p.dataset.duration)===state.settings.restDuration));
   const row=document.getElementById('rest-length-row');
   if(row)row.style.display=on?'':'none';
 }
