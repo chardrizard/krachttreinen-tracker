@@ -504,6 +504,9 @@ body.is-rest-offer #screen-log{padding-bottom:calc(184px + env(safe-area-inset-b
   body{padding:28px 0;}
   #app{position:relative;min-height:844px;border:1px solid var(--border-default);border-radius:28px;overflow:hidden;box-shadow:0 24px 70px oklch(3% 0.005 145 / .55);}
   .log-save{position:absolute;}
+  /* Must match .log-save: a fixed dock against an absolute Save button uses a
+     different coordinate system, and the two collide when scrolled. */
+  .rest-dock{position:absolute;}
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important;}
