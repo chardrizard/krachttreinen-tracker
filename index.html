@@ -422,7 +422,9 @@ body[data-screen="log"] .bottom-nav,body[data-screen="select"] .bottom-nav{displ
 .log-save:active{transform:translateX(-50%) scale(.985);}
 
 /* Rest timer — docked strip above the save button */
-.rest-dock{position:fixed;z-index:191;left:50%;bottom:0;width:min(calc(430px - 32px),calc(100% - 32px));margin:0 0 calc(60px + max(10px,env(safe-area-inset-bottom)));transform:translateX(-50%);background:var(--surface-overlay);border:1px solid var(--border-default);border-radius:var(--radius-md);box-shadow:var(--shadow-elevated);overflow:hidden;}
+/* Solid scrim, not an alpha drop shadow — matches .log-save and keeps DESIGN.md's
+   "depth comes from lighter surfaces, not visible shadows". */
+.rest-dock{position:fixed;z-index:191;left:50%;bottom:0;width:min(calc(430px - 32px),calc(100% - 32px));margin:0 0 calc(60px + max(10px,env(safe-area-inset-bottom)));transform:translateX(-50%);background:var(--surface-overlay);border:1px solid var(--border-default);border-radius:var(--radius-md);box-shadow:0 -12px 28px var(--surface-base);overflow:hidden;}
 .rest-dock[hidden]{display:none;}
 .rest-dock__drain{height:2px;background:var(--accent);transition:width var(--transition-normal) linear;}
 .rest-dock.is-spent .rest-dock__drain{background:var(--border-strong);}
