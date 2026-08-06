@@ -481,7 +481,9 @@ body.is-rest-offer #screen-log{padding-bottom:calc(184px + env(safe-area-inset-b
 .data-info-banner{padding:14px 0;margin:0;background:transparent;border:0;border-bottom:1px solid var(--border-subtle);border-radius:0;}
 .toggle-pills{background:var(--surface-inset);border-color:var(--border-default);}
 .toggle-pill.active,.increment-pill.active{background:var(--surface-overlay);color:var(--accent);}
-.increment-pill{min-height:40px;background:var(--surface-inset);border-color:var(--border-default);border-radius:var(--radius-sm);font-family:var(--font-sans);}
+/* DESIGN.md: 44px minimum touch targets */
+.toggle-pill,.increment-pill{min-height:44px;min-width:44px;}
+.increment-pill{background:var(--surface-inset);border-color:var(--border-default);border-radius:var(--radius-sm);font-family:var(--font-sans);}
 
 .dropdown-menu{background:var(--surface-overlay);border-color:var(--border-default);border-radius:var(--radius-sm);box-shadow:var(--shadow-elevated);}
 .dropdown-item{min-height:54px;border-bottom:1px solid var(--border-subtle);}
