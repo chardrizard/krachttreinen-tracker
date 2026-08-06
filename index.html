@@ -1027,6 +1027,7 @@ function editTodayLog(logId){
   const log=state.logs.find(l=>l.id===logId);if(!log)return;
   const ex=state.exercises.find(e=>e.id===log.exerciseId);if(!ex)return;
   state.currentExercise=ex;state.currentSets=log.sets.map(s=>({...s}));state.completedSetIndices=new Set();state.activeSetIndex=0;state.editingLogId=logId;
+  hideRestDock();
   renderLogScreen();navigateTo('log');
 }
 
@@ -1299,7 +1300,7 @@ function confirmDeleteEntry(){
     <div class="modal__actions"><button class="btn-destructive" onclick="deleteEntry()">Delete Entry</button><button class="btn-secondary" onclick="hideModal()">Cancel</button></div>`);
 }
 function deleteEntry(){
-  state.logs=state.logs.filter(l=>l.id!==state.editingLogId);saveData();hideModal();
+  state.logs=state.logs.filter(l=>l.id!==state.editingLogId);saveData();hideModal();resetRestSession();
   state.currentExercise=null;state.currentSets=[];state.completedSetIndices=new Set();state.activeSetIndex=0;state.editingLogId=null;navigateTo('home');
 }
 
