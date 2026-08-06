@@ -223,6 +223,7 @@ p,.empty-state__text,.demo-note,.data-info-banner__body,.orm-explanation__text{t
 .settings-row--button:active{transform:scale(0.96);}
 .settings-row--destructive{border-color:rgba(239,68,68,0.2);}
 .settings-row--destructive .settings-row__label{color:var(--destructive);}
+.settings-row--rest{flex-wrap:wrap;gap:var(--space-2);}
 .data-info-banner{background:var(--surface-inset);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:var(--space-4);margin-bottom:var(--space-3);}
 .data-info-banner__title{font-size:var(--text-sm);font-weight:500;color:var(--text-secondary);margin-bottom:var(--space-2);}
 .data-info-banner__body{font-size:var(--text-xs);color:var(--text-muted);line-height:1.6;}
@@ -420,6 +421,26 @@ body[data-screen="log"] .bottom-nav,body[data-screen="select"] .bottom-nav{displ
 .log-save{position:fixed;z-index:190;left:50%;bottom:0;width:min(calc(430px - 32px),calc(100% - 32px));margin:0 0 max(10px,env(safe-area-inset-bottom));transform:translateX(-50%);box-shadow:0 -12px 28px var(--surface-base);}
 .log-save:active{transform:translateX(-50%) scale(.985);}
 
+/* Rest timer — docked strip above the save button */
+.rest-dock{position:fixed;z-index:191;left:50%;bottom:0;width:min(calc(430px - 32px),calc(100% - 32px));margin:0 0 calc(60px + max(10px,env(safe-area-inset-bottom)));transform:translateX(-50%);background:var(--surface-overlay);border:1px solid var(--border-default);border-radius:var(--radius-md);box-shadow:var(--shadow-elevated);overflow:hidden;}
+.rest-dock[hidden]{display:none;}
+.rest-dock__drain{height:2px;background:var(--accent);transition:width var(--transition-normal) linear;}
+.rest-dock.is-spent .rest-dock__drain{background:var(--border-strong);}
+.rest-dock__row{display:flex;align-items:center;gap:8px;padding:8px 10px;}
+.rest-dock__row[hidden],.rest-dock__offer[hidden]{display:none;}
+.rest-dock__label{font-size:.625rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text-muted);}
+.rest-dock__time{flex:1;font-size:1.3125rem;font-weight:760;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--accent);}
+.rest-dock.is-spent .rest-dock__time{color:var(--text-muted);}
+.rest-dock__btn{min-width:56px;min-height:44px;padding:0 12px;border-radius:var(--radius-sm);box-shadow:var(--shadow-border);font-size:.8125rem;font-weight:640;color:var(--text-secondary);transition:background-color var(--transition-fast),transform var(--transition-fast);}
+.rest-dock__btn:active{background:var(--surface-raised);transform:scale(.96);}
+.rest-dock__offer{padding:10px 12px 12px;}
+.rest-dock__offer p{margin-bottom:10px;font-size:.8125rem;line-height:1.45;color:var(--text-primary);}
+.rest-dock__offer div{display:flex;gap:8px;}
+.rest-dock__offer .rest-dock__btn{flex:1;min-width:0;}
+.rest-dock__offer .rest-dock__btn--accept{background:var(--accent-muted);box-shadow:0 0 0 1px var(--accent);color:var(--accent);}
+body.is-resting #screen-log{padding-bottom:calc(148px + env(safe-area-inset-bottom));}
+@media(prefers-reduced-motion:reduce){.rest-dock__drain{transition:none;}}
+
 .progress-header{margin-bottom:4px;}
 .progress-header .page-title{font-size:1.5rem;letter-spacing:-.025em;}
 .progress-selector{margin-bottom:12px;text-align:center;}
@@ -582,6 +603,22 @@ body[data-screen="log"] .bottom-nav,body[data-screen="select"] .bottom-nav{displ
         Delete This Entry
       </button>
     </div>
+    <div class="rest-dock" id="rest-dock" hidden>
+      <div class="rest-dock__drain" id="rest-drain" style="width:100%"></div>
+      <div class="rest-dock__row" id="rest-controls">
+        <span class="rest-dock__label">Rest</span>
+        <span class="rest-dock__time" id="rest-time" aria-live="off">0:00</span>
+        <button class="rest-dock__btn" onclick="extendRest()">+30s</button>
+        <button class="rest-dock__btn" onclick="skipRest()">Skip</button>
+      </div>
+      <div class="rest-dock__offer" id="rest-offer" hidden>
+        <p>Skipping every rest? Turn the timer off.</p>
+        <div>
+          <button class="rest-dock__btn rest-dock__btn--accept" onclick="disableRestTimer()">Turn off</button>
+          <button class="rest-dock__btn" onclick="dismissRestOffer()">Keep it</button>
+        </div>
+      </div>
+    </div>
     <button class="btn-primary mt-auto log-save" onclick="saveLog()">Save Workout</button>
   </div>
 
@@ -630,6 +667,22 @@ body[data-screen="log"] .bottom-nav,body[data-screen="select"] .bottom-nav{displ
           <button class="increment-pill" data-increment="1.25" onclick="setIncrement(1.25,this)">1.25</button>
           <button class="increment-pill active" data-increment="2.5" onclick="setIncrement(2.5,this)">2.5</button>
           <button class="increment-pill" data-increment="5" onclick="setIncrement(5,this)">5</button>
+        </div>
+      </div>
+      <div class="settings-row settings-row--rest">
+        <span class="settings-row__label">Rest Timer</span>
+        <div class="toggle-pills">
+          <button class="toggle-pill" data-rest="on" onclick="setRestTimerEnabled(true)">On</button>
+          <button class="toggle-pill" data-rest="off" onclick="setRestTimerEnabled(false)">Off</button>
+        </div>
+      </div>
+      <div class="settings-row settings-row--rest" id="rest-length-row">
+        <span class="settings-row__label">Rest Length</span>
+        <div class="increment-pills">
+          <button class="increment-pill" data-duration="60" onclick="setRestDuration(60)">1:00</button>
+          <button class="increment-pill" data-duration="90" onclick="setRestDuration(90)">1:30</button>
+          <button class="increment-pill" data-duration="120" onclick="setRestDuration(120)">2:00</button>
+          <button class="increment-pill" data-duration="180" onclick="setRestDuration(180)">3:00</button>
         </div>
       </div>
       <div class="settings-row">
@@ -681,6 +734,8 @@ body[data-screen="log"] .bottom-nav,body[data-screen="select"] .bottom-nav{displ
     <span>Settings</span>
   </button>
 </nav>
+
+<div class="sr-only" id="rest-announcer" role="status" aria-live="polite"></div>
 
 <div class="modal-overlay" id="modal-overlay" aria-hidden="true">
   <div class="modal" id="modal-content"></div>
@@ -748,7 +803,8 @@ const DEMO_EXERCISE_IDS=['bench-press-flat-barbell','barbell-squat','deadlift'];
 const BACKUP_REMINDER_INTERVAL_DAYS=30;
 const BACKUP_REMINDER_SNOOZE_DAYS=7;
 
-let state={exercises:[],logs:[],settings:{weightIncrement:2.5,weightUnit:'kg',lastBackupAt:null,lastBackupReminderDismissedAt:null},favouriteIds:[],currentExercise:null,currentSets:[],completedSetIndices:new Set(),activeSetIndex:0,editingLogId:null,selectedProgressExercise:null,timeRange:30,chart:null};
+let state={exercises:[],logs:[],settings:{weightIncrement:2.5,weightUnit:'kg',restTimerEnabled:true,restDuration:90,lastBackupAt:null,lastBackupReminderDismissedAt:null},favouriteIds:[],currentExercise:null,currentSets:[],completedSetIndices:new Set(),activeSetIndex:0,editingLogId:null,selectedProgressExercise:null,timeRange:30,chart:null,
+rest:{endsAt:null,tick:null,hideTimeout:null,spent:false,offerOpen:false,skipStreak:0,offerShown:false}};
 let activeModalType=null;
 
 function roundNumber(value,decimals=1){
@@ -1095,9 +1151,103 @@ function toggleSetComplete(i){
     const next=state.currentSets.findIndex((_,index)=>!state.completedSetIndices.has(index));
     state.activeSetIndex=next;
     motion={completedIndex:i,activatedIndex:next};
+    startRest();
   }
   renderSets(motion);
 }
+
+/* ---------- Rest timer ----------
+   Silent and visual only: no audio, no vibration, no notifications.
+   endsAt lives in memory, so a killed app ends the rest rather than resuming a stale one. */
+const REST_SPENT_HIDE_MS=5000;
+function formatRestClock(s){return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;}
+function restRemaining(){return state.rest.endsAt===null?0:Math.max(0,Math.ceil((state.rest.endsAt-Date.now())/1000));}
+function announceRest(msg){const el=document.getElementById('rest-announcer');if(el)el.textContent=msg;}
+
+function startRest(){
+  const r=state.rest;
+  if(state.settings.restTimerEnabled===false||state.editingLogId)return;
+  clearTimeout(r.hideTimeout);r.hideTimeout=null;
+  r.endsAt=Date.now()+state.settings.restDuration*1000;
+  r.spent=false;r.offerOpen=false;
+  if(!r.tick)r.tick=setInterval(tickRest,1000);
+  renderRestDock();
+  announceRest(`Rest started, ${state.settings.restDuration} seconds.`);
+}
+function tickRest(){
+  if(state.rest.endsAt===null)return;
+  if(restRemaining()<=0&&!state.rest.spent)completeRest();
+  else renderRestDock();
+}
+function completeRest(){
+  const r=state.rest;
+  r.spent=true;r.skipStreak=0;
+  clearInterval(r.tick);r.tick=null;
+  renderRestDock();
+  announceRest('Rest complete.');
+  r.hideTimeout=setTimeout(hideRestDock,REST_SPENT_HIDE_MS);
+}
+function hideRestDock(){
+  const r=state.rest;
+  clearInterval(r.tick);r.tick=null;
+  clearTimeout(r.hideTimeout);r.hideTimeout=null;
+  r.endsAt=null;r.spent=false;r.offerOpen=false;
+  renderRestDock();
+}
+function extendRest(){
+  const r=state.rest;
+  if(r.endsAt===null)return;
+  clearTimeout(r.hideTimeout);r.hideTimeout=null;
+  r.endsAt=(r.spent?Date.now():r.endsAt)+30000;
+  r.spent=false;
+  if(!r.tick)r.tick=setInterval(tickRest,1000);
+  renderRestDock();
+}
+function skipRest(){
+  const r=state.rest;
+  if(r.endsAt===null)return;
+  if(!r.spent)r.skipStreak++;
+  clearInterval(r.tick);r.tick=null;
+  clearTimeout(r.hideTimeout);r.hideTimeout=null;
+  if(r.skipStreak>=3&&!r.offerShown){
+    r.endsAt=null;r.spent=false;r.offerOpen=true;r.offerShown=true;
+    renderRestDock();
+    return;
+  }
+  hideRestDock();
+}
+function disableRestTimer(){
+  state.rest.offerOpen=false;
+  setRestTimerEnabled(false);
+  announceRest('Rest timer turned off. You can turn it back on in Settings.');
+}
+function dismissRestOffer(){state.rest.skipStreak=0;hideRestDock();}
+function resetRestSession(){const r=state.rest;hideRestDock();r.skipStreak=0;r.offerShown=false;}
+
+function renderRestDock(){
+  const dock=document.getElementById('rest-dock');
+  if(!dock)return;
+  const r=state.rest;
+  const visible=r.offerOpen||r.endsAt!==null;
+  dock.hidden=!visible;
+  document.body.classList.toggle('is-resting',visible);
+  if(!visible)return;
+  document.getElementById('rest-controls').hidden=r.offerOpen;
+  document.getElementById('rest-offer').hidden=!r.offerOpen;
+  const drain=document.getElementById('rest-drain');
+  dock.classList.toggle('is-spent',r.spent);
+  if(r.offerOpen){drain.style.width='0%';return;}
+  const left=restRemaining();
+  const total=state.settings.restDuration||1;
+  document.getElementById('rest-time').textContent=formatRestClock(left);
+  drain.style.width=Math.max(0,Math.min(100,(left/total)*100))+'%';
+}
+
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden||state.rest.endsAt===null)return;
+  if(restRemaining()<=0&&!state.rest.spent)completeRest();
+  else{if(!state.rest.tick)state.rest.tick=setInterval(tickRest,1000);renderRestDock();}
+});
 function updateLogSummary(){
   const completed=[...state.completedSetIndices];
   const sets=completed.map(i=>state.currentSets[i]).filter(Boolean);
@@ -1124,7 +1274,7 @@ function saveLog(){
     const now=new Date();
     state.logs.push({id:`log_${now.getTime()}`,date:now.toISOString().split('T')[0],timestamp:now.getTime(),exerciseId:state.currentExercise.id,sets:valid});
   }
-  saveData();state.currentExercise=null;state.currentSets=[];state.completedSetIndices=new Set();state.activeSetIndex=0;state.editingLogId=null;navigateTo('home');
+  saveData();resetRestSession();state.currentExercise=null;state.currentSets=[];state.completedSetIndices=new Set();state.activeSetIndex=0;state.editingLogId=null;navigateTo('home');
 }
 
 function confirmDeleteEntry(){
@@ -1237,11 +1387,21 @@ function renderProgressChart(){
 
 // Settings
 function applySettings(){
-  document.querySelectorAll('.increment-pill').forEach(p=>p.classList.toggle('active',parseFloat(p.dataset.increment)===state.settings.weightIncrement));
-  document.querySelectorAll('.toggle-pill').forEach(p=>p.classList.toggle('active',p.dataset.unit===state.settings.weightUnit));
+  document.querySelectorAll('.increment-pill[data-increment]').forEach(p=>p.classList.toggle('active',parseFloat(p.dataset.increment)===state.settings.weightIncrement));
+  document.querySelectorAll('.toggle-pill[data-unit]').forEach(p=>p.classList.toggle('active',p.dataset.unit===state.settings.weightUnit));
+  syncRestSettingsUI();
 }
-function setIncrement(v,btn){state.settings.weightIncrement=v;document.querySelectorAll('.increment-pill').forEach(p=>p.classList.remove('active'));btn.classList.add('active');saveData();}
-function setUnit(u,btn){state.settings.weightUnit=u;document.querySelectorAll('.toggle-pill').forEach(p=>p.classList.remove('active'));btn.classList.add('active');saveData();}
+function setIncrement(v,btn){state.settings.weightIncrement=v;document.querySelectorAll('.increment-pill[data-increment]').forEach(p=>p.classList.remove('active'));btn.classList.add('active');saveData();}
+function setUnit(u,btn){state.settings.weightUnit=u;document.querySelectorAll('.toggle-pill[data-unit]').forEach(p=>p.classList.remove('active'));btn.classList.add('active');saveData();}
+function setRestTimerEnabled(on){state.settings.restTimerEnabled=on;if(!on)hideRestDock();saveData();syncRestSettingsUI();}
+function setRestDuration(sec){state.settings.restDuration=sec;saveData();syncRestSettingsUI();}
+function syncRestSettingsUI(){
+  const on=state.settings.restTimerEnabled!==false;
+  document.querySelectorAll('.toggle-pill[data-rest]').forEach(p=>p.classList.toggle('active',(p.dataset.rest==='on')===on));
+  document.querySelectorAll('.increment-pill[data-duration]').forEach(p=>p.classList.toggle('active',Number(p.dataset.duration)===state.settings.restDuration));
+  const row=document.getElementById('rest-length-row');
+  if(row)row.style.display=on?'':'none';
+}
 
 function daysSince(value){
   if(!value)return Infinity;
