@@ -439,7 +439,10 @@ body[data-screen="log"] .bottom-nav,body[data-screen="select"] .bottom-nav{displ
 .rest-dock__offer div{display:flex;gap:8px;}
 .rest-dock__offer .rest-dock__btn{flex:1;min-width:0;}
 .rest-dock__offer .rest-dock__btn--accept{background:var(--accent-muted);box-shadow:0 0 0 1px var(--accent);color:var(--accent);}
+/* Content padding must match the tallest state of the fixed dock, or the last
+   row becomes unreachable at max scroll. The offer state is ~35px taller. */
 body.is-resting #screen-log{padding-bottom:calc(148px + env(safe-area-inset-bottom));}
+body.is-rest-offer #screen-log{padding-bottom:calc(184px + env(safe-area-inset-bottom));}
 @media(prefers-reduced-motion:reduce){.rest-dock__drain{transition:none;}}
 
 .progress-header{margin-bottom:4px;}
@@ -1232,6 +1235,7 @@ function renderRestDock(){
   const visible=r.offerOpen||r.endsAt!==null;
   dock.hidden=!visible;
   document.body.classList.toggle('is-resting',visible);
+  document.body.classList.toggle('is-rest-offer',visible&&r.offerOpen);
   if(!visible)return;
   document.getElementById('rest-controls').hidden=r.offerOpen;
   document.getElementById('rest-offer').hidden=!r.offerOpen;
