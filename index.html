@@ -1110,7 +1110,7 @@ function renderSets(motion=null){
     ].filter(Boolean).join(' ');
     return`<div class="set-row ${complete?'is-complete':''} ${active?'is-active':''} ${motionClasses}">
       <span class="set-row__number">${String(i+1).padStart(2,'0')}</span>
-      <span class="set-row__previous">${prior?`${formatWeight(prior.weight)} × ${prior.reps}`:'None'}</span>
+      <span class="set-row__previous">${prior?`${formatWeight(prior.weight)} × ${prior.reps}`:'—'}</span>
       <label class="set-row__field"><span class="sr-only">Set ${i+1} weight in ${state.settings.weightUnit}</span><input type="number" class="set-row__input set-row__input--weight" value="${s.weight>0?formatWeight(s.weight):''}" placeholder="0" inputmode="decimal" ${complete?'disabled':''} onfocus="activateSet(${i},this)" onchange="updateWeight(${i},this.value)" onblur="commitWeight(${i},this)"></label>
       <label class="set-row__field"><span class="sr-only">Set ${i+1} repetitions</span><input type="number" class="set-row__input set-row__input--reps" value="${s.reps>0?s.reps:''}" placeholder="0" inputmode="numeric" ${complete?'disabled':''} onfocus="activateSet(${i},this)" onchange="updateReps(${i},this.value)" onblur="commitReps(${i},this)"></label>
       <button class="set-row__done" onclick="toggleSetComplete(${i})" aria-label="${complete?`Set ${i+1} completed`:`Mark set ${i+1} completed`}" aria-pressed="${complete}"><span>${complete?'✓':''}</span></button>
