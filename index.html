@@ -428,7 +428,8 @@ body[data-screen="log"] .bottom-nav,body[data-screen="select"] .bottom-nav{displ
 .rest-dock.is-spent .rest-dock__drain{background:var(--border-strong);}
 .rest-dock__row{display:flex;align-items:center;gap:8px;padding:8px 10px;}
 .rest-dock__row[hidden],.rest-dock__offer[hidden]{display:none;}
-.rest-dock__label{font-size:.625rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text-muted);}
+/* --text-muted is only AA on --surface-base (4.59:1); on this raised surface it drops to 3.84:1 */
+.rest-dock__label{font-size:.625rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text-secondary);}
 .rest-dock__time{flex:1;font-size:1.3125rem;font-weight:760;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--accent);}
 .rest-dock.is-spent .rest-dock__time{color:var(--text-muted);}
 .rest-dock__btn{min-width:56px;min-height:44px;padding:0 12px;border-radius:var(--radius-sm);box-shadow:var(--shadow-border);font-size:.8125rem;font-weight:640;color:var(--text-secondary);transition:background-color var(--transition-fast),transform var(--transition-fast);}
